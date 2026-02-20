@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,30 +36,23 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-navy-dark flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <h1 className="text-white font-serif text-2xl tracking-[4px] leading-tight">
-            GAIB CAPITAL<br />PARTNERS
-          </h1>
-          <div className="gold-line mt-4 w-24 mx-auto" />
-          <p className="text-gold text-sm mt-4 tracking-wider">INTERNAL PORTAL</p>
-        </div>
-
-        {/* Login form */}
-        <form onSubmit={handleSubmit} className="bg-navy-card border border-navy rounded-xl p-8">
-          <h2 className="text-xl font-serif text-white mb-6 text-center">Portal Access</h2>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-sm">
+        <div className="bg-white rounded-lg shadow p-8">
+          <div className="text-center mb-6">
+            <h1 className="text-xl font-semibold text-gray-900">GAIB Portal</h1>
+            <p className="text-sm text-gray-500 mt-1">Internal access only</p>
+          </div>
           
           {error && (
-            <div className="mb-4 p-3 bg-danger/10 border border-danger/20 rounded-lg text-danger text-sm">
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
               {error}
             </div>
           )}
 
-          <div className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-muted mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 Password
               </label>
               <input
@@ -66,8 +60,8 @@ export default function LoginPage() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white placeholder-muted focus:border-gold focus:ring-1 focus:ring-gold outline-none"
-                placeholder="Enter portal password"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter password"
                 required
                 autoFocus
               />
@@ -76,26 +70,18 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-gold hover:bg-gold-dark text-navy font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 disabled:opacity-50"
             >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  Accessing...
-                </span>
-              ) : (
-                'Enter Portal'
-              )}
+              {loading ? 'Signing in...' : 'Sign In'}
             </button>
-          </div>
-        </form>
+          </form>
 
-        <p className="text-center text-muted text-sm mt-6">
-          © 2026 Gaib Capital Partners LLC. Confidential.
-        </p>
+          <div className="mt-6 text-center">
+            <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">
+              ← Back to main site
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

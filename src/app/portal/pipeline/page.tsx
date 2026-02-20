@@ -1,164 +1,114 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 
 const sites = [
-  { id: 1, name: 'Site Alpha', location: 'Springfield, OH', stage: 3, mw: 75, riskScore: 2, exitValue: 22500000, timeline: '8 months', lastUpdated: '2026-02-18' },
-  { id: 2, name: 'Site Beta', location: 'Columbus, OH', stage: 2, mw: 50, riskScore: 3, exitValue: 15000000, timeline: '12 months', lastUpdated: '2026-02-17' },
-  { id: 3, name: 'Site Gamma', location: 'Indianapolis, IN', stage: 1, mw: 100, riskScore: 4, exitValue: 30000000, timeline: '18 months', lastUpdated: '2026-02-16' },
-  { id: 4, name: 'Site Delta', location: 'Louisville, KY', stage: 4, mw: 60, riskScore: 2, exitValue: 18000000, timeline: '6 months', lastUpdated: '2026-02-15' },
-  { id: 5, name: 'Site Epsilon', location: 'Cincinnati, OH', stage: 6, mw: 120, riskScore: 1, exitValue: 36000000, timeline: '2 months', lastUpdated: '2026-02-13' },
-  { id: 6, name: 'Site Zeta', location: 'Dayton, OH', stage: 1, mw: 40, riskScore: 3, exitValue: 12000000, timeline: '18 months', lastUpdated: '2026-02-11' },
-  { id: 7, name: 'Site Eta', location: 'Toledo, OH', stage: 2, mw: 80, riskScore: 2, exitValue: 24000000, timeline: '14 months', lastUpdated: '2026-02-10' },
-  { id: 8, name: 'Site Theta', location: 'Fort Wayne, IN', stage: 1, mw: 55, riskScore: 4, exitValue: 16500000, timeline: '16 months', lastUpdated: '2026-02-08' },
+  { id: 1, name: 'Site Alpha', location: 'Springfield, OH', stage: 3, mw: 75, risk: 2, exitValue: 22500000, timeline: '8 months', updated: '2026-02-18' },
+  { id: 2, name: 'Site Beta', location: 'Columbus, OH', stage: 2, mw: 50, risk: 3, exitValue: 15000000, timeline: '12 months', updated: '2026-02-17' },
+  { id: 3, name: 'Site Gamma', location: 'Indianapolis, IN', stage: 1, mw: 100, risk: 4, exitValue: 30000000, timeline: '18 months', updated: '2026-02-16' },
+  { id: 4, name: 'Site Delta', location: 'Louisville, KY', stage: 4, mw: 60, risk: 2, exitValue: 18000000, timeline: '6 months', updated: '2026-02-15' },
+  { id: 5, name: 'Site Epsilon', location: 'Cincinnati, OH', stage: 6, mw: 120, risk: 1, exitValue: 36000000, timeline: '2 months', updated: '2026-02-13' },
+  { id: 6, name: 'Site Zeta', location: 'Dayton, OH', stage: 1, mw: 40, risk: 3, exitValue: 12000000, timeline: '18 months', updated: '2026-02-11' },
+  { id: 7, name: 'Site Eta', location: 'Toledo, OH', stage: 2, mw: 80, risk: 2, exitValue: 24000000, timeline: '14 months', updated: '2026-02-10' },
+  { id: 8, name: 'Site Theta', location: 'Fort Wayne, IN', stage: 1, mw: 55, risk: 4, exitValue: 16500000, timeline: '16 months', updated: '2026-02-08' },
 ];
 
 const stageNames: Record<number, string> = {
-  1: 'Identified',
-  2: 'Gas Confirmed',
-  3: 'Power Secured',
-  4: 'Permits Filed',
-  5: 'De-risked',
-  6: 'Marketing',
-  7: 'Closed',
+  1: 'Identified', 2: 'Gas Confirmed', 3: 'Power Secured', 
+  4: 'Permits Filed', 5: 'De-risked', 6: 'Marketing', 7: 'Closed',
 };
 
 function formatCurrency(value: number): string {
-  if (value >= 1000000) {
-    return `$${(value / 1000000).toFixed(1)}M`;
-  }
-  return `$${(value / 1000).toFixed(0)}K`;
+  return `$${(value / 1000000).toFixed(1)}M`;
 }
 
-function getRiskColor(score: number): string {
-  if (score <= 2) return 'bg-success';
-  if (score <= 3) return 'bg-warning';
-  return 'bg-danger';
-}
-
-function getStageColor(stage: number): string {
-  const colors: Record<number, string> = {
-    1: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-    2: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
-    3: 'bg-green-500/20 text-green-400 border-green-500/30',
-    4: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-    5: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-    6: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-    7: 'bg-gold/20 text-gold border-gold/30',
-  };
-  return colors[stage] || '';
+function getRiskLabel(score: number): { label: string; color: string } {
+  if (score <= 2) return { label: 'Low', color: 'text-green-600 bg-green-50' };
+  if (score <= 3) return { label: 'Med', color: 'text-yellow-600 bg-yellow-50' };
+  return { label: 'High', color: 'text-red-600 bg-red-50' };
 }
 
 export default function PipelinePage() {
   const [stageFilter, setStageFilter] = useState<number | 'all'>('all');
-  const [sortBy, setSortBy] = useState<'name' | 'stage' | 'mw' | 'exitValue'>('stage');
 
-  const filteredSites = sites
-    .filter(site => stageFilter === 'all' || site.stage === stageFilter)
-    .sort((a, b) => {
-      if (sortBy === 'name') return a.name.localeCompare(b.name);
-      if (sortBy === 'stage') return a.stage - b.stage;
-      if (sortBy === 'mw') return b.mw - a.mw;
-      if (sortBy === 'exitValue') return b.exitValue - a.exitValue;
-      return 0;
-    });
+  const filteredSites = stageFilter === 'all' 
+    ? sites 
+    : sites.filter(s => s.stage === stageFilter);
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-serif text-white">Pipeline</h1>
-          <p className="text-muted mt-1">All sites in the acquisition pipeline.</p>
-        </div>
-        <a
+        <h1 className="text-2xl font-semibold text-gray-900">Pipeline</h1>
+        <Link
           href="/portal/new-site"
-          className="px-6 py-3 bg-gold hover:bg-gold-dark text-navy font-semibold rounded-lg transition-colors"
+          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700"
         >
           + Add Site
-        </a>
+        </Link>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-muted text-sm">Stage:</span>
-          <select
-            value={stageFilter}
-            onChange={(e) => setStageFilter(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
-            className="bg-navy-card border border-navy text-white px-3 py-2 rounded-lg focus:border-gold outline-none"
-          >
-            <option value="all">All Stages</option>
-            {Object.entries(stageNames).map(([num, name]) => (
-              <option key={num} value={num}>Stage {num}: {name}</option>
-            ))}
-          </select>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-muted text-sm">Sort by:</span>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-            className="bg-navy-card border border-navy text-white px-3 py-2 rounded-lg focus:border-gold outline-none"
-          >
-            <option value="stage">Stage</option>
-            <option value="name">Name</option>
-            <option value="mw">MW Capacity</option>
-            <option value="exitValue">Exit Value</option>
-          </select>
-        </div>
+      <div className="flex gap-4 items-center">
+        <label className="text-sm text-gray-600">Filter by stage:</label>
+        <select
+          value={stageFilter}
+          onChange={(e) => setStageFilter(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
+          className="border border-gray-300 rounded px-3 py-1.5 text-sm"
+        >
+          <option value="all">All Stages</option>
+          {Object.entries(stageNames).map(([num, name]) => (
+            <option key={num} value={num}>Stage {num}: {name}</option>
+          ))}
+        </select>
+        <span className="text-sm text-gray-500">{filteredSites.length} sites</span>
       </div>
 
-      {/* Pipeline Table */}
-      <div className="bg-navy-card border border-navy rounded-xl overflow-hidden">
+      {/* Table */}
+      <div className="bg-white rounded border border-gray-200 overflow-hidden">
         <table className="w-full">
-          <thead>
-            <tr className="border-b border-navy">
-              <th className="px-6 py-4 text-left text-muted font-medium text-sm">Site</th>
-              <th className="px-6 py-4 text-left text-muted font-medium text-sm">Stage</th>
-              <th className="px-6 py-4 text-left text-muted font-medium text-sm">MW</th>
-              <th className="px-6 py-4 text-left text-muted font-medium text-sm">Risk</th>
-              <th className="px-6 py-4 text-left text-muted font-medium text-sm">Timeline</th>
-              <th className="px-6 py-4 text-right text-muted font-medium text-sm">Exit Value</th>
-              <th className="px-6 py-4 text-right text-muted font-medium text-sm">Updated</th>
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Site</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stage</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">MW</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Risk</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Timeline</th>
+              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Exit Value</th>
+              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Updated</th>
             </tr>
           </thead>
-          <tbody>
-            {filteredSites.map((site) => (
-              <tr
-                key={site.id}
-                className="border-b border-navy/50 hover:bg-navy/30 cursor-pointer transition-colors"
-              >
-                <td className="px-6 py-4">
-                  <p className="text-white font-medium">{site.name}</p>
-                  <p className="text-muted text-sm">{site.location}</p>
-                </td>
-                <td className="px-6 py-4">
-                  <span className={`px-3 py-1 text-xs font-medium rounded-full border ${getStageColor(site.stage)}`}>
-                    {site.stage}. {stageNames[site.stage]}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-white font-medium">{site.mw} MW</td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-2">
-                    <span className={`w-3 h-3 rounded-full ${getRiskColor(site.riskScore)}`} />
-                    <span className="text-white">{site.riskScore}/5</span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-muted">{site.timeline}</td>
-                <td className="px-6 py-4 text-right text-gold font-semibold">{formatCurrency(site.exitValue)}</td>
-                <td className="px-6 py-4 text-right text-muted text-sm">{site.lastUpdated}</td>
-              </tr>
-            ))}
+          <tbody className="divide-y divide-gray-100">
+            {filteredSites.map((site) => {
+              const risk = getRiskLabel(site.risk);
+              return (
+                <tr key={site.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3">
+                    <Link href={`/portal/sites/${site.id}`} className="block">
+                      <p className="font-medium text-blue-600 hover:underline">{site.name}</p>
+                      <p className="text-sm text-gray-500">{site.location}</p>
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded">
+                      {site.stage}. {stageNames[site.stage]}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-900">{site.mw} MW</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-1 text-xs font-medium rounded ${risk.color}`}>
+                      {risk.label}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-600">{site.timeline}</td>
+                  <td className="px-4 py-3 text-right font-medium text-gray-900">{formatCurrency(site.exitValue)}</td>
+                  <td className="px-4 py-3 text-right text-gray-500 text-sm">{site.updated}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
-
-      {filteredSites.length === 0 && (
-        <div className="text-center py-12 bg-navy-card rounded-xl">
-          <p className="text-muted">No sites match your filters.</p>
-        </div>
-      )}
     </div>
   );
 }

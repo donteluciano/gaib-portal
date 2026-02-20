@@ -1,195 +1,134 @@
 'use client';
 
-// Demo data - will be replaced with Supabase
-const pipelineStats = {
+import Link from 'next/link';
+
+// Demo data
+const stats = {
   totalSites: 8,
   totalMW: 485,
   totalExitValue: 142500000,
   avgRiskScore: 2.3,
 };
 
-const stages = [
-  { stage: 1, name: 'Identified', count: 3, color: 'bg-blue-500' },
-  { stage: 2, name: 'Gas Confirmed', count: 2, color: 'bg-cyan-500' },
-  { stage: 3, name: 'Power Secured', count: 1, color: 'bg-green-500' },
-  { stage: 4, name: 'Permits Filed', count: 1, color: 'bg-yellow-500' },
-  { stage: 5, name: 'De-risked', count: 0, color: 'bg-orange-500' },
-  { stage: 6, name: 'Marketing', count: 1, color: 'bg-purple-500' },
-  { stage: 7, name: 'Closed', count: 0, color: 'bg-gold' },
-];
-
 const sites = [
-  { id: 1, name: 'Site Alpha', location: 'Springfield, OH', stage: 3, mw: 75, riskScore: 2, exitValue: 22500000, lastUpdated: '2 hours ago' },
-  { id: 2, name: 'Site Beta', location: 'Columbus, OH', stage: 2, mw: 50, riskScore: 3, exitValue: 15000000, lastUpdated: '1 day ago' },
-  { id: 3, name: 'Site Gamma', location: 'Indianapolis, IN', stage: 1, mw: 100, riskScore: 4, exitValue: 30000000, lastUpdated: '2 days ago' },
-  { id: 4, name: 'Site Delta', location: 'Louisville, KY', stage: 4, mw: 60, riskScore: 2, exitValue: 18000000, lastUpdated: '3 days ago' },
-  { id: 5, name: 'Site Epsilon', location: 'Cincinnati, OH', stage: 6, mw: 120, riskScore: 1, exitValue: 36000000, lastUpdated: '5 days ago' },
-  { id: 6, name: 'Site Zeta', location: 'Dayton, OH', stage: 1, mw: 40, riskScore: 3, exitValue: 12000000, lastUpdated: '1 week ago' },
+  { id: 1, name: 'Site Alpha', location: 'Springfield, OH', stage: 3, mw: 75, risk: 2, exitValue: 22500000, updated: '2 hours ago' },
+  { id: 2, name: 'Site Beta', location: 'Columbus, OH', stage: 2, mw: 50, risk: 3, exitValue: 15000000, updated: '1 day ago' },
+  { id: 3, name: 'Site Gamma', location: 'Indianapolis, IN', stage: 1, mw: 100, risk: 4, exitValue: 30000000, updated: '2 days ago' },
+  { id: 4, name: 'Site Delta', location: 'Louisville, KY', stage: 4, mw: 60, risk: 2, exitValue: 18000000, updated: '3 days ago' },
+  { id: 5, name: 'Site Epsilon', location: 'Cincinnati, OH', stage: 6, mw: 120, risk: 1, exitValue: 36000000, updated: '5 days ago' },
 ];
 
 const recentActivity = [
-  { id: 1, site: 'Site Alpha', action: 'Power agreement signed with AEP', date: '2 hours ago' },
-  { id: 2, site: 'Site Beta', action: 'Gas feasibility study completed', date: '1 day ago' },
-  { id: 3, site: 'Site Gamma', action: 'Initial site visit scheduled', date: '2 days ago' },
-  { id: 4, site: 'Site Delta', action: 'Air permit application submitted', date: '3 days ago' },
-  { id: 5, site: 'Site Epsilon', action: 'Buyer LOI received from Vantage', date: '5 days ago' },
+  { site: 'Site Alpha', action: 'Power agreement signed with AEP', date: '2 hours ago' },
+  { site: 'Site Beta', action: 'Gas feasibility study completed', date: '1 day ago' },
+  { site: 'Site Gamma', action: 'Initial site visit scheduled', date: '2 days ago' },
+  { site: 'Site Delta', action: 'Air permit application submitted', date: '3 days ago' },
 ];
 
 function formatCurrency(value: number): string {
-  if (value >= 1000000) {
-    return `$${(value / 1000000).toFixed(1)}M`;
-  }
-  return `$${(value / 1000).toFixed(0)}K`;
+  return `$${(value / 1000000).toFixed(1)}M`;
 }
 
-function getRiskColor(score: number): string {
-  if (score <= 2) return 'bg-success';
-  if (score <= 3) return 'bg-warning';
-  return 'bg-danger';
-}
-
-function getRiskLabel(score: number): string {
-  if (score <= 2) return 'Low';
-  if (score <= 3) return 'Medium';
-  return 'High';
+function getRiskLabel(score: number): { label: string; color: string } {
+  if (score <= 2) return { label: 'Low', color: 'text-green-600 bg-green-50' };
+  if (score <= 3) return { label: 'Med', color: 'text-yellow-600 bg-yellow-50' };
+  return { label: 'High', color: 'text-red-600 bg-red-50' };
 }
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-serif text-white">Dashboard</h1>
-        <p className="text-muted mt-1">Pipeline overview and recent activity.</p>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
+        <Link
+          href="/portal/new-site"
+          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700"
+        >
+          + Add Site
+        </Link>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-navy-card border border-navy-card rounded-xl p-6">
-          <p className="text-muted text-sm">Active Sites</p>
-          <p className="text-3xl font-bold text-white mt-2">{pipelineStats.totalSites}</p>
-          <p className="text-gold text-sm mt-2">In pipeline</p>
+      {/* Stats */}
+      <div className="grid grid-cols-4 gap-4">
+        <div className="bg-white p-4 rounded border border-gray-200">
+          <p className="text-sm text-gray-500">Active Sites</p>
+          <p className="text-2xl font-semibold text-gray-900">{stats.totalSites}</p>
         </div>
-        <div className="bg-navy-card border border-navy-card rounded-xl p-6">
-          <p className="text-muted text-sm">Total MW Capacity</p>
-          <p className="text-3xl font-bold text-white mt-2">{pipelineStats.totalMW} MW</p>
-          <p className="text-gold text-sm mt-2">Across all sites</p>
+        <div className="bg-white p-4 rounded border border-gray-200">
+          <p className="text-sm text-gray-500">Total MW</p>
+          <p className="text-2xl font-semibold text-gray-900">{stats.totalMW}</p>
         </div>
-        <div className="bg-navy-card border border-navy-card rounded-xl p-6">
-          <p className="text-muted text-sm">Est. Exit Value</p>
-          <p className="text-3xl font-bold text-white mt-2">{formatCurrency(pipelineStats.totalExitValue)}</p>
-          <p className="text-success text-sm mt-2">Portfolio total</p>
+        <div className="bg-white p-4 rounded border border-gray-200">
+          <p className="text-sm text-gray-500">Est. Exit Value</p>
+          <p className="text-2xl font-semibold text-gray-900">{formatCurrency(stats.totalExitValue)}</p>
         </div>
-        <div className="bg-navy-card border border-navy-card rounded-xl p-6">
-          <p className="text-muted text-sm">Avg. Risk Score</p>
-          <p className="text-3xl font-bold text-white mt-2">{pipelineStats.avgRiskScore.toFixed(1)}</p>
-          <p className="text-success text-sm mt-2">Low risk</p>
-        </div>
-      </div>
-
-      {/* Stage Funnel */}
-      <div className="bg-navy-card border border-navy-card rounded-xl p-6">
-        <h2 className="text-xl font-serif text-white mb-6">Stage Funnel</h2>
-        <div className="flex items-end gap-2 h-32">
-          {stages.map((stage) => (
-            <div key={stage.stage} className="flex-1 flex flex-col items-center">
-              <span className="text-white font-bold text-lg mb-2">{stage.count}</span>
-              <div 
-                className={`w-full ${stage.color} rounded-t transition-all`}
-                style={{ height: `${Math.max(stage.count * 25, 8)}%` }}
-              />
-              <span className="text-muted text-xs mt-2 text-center">{stage.name}</span>
-            </div>
-          ))}
+        <div className="bg-white p-4 rounded border border-gray-200">
+          <p className="text-sm text-gray-500">Avg Risk Score</p>
+          <p className="text-2xl font-semibold text-gray-900">{stats.avgRiskScore}</p>
         </div>
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Pipeline Table */}
-        <div className="lg:col-span-2 bg-navy-card border border-navy-card rounded-xl p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-serif text-white">Active Sites</h2>
-            <a href="/portal/pipeline" className="text-gold hover:text-gold-light text-sm font-medium">
-              View all →
-            </a>
+      <div className="grid grid-cols-3 gap-6">
+        {/* Sites Table */}
+        <div className="col-span-2 bg-white rounded border border-gray-200">
+          <div className="px-4 py-3 border-b border-gray-200">
+            <h2 className="font-medium text-gray-900">Active Sites</h2>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="text-left border-b border-navy">
-                  <th className="pb-3 text-muted font-medium text-sm">Site</th>
-                  <th className="pb-3 text-muted font-medium text-sm">Stage</th>
-                  <th className="pb-3 text-muted font-medium text-sm">MW</th>
-                  <th className="pb-3 text-muted font-medium text-sm">Risk</th>
-                  <th className="pb-3 text-muted font-medium text-sm text-right">Exit Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sites.slice(0, 5).map((site) => (
-                  <tr key={site.id} className="border-b border-navy/50 hover:bg-navy/30 cursor-pointer">
-                    <td className="py-3">
-                      <p className="text-white font-medium">{site.name}</p>
-                      <p className="text-muted text-sm">{site.location}</p>
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Site</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Stage</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">MW</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Risk</th>
+                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Exit Value</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {sites.map((site) => {
+                const risk = getRiskLabel(site.risk);
+                return (
+                  <tr key={site.id} className="hover:bg-gray-50 cursor-pointer">
+                    <td className="px-4 py-3">
+                      <Link href={`/portal/sites/${site.id}`} className="block">
+                        <p className="font-medium text-gray-900">{site.name}</p>
+                        <p className="text-sm text-gray-500">{site.location}</p>
+                      </Link>
                     </td>
-                    <td className="py-3">
-                      <span className="px-2 py-1 bg-navy text-gold text-xs rounded font-medium">
+                    <td className="px-4 py-3">
+                      <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded">
                         Stage {site.stage}
                       </span>
                     </td>
-                    <td className="py-3 text-white">{site.mw}</td>
-                    <td className="py-3">
-                      <div className="flex items-center gap-2">
-                        <span className={`w-2 h-2 rounded-full ${getRiskColor(site.riskScore)}`} />
-                        <span className="text-muted text-sm">{getRiskLabel(site.riskScore)}</span>
-                      </div>
+                    <td className="px-4 py-3 text-gray-900">{site.mw}</td>
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-1 text-xs font-medium rounded ${risk.color}`}>
+                        {risk.label}
+                      </span>
                     </td>
-                    <td className="py-3 text-white text-right font-medium">{formatCurrency(site.exitValue)}</td>
+                    <td className="px-4 py-3 text-right text-gray-900">{formatCurrency(site.exitValue)}</td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-navy-card border border-navy-card rounded-xl p-6">
-          <h2 className="text-xl font-serif text-white mb-6">Recent Activity</h2>
-          <div className="space-y-4">
-            {recentActivity.map((activity) => (
-              <div key={activity.id} className="flex items-start gap-3 pb-4 border-b border-navy last:border-0 last:pb-0">
-                <div className="w-2 h-2 rounded-full bg-gold mt-2" />
-                <div className="flex-1">
-                  <p className="text-white text-sm font-medium">{activity.site}</p>
-                  <p className="text-muted text-sm mt-1">{activity.action}</p>
-                  <p className="text-light-gray text-xs mt-1">{activity.date}</p>
-                </div>
+        <div className="bg-white rounded border border-gray-200">
+          <div className="px-4 py-3 border-b border-gray-200">
+            <h2 className="font-medium text-gray-900">Recent Activity</h2>
+          </div>
+          <div className="p-4 space-y-4">
+            {recentActivity.map((activity, i) => (
+              <div key={i} className="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+                <p className="text-sm font-medium text-gray-900">{activity.site}</p>
+                <p className="text-sm text-gray-600">{activity.action}</p>
+                <p className="text-xs text-gray-400 mt-1">{activity.date}</p>
               </div>
             ))}
           </div>
         </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="flex flex-wrap gap-4">
-        <a
-          href="/portal/new-site"
-          className="px-6 py-3 bg-gold hover:bg-gold-dark text-navy font-semibold rounded-lg transition-colors"
-        >
-          + Add New Site
-        </a>
-        <a
-          href="/portal/reports"
-          className="px-6 py-3 bg-navy-card hover:bg-navy text-white font-medium rounded-lg transition-colors border border-navy"
-        >
-          Generate Report
-        </a>
-        <a
-          href="/portal/leads"
-          className="px-6 py-3 bg-navy-card hover:bg-navy text-white font-medium rounded-lg transition-colors border border-navy"
-        >
-          View Leads
-        </a>
       </div>
     </div>
   );
