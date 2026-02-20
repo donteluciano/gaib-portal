@@ -4,130 +4,470 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function HomePage() {
-  const [loaded, setLoaded] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [aboutVisible, setAboutVisible] = useState(false);
+  const [pillarsVisible, setPillarsVisible] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
 
   useEffect(() => {
-    // Initial load animation
-    setTimeout(() => setLoaded(true), 100);
+    // Navbar scroll effect
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
 
-    // Intersection observer for scroll animations
+    // Fade-in on scroll
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             if (entry.target.id === 'about') setAboutVisible(true);
-            if (entry.target.id === 'contact') setContactVisible(true);
+            if (entry.target.id === 'pillars') setPillarsVisible(true);
+            if (entry.target.id === 'contact-section') setContactVisible(true);
           }
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.15 }
     );
 
-    const aboutEl = document.getElementById('about');
-    const contactEl = document.getElementById('contact');
-    if (aboutEl) observer.observe(aboutEl);
-    if (contactEl) observer.observe(contactEl);
+    document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
 
-    return () => observer.disconnect();
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
+    };
   }, []);
 
   return (
-    <div className="min-h-screen bg-navy">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-navy" style={{ borderBottom: '1px solid rgba(184, 150, 90, 0.2)' }}>
-        <div className="max-w-7xl mx-auto px-10 py-4 flex items-center justify-between">
+    <>
+      {/* Google Fonts */}
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Karla:wght@300;400;500&display=swap');
+        
+        :root {
+          --navy: #0a1628;
+          --navy-light: #12243d;
+          --cream: #f4f1eb;
+          --gold: #b8965a;
+          --gold-light: #d4b87c;
+          --text-muted: #8a9bb5;
+          --white: #ffffff;
+        }
+
+        html {
+          scroll-behavior: smooth;
+        }
+
+        body {
+          font-family: 'Karla', sans-serif;
+          background-color: var(--navy);
+          color: var(--cream);
+          overflow-x: hidden;
+          margin: 0;
+          padding: 0;
+        }
+
+        /* Subtle grain overlay */
+        body::before {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          opacity: 0.03;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+          pointer-events: none;
+          z-index: 1000;
+        }
+
+        @keyframes fadeUp {
+          from {
+            opacity: 0;
+            transform: translateY(25px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeExpand {
+          from {
+            opacity: 0;
+            width: 0;
+          }
+          to {
+            opacity: 1;
+            width: 40px;
+          }
+        }
+
+        @keyframes scrollPulse {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 1; }
+        }
+      `}</style>
+
+      <div className="min-h-screen" style={{ backgroundColor: 'var(--navy)', color: 'var(--cream)' }}>
+        {/* Navigation */}
+        <nav 
+          className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center transition-all duration-400"
+          style={{
+            padding: scrolled ? '18px 60px' : '28px 60px',
+            background: scrolled ? 'rgba(10, 22, 40, 0.95)' : 'transparent',
+            backdropFilter: scrolled ? 'blur(20px)' : 'none',
+            borderBottom: scrolled ? '1px solid rgba(184, 150, 90, 0.1)' : 'none',
+          }}
+        >
           <Link 
-            href="/" 
-            className="text-white font-serif text-sm tracking-[6px]"
+            href="/"
+            className="text-[22px] tracking-[3px] uppercase"
+            style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, color: 'var(--cream)' }}
           >
-            GAIB CAPITAL PARTNERS
+            Gaib Capital <span style={{ color: 'var(--gold)' }}>Partners</span>
           </Link>
-          <div className="flex items-center gap-8 text-xs tracking-[2px]">
-            <Link href="#contact" className="text-[#999999] hover:text-gold transition-colors duration-300">
+          <div className="flex items-center gap-8">
+            <a 
+              href="#contact" 
+              className="text-xs tracking-[2.5px] uppercase no-underline transition-colors duration-300 hover:text-[var(--gold)]"
+              style={{ color: 'var(--text-muted)', fontWeight: 400 }}
+            >
               Contact
-            </Link>
-            <Link href="/investor-login" className="text-[#999999] hover:text-gold transition-colors duration-300">
+            </a>
+            <Link 
+              href="/investor-login" 
+              className="text-xs tracking-[2.5px] uppercase no-underline transition-colors duration-300 hover:text-[var(--gold)]"
+              style={{ color: 'var(--text-muted)', fontWeight: 400 }}
+            >
               Investor Login
             </Link>
-            <Link href="/login" className="text-[#999999] hover:text-gold transition-colors duration-300">
+            <Link 
+              href="/login" 
+              className="text-xs tracking-[2.5px] uppercase no-underline transition-colors duration-300 hover:text-[var(--gold)]"
+              style={{ color: 'var(--text-muted)', fontWeight: 400 }}
+            >
               Portal
             </Link>
           </div>
-        </div>
-      </nav>
+        </nav>
 
-      {/* Hero - Centered */}
-      <section className="min-h-screen flex flex-col items-center justify-center text-center px-6">
-        {/* Firm Name */}
-        <h1 
-          className={`font-serif text-white text-4xl md:text-[40px] tracking-[8px] font-normal transition-opacity duration-[1500ms] ease-in-out ${
-            loaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          style={{ transitionDelay: '500ms' }}
+        {/* Hero Section */}
+        <section 
+          className="h-screen flex flex-col justify-center items-center text-center relative px-10"
+          style={{ 
+            position: 'relative',
+          }}
         >
-          GAIB CAPITAL PARTNERS
-        </h1>
+          {/* Bottom gradient line */}
+          <div 
+            className="absolute bottom-0 left-[10%] right-[10%] h-px"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(184, 150, 90, 0.2), transparent)' }}
+          />
 
-        {/* Gold Line */}
-        <div 
-          className={`h-[3px] bg-gold my-6 transition-all duration-1000 ease-in-out ${
-            loaded ? 'w-20 opacity-100' : 'w-0 opacity-0'
+          {/* Hero accent line */}
+          <div 
+            className="h-px mb-10"
+            style={{ 
+              width: '40px', 
+              background: 'var(--gold)',
+              animation: 'fadeExpand 1.2s ease-out 0.3s both'
+            }}
+          />
+
+          {/* Title */}
+          <h1 
+            className="mb-8"
+            style={{ 
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: 'clamp(38px, 5.5vw, 72px)',
+              fontWeight: 300,
+              letterSpacing: '8px',
+              textTransform: 'uppercase',
+              lineHeight: 1.15,
+              animation: 'fadeUp 1s ease-out 0.5s both'
+            }}
+          >
+            Gaib Capital
+            <span 
+              className="block"
+              style={{ 
+                color: 'var(--gold)',
+                fontSize: 'clamp(32px, 4.5vw, 60px)',
+                letterSpacing: '12px',
+                fontWeight: 300
+              }}
+            >
+              Partners
+            </span>
+          </h1>
+
+          {/* Tagline */}
+          <p 
+            className="text-sm tracking-[4px] uppercase"
+            style={{ 
+              color: 'var(--text-muted)',
+              fontWeight: 300,
+              animation: 'fadeUp 1s ease-out 0.8s both'
+            }}
+          >
+            Principal Investment Firm
+          </p>
+
+          {/* Scroll indicator */}
+          <div 
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+            style={{ animation: 'fadeUp 1s ease-out 1.2s both' }}
+          >
+            <span 
+              className="text-[10px] tracking-[3px] uppercase"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              Discover
+            </span>
+            <div 
+              className="w-px h-10"
+              style={{ 
+                background: 'linear-gradient(to bottom, var(--gold), transparent)',
+                animation: 'scrollPulse 2s ease-in-out infinite'
+              }}
+            />
+          </div>
+        </section>
+
+        {/* About Section */}
+        <section 
+          id="about"
+          className={`fade-in py-[140px] px-[60px] max-w-[900px] mx-auto text-center transition-all duration-800 ${
+            aboutVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'
           }`}
-          style={{ transitionDelay: '1000ms' }}
-        />
+        >
+          <div 
+            className="text-[11px] tracking-[4px] uppercase mb-10"
+            style={{ color: 'var(--gold)', fontWeight: 500 }}
+          >
+            Our Firm
+          </div>
+          <p 
+            style={{ 
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: 'clamp(22px, 2.8vw, 32px)',
+              lineHeight: 1.7,
+              fontWeight: 300,
+              color: 'var(--cream)'
+            }}
+          >
+            Gaib Capital Partners is a private investment firm focused on infrastructure and real estate. We pursue special situations where proprietary sourcing and technical expertise produce asymmetric risk-adjusted returns for our investors.
+          </p>
+        </section>
 
-        {/* Subtitle */}
-        <p 
-          className={`font-serif text-[#999999] text-base tracking-[4px] italic transition-opacity duration-[1500ms] ease-in-out ${
-            loaded ? 'opacity-100' : 'opacity-0'
+        {/* Pillars Section */}
+        <section 
+          id="pillars"
+          className={`fade-in py-20 pb-[140px] px-[60px] max-w-[1100px] mx-auto transition-all duration-800 ${
+            pillarsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'
           }`}
-          style={{ transitionDelay: '1500ms' }}
         >
-          Principal Investment Firm
-        </p>
-      </section>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-[60px] mt-20">
+            {/* Pillar 1 */}
+            <div className="text-center px-5">
+              <div className="w-[30px] h-px mx-auto mb-7" style={{ background: 'var(--gold)' }} />
+              <h3 
+                className="text-[20px] tracking-[3px] uppercase mb-[18px]"
+                style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, color: 'var(--cream)' }}
+              >
+                Origination
+              </h3>
+              <p 
+                className="text-sm leading-[1.8]"
+                style={{ color: 'var(--text-muted)', fontWeight: 300 }}
+              >
+                Proprietary deal flow through relationships and technical knowledge that the broader market has not yet developed.
+              </p>
+            </div>
 
-      {/* About - One Paragraph */}
-      <section 
-        id="about" 
-        className={`max-w-[600px] mx-auto px-6 py-24 text-center transition-opacity duration-[1500ms] ease-in-out ${
-          aboutVisible ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        <p className="font-serif text-[#999999] text-[15px] leading-[1.8]">
-          Gaib Capital Partners is a private investment firm focused on infrastructure and real estate. 
-          We pursue special situations where proprietary sourcing and technical expertise produce 
-          asymmetric risk-adjusted returns for our investors.
-        </p>
-      </section>
+            {/* Pillar 2 */}
+            <div className="text-center px-5">
+              <div className="w-[30px] h-px mx-auto mb-7" style={{ background: 'var(--gold)' }} />
+              <h3 
+                className="text-[20px] tracking-[3px] uppercase mb-[18px]"
+                style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, color: 'var(--cream)' }}
+              >
+                Conviction
+              </h3>
+              <p 
+                className="text-sm leading-[1.8]"
+                style={{ color: 'var(--text-muted)', fontWeight: 300 }}
+              >
+                Concentrated positions in assets we understand deeply. Zero management fee. Our returns come from performance.
+              </p>
+            </div>
 
-      {/* Contact */}
-      <section 
-        id="contact" 
-        className={`text-center py-16 transition-opacity duration-[1500ms] ease-in-out ${
-          contactVisible ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        <div className="w-20 h-[1px] bg-gold/30 mx-auto mb-8" />
-        <a 
-          href="mailto:info@gaibcapitalpartners.com" 
-          className="font-serif text-gold text-sm tracking-[2px] hover:text-gold-light transition-colors duration-300"
+            {/* Pillar 3 */}
+            <div className="text-center px-5">
+              <div className="w-[30px] h-px mx-auto mb-7" style={{ background: 'var(--gold)' }} />
+              <h3 
+                className="text-[20px] tracking-[3px] uppercase mb-[18px]"
+                style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, color: 'var(--cream)' }}
+              >
+                Alignment
+              </h3>
+              <p 
+                className="text-sm leading-[1.8]"
+                style={{ color: 'var(--text-muted)', fontWeight: 300 }}
+              >
+                We invest alongside our partners with full transparency and a shared commitment to exceptional outcomes.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section 
+          id="contact"
+          className="relative py-[120px] px-[60px] text-center"
+          style={{ background: 'var(--navy-light)' }}
         >
-          info@gaibcapitalpartners.com
-        </a>
-      </section>
+          {/* Top gradient line */}
+          <div 
+            className="absolute top-0 left-[10%] right-[10%] h-px"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(184, 150, 90, 0.2), transparent)' }}
+          />
 
-      {/* Footer */}
-      <footer className="text-center py-10 px-6">
-        <p className="font-sans text-[10px] text-[#666666] tracking-[1px]">
-          © 2026 Gaib Capital Partners LLC. All rights reserved.
-        </p>
-        <p className="font-sans text-[10px] text-[#666666] tracking-[1px] mt-1">
-          Confidential. Not an offer to sell securities.
-        </p>
-      </footer>
-    </div>
+          <div 
+            id="contact-section"
+            className={`fade-in transition-all duration-800 ${
+              contactVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'
+            }`}
+          >
+            <div 
+              className="text-[11px] tracking-[4px] uppercase mb-10"
+              style={{ color: 'var(--gold)', fontWeight: 500 }}
+            >
+              Get In Touch
+            </div>
+            <h2 
+              className="mb-5"
+              style={{ 
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: 'clamp(28px, 3.5vw, 42px)',
+                fontWeight: 300,
+                letterSpacing: '5px',
+                textTransform: 'uppercase'
+              }}
+            >
+              Contact Us
+            </h2>
+            <p 
+              className="text-sm mb-[50px]"
+              style={{ color: 'var(--text-muted)', fontWeight: 300, letterSpacing: '1px' }}
+            >
+              For inquiries, please reach out below.
+            </p>
+
+            {/* Contact Form */}
+            <form className="max-w-[520px] mx-auto flex flex-col gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <input 
+                  type="text" 
+                  placeholder="First Name"
+                  className="w-full px-5 py-4 text-sm outline-none transition-colors duration-300 focus:border-[var(--gold)]"
+                  style={{ 
+                    background: 'rgba(244, 241, 235, 0.05)',
+                    border: '1px solid rgba(184, 150, 90, 0.15)',
+                    color: 'var(--cream)',
+                    fontFamily: "'Karla', sans-serif",
+                    fontWeight: 300,
+                    letterSpacing: '0.5px'
+                  }}
+                />
+                <input 
+                  type="text" 
+                  placeholder="Last Name"
+                  className="w-full px-5 py-4 text-sm outline-none transition-colors duration-300 focus:border-[var(--gold)]"
+                  style={{ 
+                    background: 'rgba(244, 241, 235, 0.05)',
+                    border: '1px solid rgba(184, 150, 90, 0.15)',
+                    color: 'var(--cream)',
+                    fontFamily: "'Karla', sans-serif",
+                    fontWeight: 300,
+                    letterSpacing: '0.5px'
+                  }}
+                />
+              </div>
+              <input 
+                type="email" 
+                placeholder="Email Address"
+                className="w-full px-5 py-4 text-sm outline-none transition-colors duration-300 focus:border-[var(--gold)]"
+                style={{ 
+                  background: 'rgba(244, 241, 235, 0.05)',
+                  border: '1px solid rgba(184, 150, 90, 0.15)',
+                  color: 'var(--cream)',
+                  fontFamily: "'Karla', sans-serif",
+                  fontWeight: 300,
+                  letterSpacing: '0.5px'
+                }}
+              />
+              <input 
+                type="text" 
+                placeholder="Company / Affiliation"
+                className="w-full px-5 py-4 text-sm outline-none transition-colors duration-300 focus:border-[var(--gold)]"
+                style={{ 
+                  background: 'rgba(244, 241, 235, 0.05)',
+                  border: '1px solid rgba(184, 150, 90, 0.15)',
+                  color: 'var(--cream)',
+                  fontFamily: "'Karla', sans-serif",
+                  fontWeight: 300,
+                  letterSpacing: '0.5px'
+                }}
+              />
+              <textarea 
+                placeholder="Message"
+                className="w-full px-5 py-4 text-sm outline-none transition-colors duration-300 focus:border-[var(--gold)] resize-none h-[120px]"
+                style={{ 
+                  background: 'rgba(244, 241, 235, 0.05)',
+                  border: '1px solid rgba(184, 150, 90, 0.15)',
+                  color: 'var(--cream)',
+                  fontFamily: "'Karla', sans-serif",
+                  fontWeight: 300,
+                  letterSpacing: '0.5px'
+                }}
+              />
+              <button 
+                type="submit"
+                className="self-center mt-2.5 px-10 py-4 text-xs tracking-[3px] uppercase cursor-pointer transition-all duration-400 hover:bg-[var(--gold)] hover:text-[var(--navy)]"
+                style={{ 
+                  background: 'transparent',
+                  border: '1px solid var(--gold)',
+                  color: 'var(--gold)',
+                  fontFamily: "'Karla', sans-serif"
+                }}
+              >
+                Submit Inquiry
+              </button>
+            </form>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer 
+          className="px-[60px] py-10 flex justify-between items-center"
+          style={{ borderTop: '1px solid rgba(184, 150, 90, 0.08)' }}
+        >
+          <div 
+            className="text-sm tracking-[2px] uppercase"
+            style={{ fontFamily: "'Cormorant Garamond', serif", color: 'var(--text-muted)' }}
+          >
+            Gaib Capital Partners
+          </div>
+          <div 
+            className="text-[11px] tracking-[1px]"
+            style={{ color: 'rgba(138, 155, 181, 0.5)' }}
+          >
+            © 2026 Gaib Capital Partners LLC. All rights reserved. Confidential. Not an offer to sell securities.
+          </div>
+        </footer>
+      </div>
+    </>
   );
 }
