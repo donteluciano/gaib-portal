@@ -211,7 +211,7 @@ export default function HomePage() {
               animation: 'fadeUp 1s ease-out 0.8s both'
             }}
           >
-            Principal Investment Firm
+            Private Infrastructure & Real Estate
           </p>
 
           {/* Scroll indicator */}
@@ -257,7 +257,7 @@ export default function HomePage() {
               color: 'var(--cream)'
             }}
           >
-            Gaib Capital Partners is a private investment firm focused on infrastructure and real estate. We pursue special situations where proprietary sourcing and technical expertise produce asymmetric risk-adjusted returns for our investors.
+            Gaib Capital Partners is a private investment firm that acquires and develops real estate and infrastructure assets in special situations. We target opportunities where proprietary sourcing, technical expertise, and disciplined execution produce outsized risk-adjusted returns. The firm invests alongside its limited partners with zero management fees and a compensation structure tied entirely to performance.
           </p>
         </section>
 
@@ -276,13 +276,13 @@ export default function HomePage() {
                 className="text-[20px] tracking-[3px] uppercase mb-[18px]"
                 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, color: 'var(--cream)' }}
               >
-                Origination
+                Capital
               </h3>
               <p 
                 className="text-sm leading-[1.8]"
                 style={{ color: 'var(--text-muted)', fontWeight: 300 }}
               >
-                Proprietary deal flow through relationships and technical knowledge that the broader market has not yet developed.
+                We deploy capital into concentrated, high-conviction positions where our technical knowledge creates value the broader market has not yet recognized.
               </p>
             </div>
 
@@ -293,13 +293,13 @@ export default function HomePage() {
                 className="text-[20px] tracking-[3px] uppercase mb-[18px]"
                 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, color: 'var(--cream)' }}
               >
-                Conviction
+                Discipline
               </h3>
               <p 
                 className="text-sm leading-[1.8]"
                 style={{ color: 'var(--text-muted)', fontWeight: 300 }}
               >
-                Concentrated positions in assets we understand deeply. Zero management fee. Our returns come from performance.
+                Zero management fee. Our compensation is tied entirely to performance. We do not earn carried interest until our investors are paid first.
               </p>
             </div>
 
@@ -316,7 +316,7 @@ export default function HomePage() {
                 className="text-sm leading-[1.8]"
                 style={{ color: 'var(--text-muted)', fontWeight: 300 }}
               >
-                We invest alongside our partners with full transparency and a shared commitment to exceptional outcomes.
+                We invest alongside our partners and share in the same outcomes. Our interests are identical to those of our limited partners.
               </p>
             </div>
           </div>
