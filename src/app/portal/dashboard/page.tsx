@@ -3,19 +3,19 @@
 import Link from 'next/link';
 
 // Demo data
-const stats = {
-  totalSites: 8,
-  totalMW: 485,
-  totalExitValue: 142500000,
-  avgRiskScore: 2.3,
-};
+const stats = [
+  { label: 'Active Sites', value: '8' },
+  { label: 'Total MW', value: '485' },
+  { label: 'Est. Exit Value', value: '$142.5M' },
+  { label: 'Avg Risk Score', value: '2.3' },
+];
 
 const sites = [
-  { id: 1, name: 'Site Alpha', location: 'Springfield, OH', stage: 3, mw: 75, risk: 2, exitValue: 22500000, updated: '2 hours ago' },
-  { id: 2, name: 'Site Beta', location: 'Columbus, OH', stage: 2, mw: 50, risk: 3, exitValue: 15000000, updated: '1 day ago' },
-  { id: 3, name: 'Site Gamma', location: 'Indianapolis, IN', stage: 1, mw: 100, risk: 4, exitValue: 30000000, updated: '2 days ago' },
-  { id: 4, name: 'Site Delta', location: 'Louisville, KY', stage: 4, mw: 60, risk: 2, exitValue: 18000000, updated: '3 days ago' },
-  { id: 5, name: 'Site Epsilon', location: 'Cincinnati, OH', stage: 6, mw: 120, risk: 1, exitValue: 36000000, updated: '5 days ago' },
+  { id: 1, name: 'Site Alpha', location: 'Springfield, OH', stage: 3, mw: 75, risk: 'Low', exitValue: '$22.5M' },
+  { id: 2, name: 'Site Beta', location: 'Columbus, OH', stage: 2, mw: 50, risk: 'Med', exitValue: '$15.0M' },
+  { id: 3, name: 'Site Gamma', location: 'Indianapolis, IN', stage: 1, mw: 100, risk: 'High', exitValue: '$30.0M' },
+  { id: 4, name: 'Site Delta', location: 'Louisville, KY', stage: 4, mw: 60, risk: 'Low', exitValue: '$18.0M' },
+  { id: 5, name: 'Site Epsilon', location: 'Cincinnati, OH', stage: 6, mw: 120, risk: 'Low', exitValue: '$36.0M' },
 ];
 
 const recentActivity = [
@@ -25,106 +25,120 @@ const recentActivity = [
   { site: 'Site Delta', action: 'Air permit application submitted', date: '3 days ago' },
 ];
 
-function formatCurrency(value: number): string {
-  return `$${(value / 1000000).toFixed(1)}M`;
-}
-
-function getRiskLabel(score: number): { label: string; color: string } {
-  if (score <= 2) return { label: 'Low', color: 'text-green-600 bg-green-50' };
-  if (score <= 3) return { label: 'Med', color: 'text-yellow-600 bg-yellow-50' };
-  return { label: 'High', color: 'text-red-600 bg-red-50' };
-}
+const riskColors: Record<string, string> = {
+  Low: '#16a34a',
+  Med: '#ca8a04', 
+  High: '#dc2626',
+};
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#111827' }}>Dashboard</h1>
         <Link
           href="/portal/new-site"
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700"
+          style={{ 
+            padding: '8px 16px', 
+            backgroundColor: '#2563eb', 
+            color: 'white', 
+            fontSize: '14px',
+            fontWeight: 500,
+            borderRadius: '6px',
+            textDecoration: 'none'
+          }}
         >
           + Add Site
         </Link>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded border border-gray-200">
-          <p className="text-sm text-gray-500">Active Sites</p>
-          <p className="text-2xl font-semibold text-gray-900">{stats.totalSites}</p>
-        </div>
-        <div className="bg-white p-4 rounded border border-gray-200">
-          <p className="text-sm text-gray-500">Total MW</p>
-          <p className="text-2xl font-semibold text-gray-900">{stats.totalMW}</p>
-        </div>
-        <div className="bg-white p-4 rounded border border-gray-200">
-          <p className="text-sm text-gray-500">Est. Exit Value</p>
-          <p className="text-2xl font-semibold text-gray-900">{formatCurrency(stats.totalExitValue)}</p>
-        </div>
-        <div className="bg-white p-4 rounded border border-gray-200">
-          <p className="text-sm text-gray-500">Avg Risk Score</p>
-          <p className="text-2xl font-semibold text-gray-900">{stats.avgRiskScore}</p>
-        </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
+        {stats.map((stat) => (
+          <div key={stat.label} style={{ 
+            backgroundColor: 'white', 
+            padding: '16px', 
+            borderRadius: '8px',
+            border: '1px solid #e5e7eb'
+          }}>
+            <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>{stat.label}</p>
+            <p style={{ fontSize: '24px', fontWeight: 600, color: '#111827' }}>{stat.value}</p>
+          </div>
+        ))}
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
         {/* Sites Table */}
-        <div className="col-span-2 bg-white rounded border border-gray-200">
-          <div className="px-4 py-3 border-b border-gray-200">
-            <h2 className="font-medium text-gray-900">Active Sites</h2>
+        <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e5e7eb', overflow: 'hidden' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '1px solid #e5e7eb' }}>
+            <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#111827' }}>Active Sites</h2>
           </div>
-          <table className="w-full">
-            <thead className="bg-gray-50">
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead style={{ backgroundColor: '#f9fafb' }}>
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Site</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Stage</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">MW</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Risk</th>
-                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Exit Value</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Site</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Stage</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>MW</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Risk</th>
+                <th style={{ padding: '12px 16px', textAlign: 'right', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Exit Value</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
-              {sites.map((site) => {
-                const risk = getRiskLabel(site.risk);
-                return (
-                  <tr key={site.id} className="hover:bg-gray-50 cursor-pointer">
-                    <td className="px-4 py-3">
-                      <Link href={`/portal/sites/${site.id}`} className="block">
-                        <p className="font-medium text-gray-900">{site.name}</p>
-                        <p className="text-sm text-gray-500">{site.location}</p>
-                      </Link>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded">
-                        Stage {site.stage}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-gray-900">{site.mw}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 text-xs font-medium rounded ${risk.color}`}>
-                        {risk.label}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right text-gray-900">{formatCurrency(site.exitValue)}</td>
-                  </tr>
-                );
-              })}
+            <tbody>
+              {sites.map((site, i) => (
+                <tr key={site.id} style={{ borderTop: i > 0 ? '1px solid #f3f4f6' : 'none' }}>
+                  <td style={{ padding: '12px 16px' }}>
+                    <Link href={`/portal/sites/${site.id}`} style={{ textDecoration: 'none' }}>
+                      <p style={{ fontWeight: 500, color: '#111827' }}>{site.name}</p>
+                      <p style={{ fontSize: '14px', color: '#6b7280' }}>{site.location}</p>
+                    </Link>
+                  </td>
+                  <td style={{ padding: '12px 16px' }}>
+                    <span style={{ 
+                      padding: '4px 8px', 
+                      fontSize: '12px', 
+                      fontWeight: 500,
+                      backgroundColor: '#f3f4f6',
+                      color: '#374151',
+                      borderRadius: '4px'
+                    }}>
+                      Stage {site.stage}
+                    </span>
+                  </td>
+                  <td style={{ padding: '12px 16px', color: '#111827' }}>{site.mw}</td>
+                  <td style={{ padding: '12px 16px' }}>
+                    <span style={{ 
+                      padding: '4px 8px', 
+                      fontSize: '12px', 
+                      fontWeight: 500,
+                      color: riskColors[site.risk],
+                      backgroundColor: `${riskColors[site.risk]}15`,
+                      borderRadius: '4px'
+                    }}>
+                      {site.risk}
+                    </span>
+                  </td>
+                  <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 500, color: '#111827' }}>{site.exitValue}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-white rounded border border-gray-200">
-          <div className="px-4 py-3 border-b border-gray-200">
-            <h2 className="font-medium text-gray-900">Recent Activity</h2>
+        <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '1px solid #e5e7eb' }}>
+            <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#111827' }}>Recent Activity</h2>
           </div>
-          <div className="p-4 space-y-4">
+          <div style={{ padding: '16px' }}>
             {recentActivity.map((activity, i) => (
-              <div key={i} className="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
-                <p className="text-sm font-medium text-gray-900">{activity.site}</p>
-                <p className="text-sm text-gray-600">{activity.action}</p>
-                <p className="text-xs text-gray-400 mt-1">{activity.date}</p>
+              <div key={i} style={{ 
+                paddingBottom: '12px', 
+                marginBottom: '12px',
+                borderBottom: i < recentActivity.length - 1 ? '1px solid #f3f4f6' : 'none'
+              }}>
+                <p style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>{activity.site}</p>
+                <p style={{ fontSize: '14px', color: '#6b7280' }}>{activity.action}</p>
+                <p style={{ fontSize: '12px', color: '#9ca3af', marginTop: '4px' }}>{activity.date}</p>
               </div>
             ))}
           </div>

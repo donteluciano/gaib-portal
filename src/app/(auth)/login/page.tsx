@@ -36,23 +36,47 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm">
-        <div className="bg-white rounded-lg shadow p-8">
-          <div className="text-center mb-6">
-            <h1 className="text-xl font-semibold text-gray-900">GAIB Portal</h1>
-            <p className="text-sm text-gray-500 mt-1">Internal access only</p>
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#f3f4f6', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      padding: '16px',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      <div style={{ width: '100%', maxWidth: '400px' }}>
+        <div style={{ 
+          backgroundColor: 'white', 
+          borderRadius: '8px', 
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          padding: '32px'
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+            <h1 style={{ fontSize: '20px', fontWeight: 600, color: '#111827' }}>GAIB Portal</h1>
+            <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '4px' }}>Internal access only</p>
           </div>
           
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
+            <div style={{ 
+              marginBottom: '16px', 
+              padding: '12px', 
+              backgroundColor: '#fef2f2',
+              border: '1px solid #fecaca',
+              borderRadius: '6px',
+              color: '#dc2626',
+              fontSize: '14px'
+            }}>
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: '16px' }}>
+              <label 
+                htmlFor="password" 
+                style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}
+              >
                 Password
               </label>
               <input
@@ -60,7 +84,16 @@ export default function LoginPage() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{ 
+                  width: '100%', 
+                  padding: '10px 12px', 
+                  border: '1px solid #d1d5db',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  color: '#111827',
+                  backgroundColor: 'white',
+                  boxSizing: 'border-box'
+                }}
                 placeholder="Enter password"
                 required
                 autoFocus
@@ -70,14 +103,25 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 disabled:opacity-50"
+              style={{ 
+                width: '100%', 
+                padding: '10px', 
+                backgroundColor: '#2563eb',
+                color: 'white',
+                fontWeight: 500,
+                fontSize: '14px',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.5 : 1
+              }}
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">
+          <div style={{ marginTop: '24px', textAlign: 'center' }}>
+            <Link href="/" style={{ fontSize: '14px', color: '#6b7280', textDecoration: 'none' }}>
               ← Back to main site
             </Link>
           </div>

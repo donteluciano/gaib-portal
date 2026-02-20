@@ -15,20 +15,37 @@ export default function PortalLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#f9fafb',
+      fontFamily: 'Arial, sans-serif'
+    }}>
       {/* Top Nav */}
-      <nav className="bg-white border-b border-gray-200 px-6 py-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link href="/portal/dashboard" className="font-semibold text-gray-900">
+      <nav style={{ 
+        backgroundColor: '#ffffff', 
+        borderBottom: '1px solid #e5e7eb',
+        padding: '12px 24px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+            <Link href="/portal/dashboard" style={{ 
+              fontWeight: 600, 
+              color: '#111827',
+              textDecoration: 'none',
+              fontSize: '16px'
+            }}>
               GAIB Portal
             </Link>
-            <div className="flex gap-6">
+            <div style={{ display: 'flex', gap: '24px' }}>
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-sm text-gray-600 hover:text-gray-900"
+                  style={{ 
+                    fontSize: '14px', 
+                    color: '#4b5563',
+                    textDecoration: 'none'
+                  }}
                 >
                   {item.name}
                 </Link>
@@ -36,7 +53,16 @@ export default function PortalLayout({
             </div>
           </div>
           <form action="/api/logout" method="POST">
-            <button type="submit" className="text-sm text-gray-500 hover:text-gray-700">
+            <button 
+              type="submit" 
+              style={{ 
+                fontSize: '14px', 
+                color: '#6b7280',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+            >
               Logout
             </button>
           </form>
@@ -44,7 +70,7 @@ export default function PortalLayout({
       </nav>
 
       {/* Main Content */}
-      <main className="p-6">
+      <main style={{ padding: '24px' }}>
         {children}
       </main>
     </div>
