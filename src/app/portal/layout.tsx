@@ -24,53 +24,64 @@ export default function PortalLayout({
       <nav style={{ 
         backgroundColor: '#ffffff', 
         borderBottom: '1px solid #e5e7eb',
-        padding: '12px 24px'
+        padding: '12px 16px',
+        position: 'sticky',
+        top: 0,
+        zIndex: 50
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
-            <Link href="/portal/dashboard" style={{ 
-              fontWeight: 600, 
-              color: '#111827',
-              textDecoration: 'none',
-              fontSize: '16px'
-            }}>
-              GAIB Portal
-            </Link>
-            <div style={{ display: 'flex', gap: '24px' }}>
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  style={{ 
-                    fontSize: '14px', 
-                    color: '#4b5563',
-                    textDecoration: 'none'
-                  }}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+          <Link href="/portal/dashboard" style={{ 
+            fontWeight: 600, 
+            color: '#111827',
+            textDecoration: 'none',
+            fontSize: '16px'
+          }}>
+            GAIB Portal
+          </Link>
+          <div style={{ 
+            display: 'flex', 
+            gap: '16px', 
+            flexWrap: 'wrap',
+            overflowX: 'auto'
+          }}>
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                style={{ 
+                  fontSize: '14px', 
+                  color: '#4b5563',
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {item.name}
+              </Link>
+            ))}
+            <form action="/api/logout" method="POST" style={{ display: 'inline' }}>
+              <button 
+                type="submit" 
+                style={{ 
+                  fontSize: '14px', 
+                  color: '#6b7280',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                Logout
+              </button>
+            </form>
           </div>
-          <form action="/api/logout" method="POST">
-            <button 
-              type="submit" 
-              style={{ 
-                fontSize: '14px', 
-                color: '#6b7280',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer'
-              }}
-            >
-              Logout
-            </button>
-          </form>
         </div>
       </nav>
 
       {/* Main Content */}
-      <main style={{ padding: '24px' }}>
+      <main style={{ 
+        padding: '16px',
+        overflowX: 'auto'
+      }}>
         {children}
       </main>
     </div>
