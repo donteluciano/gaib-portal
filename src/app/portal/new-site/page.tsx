@@ -1,176 +1,208 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 export default function NewSitePage() {
-  const [siteName, setSiteName] = useState('');
-  const [location, setLocation] = useState({ city: '', state: '', county: '' });
-  const [acreage, setAcreage] = useState('');
-  const [askingPrice, setAskingPrice] = useState('');
+  const router = useRouter();
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  
+  const [form, setForm] = useState({
+    name: '',
+    city: '',
+    state: '',
+    county: '',
+    acreage: '',
+    askingPrice: '',
+    mw: '',
+    pipelineDistance: '',
+    pipelineDiameter: '',
+    notes: '',
+  });
+
+  const updateForm = (field: string, value: string) => {
+    setForm({ ...form, [field]: value });
+  };
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.name) {
+      setError('Site name is required');
+      return;
+    }
+
+    setSaving(true);
+    setError('');
+
+    const { data, error: dbError } = await supabase
+      .from('sites')
+      .insert({
+        name: form.name,
+        city: form.city,
+        state: form.state,
+        county: form.county,
+        stage: 1,
+        status: 'active',
+        inputs: {
+          acreage: parseFloat(form.acreage) || 0,
+          askingPrice: parseFloat(form.askingPrice) || 0,
+          mw: parseFloat(form.mw) || 0,
+          pipelineDistance: parseFloat(form.pipelineDistance) || 0,
+          pipelineDiameter: parseFloat(form.pipelineDiameter) || 0,
+        },
+        notes: form.notes,
+      })
+      .select()
+      .single();
+
+    if (dbError) {
+      setError(dbError.message);
+      setSaving(false);
+      return;
+    }
+
+    // Create initial activity
+    await supabase.from('activities').insert({
+      site_id: data.id,
+      date: new Date().toISOString().split('T')[0],
+      action: 'Site created',
+      stage: 1,
+    });
+
+    router.push(`/portal/sites/${data.id}`);
+  }
+
+  const inputStyle = {
+    width: '100%',
+    padding: '10px 12px',
+    border: '1px solid #d1d5db',
+    borderRadius: '6px',
+    fontSize: '14px',
+    color: '#111827',
+    backgroundColor: 'white',
+    boxSizing: 'border-box' as const,
+  };
+
+  const labelStyle = {
+    display: 'block',
+    fontSize: '14px',
+    fontWeight: 500,
+    color: '#374151',
+    marginBottom: '6px',
+  };
 
   return (
-    <div className="space-y-8 max-w-4xl">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-serif text-white">New Site Evaluation</h1>
-        <p className="text-muted mt-1">Add a new site to the acquisition pipeline.</p>
-      </div>
+    <div style={{ maxWidth: '800px' }}>
+      <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#111827', marginBottom: '24px' }}>New Site</h1>
 
-      <form className="space-y-8">
-        {/* Site Info Section */}
-        <div className="bg-navy-card border border-navy rounded-xl p-6">
-          <h2 className="text-xl font-serif text-white mb-6">Site Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-muted mb-2">Site Name</label>
-              <input
-                type="text"
-                value={siteName}
-                onChange={(e) => setSiteName(e.target.value)}
-                placeholder="e.g., Site Alpha"
-                className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white placeholder-muted focus:border-gold focus:ring-1 focus:ring-gold outline-none"
-              />
+      {error && (
+        <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '6px', color: '#dc2626', fontSize: '14px' }}>
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit}>
+        {/* Site Info */}
+        <div style={{ backgroundColor: 'white', padding: '24px', borderRadius: '8px', border: '1px solid #e5e7eb', marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#111827', marginBottom: '16px' }}>Site Information</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+            <div style={{ gridColumn: 'span 2' }}>
+              <label style={labelStyle}>Site Name *</label>
+              <input type="text" value={form.name} onChange={(e) => updateForm('name', e.target.value)} style={inputStyle} placeholder="e.g., Site Alpha" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-muted mb-2">City</label>
-              <input
-                type="text"
-                value={location.city}
-                onChange={(e) => setLocation({ ...location, city: e.target.value })}
-                placeholder="Springfield"
-                className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white placeholder-muted focus:border-gold focus:ring-1 focus:ring-gold outline-none"
-              />
+              <label style={labelStyle}>City</label>
+              <input type="text" value={form.city} onChange={(e) => updateForm('city', e.target.value)} style={inputStyle} placeholder="Springfield" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-muted mb-2">State</label>
-              <input
-                type="text"
-                value={location.state}
-                onChange={(e) => setLocation({ ...location, state: e.target.value })}
-                placeholder="OH"
-                className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white placeholder-muted focus:border-gold focus:ring-1 focus:ring-gold outline-none"
-              />
+              <label style={labelStyle}>State</label>
+              <input type="text" value={form.state} onChange={(e) => updateForm('state', e.target.value)} style={inputStyle} placeholder="OH" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-muted mb-2">Acreage</label>
-              <input
-                type="number"
-                value={acreage}
-                onChange={(e) => setAcreage(e.target.value)}
-                placeholder="25"
-                className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white placeholder-muted focus:border-gold focus:ring-1 focus:ring-gold outline-none"
-              />
+              <label style={labelStyle}>County</label>
+              <input type="text" value={form.county} onChange={(e) => updateForm('county', e.target.value)} style={inputStyle} placeholder="Clark" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-muted mb-2">Asking Price</label>
-              <input
-                type="number"
-                value={askingPrice}
-                onChange={(e) => setAskingPrice(e.target.value)}
-                placeholder="1500000"
-                className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white placeholder-muted focus:border-gold focus:ring-1 focus:ring-gold outline-none"
-              />
+              <label style={labelStyle}>Acreage</label>
+              <input type="number" value={form.acreage} onChange={(e) => updateForm('acreage', e.target.value)} style={inputStyle} placeholder="25" />
+            </div>
+            <div>
+              <label style={labelStyle}>Asking Price ($)</label>
+              <input type="number" value={form.askingPrice} onChange={(e) => updateForm('askingPrice', e.target.value)} style={inputStyle} placeholder="1500000" />
             </div>
           </div>
         </div>
 
-        {/* Gas & Power Section */}
-        <div className="bg-navy-card border border-navy rounded-xl p-6">
-          <h2 className="text-xl font-serif text-white mb-6">Gas & Power</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Gas & Power */}
+        <div style={{ backgroundColor: 'white', padding: '24px', borderRadius: '8px', border: '1px solid #e5e7eb', marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#111827', marginBottom: '16px' }}>Gas & Power</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
             <div>
-              <label className="block text-sm font-medium text-muted mb-2">Pipeline Distance (miles)</label>
-              <input
-                type="number"
-                placeholder="2"
-                className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white placeholder-muted focus:border-gold focus:ring-1 focus:ring-gold outline-none"
-              />
+              <label style={labelStyle}>Estimated MW</label>
+              <input type="number" value={form.mw} onChange={(e) => updateForm('mw', e.target.value)} style={inputStyle} placeholder="75" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-muted mb-2">Pipeline Diameter (inches)</label>
-              <input
-                type="number"
-                placeholder="24"
-                className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white placeholder-muted focus:border-gold focus:ring-1 focus:ring-gold outline-none"
-              />
+              <label style={labelStyle}>Pipeline Distance (miles)</label>
+              <input type="number" value={form.pipelineDistance} onChange={(e) => updateForm('pipelineDistance', e.target.value)} style={inputStyle} placeholder="2" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-muted mb-2">Estimated MW Capacity</label>
-              <input
-                type="number"
-                placeholder="75"
-                className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white placeholder-muted focus:border-gold focus:ring-1 focus:ring-gold outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-muted mb-2">Transmission Distance (miles)</label>
-              <input
-                type="number"
-                placeholder="5"
-                className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white placeholder-muted focus:border-gold focus:ring-1 focus:ring-gold outline-none"
-              />
+              <label style={labelStyle}>Pipeline Diameter (inches)</label>
+              <input type="number" value={form.pipelineDiameter} onChange={(e) => updateForm('pipelineDiameter', e.target.value)} style={inputStyle} placeholder="24" />
             </div>
           </div>
         </div>
 
-        {/* Stage & Notes */}
-        <div className="bg-navy-card border border-navy rounded-xl p-6">
-          <h2 className="text-xl font-serif text-white mb-6">Status</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-muted mb-2">Current Stage</label>
-              <select className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none">
-                <option value="1">Stage 1: Identified</option>
-                <option value="2">Stage 2: Gas Confirmed</option>
-                <option value="3">Stage 3: Power Secured</option>
-                <option value="4">Stage 4: Permits Filed</option>
-                <option value="5">Stage 5: De-risked</option>
-                <option value="6">Stage 6: Marketing</option>
-                <option value="7">Stage 7: Closed</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-muted mb-2">Status</label>
-              <select className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none">
-                <option value="active">Active</option>
-                <option value="on_hold">On Hold</option>
-                <option value="killed">Killed</option>
-              </select>
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-muted mb-2">Notes</label>
-              <textarea
-                rows={4}
-                placeholder="Initial observations, key risks, next steps..."
-                className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white placeholder-muted focus:border-gold focus:ring-1 focus:ring-gold outline-none resize-none"
-              />
-            </div>
-          </div>
+        {/* Notes */}
+        <div style={{ backgroundColor: 'white', padding: '24px', borderRadius: '8px', border: '1px solid #e5e7eb', marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#111827', marginBottom: '16px' }}>Notes</h2>
+          <textarea
+            value={form.notes}
+            onChange={(e) => updateForm('notes', e.target.value)}
+            rows={4}
+            style={{ ...inputStyle, resize: 'vertical' }}
+            placeholder="Initial observations, key risks, next steps..."
+          />
         </div>
 
         {/* Actions */}
-        <div className="flex gap-4">
+        <div style={{ display: 'flex', gap: '12px' }}>
           <button
             type="submit"
-            className="px-8 py-3 bg-gold hover:bg-gold-dark text-navy font-semibold rounded-lg transition-colors"
+            disabled={saving}
+            style={{
+              padding: '10px 24px',
+              backgroundColor: '#2563eb',
+              color: 'white',
+              fontWeight: 500,
+              fontSize: '14px',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: saving ? 'not-allowed' : 'pointer',
+              opacity: saving ? 0.5 : 1,
+            }}
           >
-            Save Site
+            {saving ? 'Saving...' : 'Create Site'}
           </button>
-          <a
-            href="/portal/dashboard"
-            className="px-8 py-3 bg-navy-card hover:bg-navy text-white font-medium rounded-lg transition-colors border border-navy"
+          <button
+            type="button"
+            onClick={() => router.push('/portal/dashboard')}
+            style={{
+              padding: '10px 24px',
+              backgroundColor: 'white',
+              color: '#374151',
+              fontWeight: 500,
+              fontSize: '14px',
+              border: '1px solid #d1d5db',
+              borderRadius: '6px',
+              cursor: 'pointer',
+            }}
           >
             Cancel
-          </a>
+          </button>
         </div>
       </form>
-
-      {/* Coming Soon: Full Simulator */}
-      <div className="bg-navy border border-gold/20 rounded-xl p-6 text-center">
-        <p className="text-gold">
-          Full site evaluation simulator with MW calculations, exit projections, and risk scoring coming soon.
-        </p>
-      </div>
     </div>
   );
 }
