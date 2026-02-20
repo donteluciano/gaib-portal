@@ -94,17 +94,22 @@ export default function EvaluationTab({ site }: { site: Site }) {
   }
 
   // Calculate MW from gas volume and pressure per spec
+  // Base: 192 MCFD = 1 MW (from reference table: 14400 MCFD = 75 MW)
+  // Pressure factor increases efficiency at higher pressure
   const calculatedMW = useMemo(() => {
-    const gasVolume = inputs.gasVolume || 0;
-    const gasPressure = inputs.gasPressure || 0;
+    const gasVolume = inputs.gasVolume || 0; // MCFD
+    const gasPressure = inputs.gasPressure || 0; // PSI
     
     if (gasVolume === 0) return 0;
     
-    let divisor = 10; // default for PSI <= 300
-    if (gasPressure > 500) divisor = 7;
-    else if (gasPressure > 300) divisor = 8.5;
+    // Higher pressure = more efficient gas utilization = more MW
+    // Using spec formula: MW = gasVolume / (7 if PSI>500, 8.5 if PSI>300, else 10)
+    // Normalized to reference table baseline
+    let efficiencyFactor = 1.0; // baseline at low pressure
+    if (gasPressure > 500) efficiencyFactor = 10 / 7; // ~1.43x more efficient
+    else if (gasPressure > 300) efficiencyFactor = 10 / 8.5; // ~1.18x more efficient
     
-    return Math.round(gasVolume / divisor / 192); // MCFD to MW conversion
+    return Math.round((gasVolume / 192) * efficiencyFactor);
   }, [inputs.gasVolume, inputs.gasPressure]);
 
   // Calculate tap cost based on pipeline diameter

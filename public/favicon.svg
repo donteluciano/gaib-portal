@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Outer hexagonal frame -->
+  <polygon points="100,8 178,54 178,146 100,192 22,146 22,54" 
+    fill="none" stroke="#B8965A" stroke-width="2"/>
+  
+  <!-- Inner hexagonal frame -->
+  <polygon points="100,28 158,64 158,136 100,172 42,136 42,64" 
+    fill="none" stroke="#B8965A" stroke-width="1" opacity="0.4"/>
+  
+  <!-- Central vertical blade -->
+  <polygon points="100,38 108,100 100,162 92,100" 
+    fill="#B8965A" opacity="0.9"/>
+  
+  <!-- Left angular wing -->
+  <polygon points="100,75 52,58 42,80 88,100" 
+    fill="#B8965A" opacity="0.7"/>
+  
+  <!-- Right angular wing -->  
+  <polygon points="100,75 148,58 158,80 112,100" 
+    fill="#B8965A" opacity="0.7"/>
+  
+  <!-- Left lower wing -->
+  <polygon points="88,100 42,120 52,142 100,125" 
+    fill="#B8965A" opacity="0.5"/>
+  
+  <!-- Right lower wing -->
+  <polygon points="112,100 158,120 148,142 100,125" 
+    fill="#B8965A" opacity="0.5"/>
+  
+  <!-- Center diamond accent -->
+  <polygon points="100,88 112,100 100,112 88,100" 
+    fill="#0A1628" stroke="#B8965A" stroke-width="1.5"/>
+  
+  <!-- Top small accent -->
+  <line x1="100" y1="8" x2="100" y2="28" stroke="#B8965A" stroke-width="1" opacity="0.6"/>
+  
+  <!-- Bottom small accent -->
+  <line x1="100" y1="172" x2="100" y2="192" stroke="#B8965A" stroke-width="1" opacity="0.6"/>
+</svg>

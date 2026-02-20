@@ -77,9 +77,12 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="p-6 border-b border-navy-card">
         <Link href="/portal/dashboard" className="block">
-          <h1 className="text-white font-serif text-lg tracking-[4px] leading-tight">
-            GAIB CAPITAL<br />PARTNERS
-          </h1>
+          <div className="flex items-center gap-3">
+            <img src="/logo.svg" alt="GAIB" width={24} height={24} />
+            <h1 className="text-white font-serif text-lg tracking-[4px] leading-tight">
+              GAIB CAPITAL<br />PARTNERS
+            </h1>
+          </div>
           <div className="gold-line mt-3 w-16" />
           <p className="text-gold text-xs mt-2 tracking-wider">PORTAL</p>
         </Link>
