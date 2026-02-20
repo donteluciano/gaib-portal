@@ -1,100 +1,81 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function ContactPage() {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setLoaded(true), 100);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-navy-dark">
+    <div className="min-h-screen bg-navy">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-navy border-b border-navy-card">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-white font-serif text-lg tracking-[4px]">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-navy" style={{ borderBottom: '1px solid rgba(184, 150, 90, 0.2)' }}>
+        <div className="max-w-7xl mx-auto px-10 py-4 flex items-center justify-between">
+          <Link 
+            href="/" 
+            className="text-white font-serif text-sm tracking-[6px]"
+          >
             GAIB CAPITAL PARTNERS
           </Link>
-          <div className="flex items-center gap-8">
-            <Link href="/" className="text-muted hover:text-gold transition-colors text-sm tracking-wide">
-              Home
-            </Link>
-            <Link href="/contact" className="text-white hover:text-gold transition-colors text-sm tracking-wide">
+          <div className="flex items-center gap-8 text-xs tracking-[2px]">
+            <Link href="/#contact" className="text-white hover:text-gold transition-colors duration-300">
               Contact
             </Link>
-            <Link href="/investor-login" className="text-muted hover:text-gold transition-colors text-sm tracking-wide">
+            <Link href="/investor-login" className="text-[#999999] hover:text-gold transition-colors duration-300">
               Investor Login
             </Link>
-            <Link 
-              href="/login" 
-              className="px-4 py-2 bg-gold/10 border border-gold/30 text-gold hover:bg-gold/20 rounded transition-colors text-sm tracking-wide"
-            >
+            <Link href="/login" className="text-[#999999] hover:text-gold transition-colors duration-300">
               Portal
             </Link>
           </div>
         </div>
-        <div className="gold-line" />
       </nav>
 
       {/* Content */}
-      <div className="pt-32 pb-20 px-6">
-        <div className="max-w-2xl mx-auto">
-          <h1 className="text-4xl font-serif text-white mb-4 text-center">Contact Us</h1>
-          <div className="gold-line w-24 mx-auto mb-12" />
-          
-          <div className="bg-navy-card border border-navy rounded-xl p-8">
-            <div className="space-y-8">
-              <div className="text-center">
-                <h2 className="text-xl font-serif text-white mb-4">General Inquiries</h2>
-                <a 
-                  href="mailto:info@gaibcapitalpartners.com" 
-                  className="text-gold hover:text-gold-light text-lg"
-                >
-                  info@gaibcapitalpartners.com
-                </a>
-              </div>
+      <section className="min-h-screen flex flex-col items-center justify-center text-center px-6">
+        <h1 
+          className={`font-serif text-white text-2xl tracking-[6px] font-normal transition-opacity duration-[1500ms] ease-in-out ${
+            loaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{ transitionDelay: '300ms' }}
+        >
+          CONTACT
+        </h1>
 
-              <div className="border-t border-navy pt-8">
-                <h2 className="text-xl font-serif text-white mb-6 text-center">Send a Message</h2>
-                <form className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-muted mb-2">Name</label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white placeholder-muted focus:border-gold focus:ring-1 focus:ring-gold outline-none"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-muted mb-2">Email</label>
-                    <input
-                      type="email"
-                      className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white placeholder-muted focus:border-gold focus:ring-1 focus:ring-gold outline-none"
-                      placeholder="your@email.com"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-muted mb-2">Message</label>
-                    <textarea
-                      rows={4}
-                      className="w-full px-4 py-3 bg-navy border border-navy-card rounded-lg text-white placeholder-muted focus:border-gold focus:ring-1 focus:ring-gold outline-none resize-none"
-                      placeholder="Your message..."
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full py-3 bg-gold hover:bg-gold-dark text-navy font-semibold rounded-lg transition-colors"
-                  >
-                    Send Message
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
+        <div 
+          className={`h-[2px] bg-gold my-6 transition-all duration-1000 ease-in-out ${
+            loaded ? 'w-16 opacity-100' : 'w-0 opacity-0'
+          }`}
+          style={{ transitionDelay: '600ms' }}
+        />
+
+        <div 
+          className={`max-w-md transition-opacity duration-[1500ms] ease-in-out ${
+            loaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{ transitionDelay: '900ms' }}
+        >
+          <p className="font-serif text-[#999999] text-[15px] leading-[1.8] mb-8">
+            For inquiries regarding investment opportunities or partnerships.
+          </p>
+          <a 
+            href="mailto:info@gaibcapitalpartners.com" 
+            className="font-serif text-gold text-sm tracking-[2px] hover:text-gold-light transition-colors duration-300"
+          >
+            info@gaibcapitalpartners.com
+          </a>
         </div>
-      </div>
+      </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-navy-card">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-muted text-sm">
-            © 2026 Gaib Capital Partners LLC. All rights reserved. Confidential.
-          </p>
-        </div>
+      <footer className="text-center py-10 px-6">
+        <p className="font-sans text-[10px] text-[#666666] tracking-[1px]">
+          © 2026 Gaib Capital Partners LLC. All rights reserved.
+        </p>
       </footer>
     </div>
   );

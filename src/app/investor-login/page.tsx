@@ -1,74 +1,81 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function InvestorLoginPage() {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setLoaded(true), 100);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-navy-dark">
+    <div className="min-h-screen bg-navy">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-navy border-b border-navy-card">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-white font-serif text-lg tracking-[4px]">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-navy" style={{ borderBottom: '1px solid rgba(184, 150, 90, 0.2)' }}>
+        <div className="max-w-7xl mx-auto px-10 py-4 flex items-center justify-between">
+          <Link 
+            href="/" 
+            className="text-white font-serif text-sm tracking-[6px]"
+          >
             GAIB CAPITAL PARTNERS
           </Link>
-          <div className="flex items-center gap-8">
-            <Link href="/" className="text-muted hover:text-gold transition-colors text-sm tracking-wide">
-              Home
-            </Link>
-            <Link href="/contact" className="text-muted hover:text-gold transition-colors text-sm tracking-wide">
+          <div className="flex items-center gap-8 text-xs tracking-[2px]">
+            <Link href="/#contact" className="text-[#999999] hover:text-gold transition-colors duration-300">
               Contact
             </Link>
-            <Link href="/investor-login" className="text-white hover:text-gold transition-colors text-sm tracking-wide">
+            <Link href="/investor-login" className="text-white hover:text-gold transition-colors duration-300">
               Investor Login
             </Link>
-            <Link 
-              href="/login" 
-              className="px-4 py-2 bg-gold/10 border border-gold/30 text-gold hover:bg-gold/20 rounded transition-colors text-sm tracking-wide"
-            >
+            <Link href="/login" className="text-[#999999] hover:text-gold transition-colors duration-300">
               Portal
             </Link>
           </div>
         </div>
-        <div className="gold-line" />
       </nav>
 
       {/* Content */}
-      <div className="pt-32 pb-20 px-6 min-h-screen flex items-center justify-center">
-        <div className="max-w-md w-full">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-serif text-white mb-4">Investor Portal</h1>
-            <div className="gold-line w-24 mx-auto" />
-          </div>
-          
-          <div className="bg-navy-card border border-navy rounded-xl p-8 text-center">
-            <div className="w-20 h-20 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-10 h-10 text-gold" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-              </svg>
-            </div>
-            <h2 className="text-xl font-serif text-white mb-4">Coming Soon</h2>
-            <p className="text-muted mb-6">
-              The investor portal is currently under development. LP investors will soon be able to access 
-              fund documents, performance reports, and capital account statements here.
-            </p>
-            <p className="text-muted text-sm mb-8">
-              For fund materials, please contact us directly.
-            </p>
-            <Link 
-              href="/contact" 
-              className="inline-block px-8 py-3 bg-gold hover:bg-gold-dark text-navy font-semibold rounded-lg transition-colors"
-            >
-              Contact Us
-            </Link>
-          </div>
+      <section className="min-h-screen flex flex-col items-center justify-center text-center px-6">
+        <h1 
+          className={`font-serif text-white text-2xl tracking-[6px] font-normal transition-opacity duration-[1500ms] ease-in-out ${
+            loaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{ transitionDelay: '300ms' }}
+        >
+          INVESTOR PORTAL
+        </h1>
+
+        <div 
+          className={`h-[2px] bg-gold my-6 transition-all duration-1000 ease-in-out ${
+            loaded ? 'w-16 opacity-100' : 'w-0 opacity-0'
+          }`}
+          style={{ transitionDelay: '600ms' }}
+        />
+
+        <div 
+          className={`max-w-md transition-opacity duration-[1500ms] ease-in-out ${
+            loaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{ transitionDelay: '900ms' }}
+        >
+          <p className="font-serif text-[#999999] text-[15px] leading-[1.8] mb-8">
+            The investor portal is currently under development. For fund materials or account information, please contact us directly.
+          </p>
+          <a 
+            href="mailto:info@gaibcapitalpartners.com" 
+            className="font-serif text-gold text-sm tracking-[2px] hover:text-gold-light transition-colors duration-300"
+          >
+            info@gaibcapitalpartners.com
+          </a>
         </div>
-      </div>
+      </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-navy-card">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-muted text-sm">
-            © 2026 Gaib Capital Partners LLC. All rights reserved. Confidential.
-          </p>
-        </div>
+      <footer className="text-center py-10 px-6">
+        <p className="font-sans text-[10px] text-[#666666] tracking-[1px]">
+          © 2026 Gaib Capital Partners LLC. All rights reserved.
+        </p>
       </footer>
     </div>
   );
