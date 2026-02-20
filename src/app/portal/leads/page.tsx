@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
 interface Lead {
@@ -46,13 +47,65 @@ function getStatusStyle(status: string): { bg: string; text: string; border: str
   }
 }
 
+// Lead scoring algorithm
+function calculateLeadScore(lead: Partial<Lead>): number {
+  let score = 0;
+  
+  // Acreage score (0-25 points)
+  const acreage = parseFloat(lead.acreage || '0');
+  if (acreage >= 50) score += 25;
+  else if (acreage >= 25) score += 20;
+  else if (acreage >= 10) score += 15;
+  else if (acreage >= 5) score += 10;
+  else if (acreage > 0) score += 5;
+  
+  // Location completeness (0-20 points)
+  if (lead.city) score += 5;
+  if (lead.state) score += 5;
+  if (lead.county) score += 5;
+  if (lead.address) score += 5;
+  
+  // Price reasonableness (0-25 points)
+  const price = parseFloat((lead.asking_price || '0').replace(/[^0-9.]/g, ''));
+  if (price > 0 && acreage > 0) {
+    const pricePerAcre = price / acreage;
+    if (pricePerAcre <= 50000) score += 25;
+    else if (pricePerAcre <= 100000) score += 20;
+    else if (pricePerAcre <= 200000) score += 15;
+    else if (pricePerAcre <= 500000) score += 10;
+    else score += 5;
+  }
+  
+  // Contact info (0-15 points)
+  if (lead.email || lead.phone) score += 10;
+  if (lead.first_name && lead.last_name) score += 5;
+  
+  // Source/relationship (0-15 points)
+  const relationship = (lead.relationship || '').toLowerCase();
+  if (relationship.includes('direct') || relationship.includes('owner')) score += 15;
+  else if (relationship.includes('broker') || relationship.includes('costar')) score += 10;
+  else if (relationship) score += 5;
+  
+  return Math.min(100, score);
+}
+
+function getScoreColor(score: number): string {
+  if (score >= 70) return '#16a34a';
+  if (score >= 50) return '#eab308';
+  if (score >= 30) return '#f97316';
+  return '#dc2626';
+}
+
 export default function LeadsPage() {
+  const router = useRouter();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [converting, setConverting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | LeadStatus>('all');
+  const [searchTerm, setSearchTerm] = useState('');
   const [newLead, setNewLead] = useState({
     address: '',
     city: '',
@@ -78,7 +131,12 @@ export default function LeadsPage() {
       .order('created_at', { ascending: false });
     
     if (!error && data) {
-      setLeads(data);
+      // Calculate scores for leads without them
+      const leadsWithScores = data.map(lead => ({
+        ...lead,
+        lead_score: lead.lead_score || calculateLeadScore(lead),
+      }));
+      setLeads(leadsWithScores);
     }
     setLoading(false);
   };
@@ -96,18 +154,20 @@ export default function LeadsPage() {
     setSaving(true);
     setError(null);
 
+    const leadScore = calculateLeadScore(newLead);
+
     const { data, error: dbError } = await supabase
       .from('leads')
       .insert({
         ...newLead,
         lead_status: 'new',
-        lead_score: 0,
+        lead_score: leadScore,
       })
       .select()
       .single();
 
     if (!dbError && data) {
-      setLeads([data, ...leads]);
+      setLeads([{ ...data, lead_score: leadScore }, ...leads]);
       setNewLead({
         address: '',
         city: '',
@@ -155,7 +215,71 @@ export default function LeadsPage() {
     }
   }
 
-  const filteredLeads = filter === 'all' ? leads : leads.filter(l => l.lead_status === filter);
+  async function convertToSite(lead: Lead) {
+    if (!confirm(`Convert "${lead.address}" to a new site? This will create a site pre-filled with lead data.`)) return;
+
+    setConverting(lead.id);
+
+    // Create the site
+    const siteInputs = {
+      acreage: parseFloat(lead.acreage) || 0,
+      askingPrice: parseFloat((lead.asking_price || '0').replace(/[^0-9.]/g, '')) || 0,
+      currentUse: lead.current_use,
+    };
+
+    const { data: siteData, error: siteError } = await supabase
+      .from('sites')
+      .insert({
+        name: lead.address || `${lead.city}, ${lead.state}`,
+        city: lead.city,
+        state: lead.state,
+        county: lead.county,
+        stage: 1,
+        status: 'active',
+        inputs: siteInputs,
+        notes: `Converted from lead. Contact: ${lead.first_name} ${lead.last_name} ${lead.email ? `(${lead.email})` : ''}\n\n${lead.additional_notes || ''}`,
+      })
+      .select()
+      .single();
+
+    if (siteError) {
+      alert('Failed to create site: ' + siteError.message);
+      setConverting(null);
+      return;
+    }
+
+    // Update the lead
+    await supabase
+      .from('leads')
+      .update({
+        lead_status: 'converted',
+        converted_site_id: siteData.id,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', lead.id);
+
+    // Update local state
+    setLeads(leads.map(l => l.id === lead.id ? { ...l, lead_status: 'converted', converted_site_id: siteData.id } : l));
+    setConverting(null);
+
+    // Navigate to the new site
+    router.push(`/portal/sites/${siteData.id}`);
+  }
+
+  // Filter and search
+  const filteredLeads = leads.filter(l => {
+    if (filter !== 'all' && l.lead_status !== filter) return false;
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      return (
+        l.address?.toLowerCase().includes(term) ||
+        l.city?.toLowerCase().includes(term) ||
+        l.state?.toLowerCase().includes(term) ||
+        l.county?.toLowerCase().includes(term)
+      );
+    }
+    return true;
+  });
 
   // Stats
   const stats = {
@@ -259,7 +383,7 @@ export default function LeadsPage() {
             </div>
             <div>
               <label style={labelStyle}>State *</label>
-              <input type="text" value={newLead.state} onChange={(e) => setNewLead({ ...newLead, state: e.target.value })} style={inputStyle} placeholder="OH" />
+              <input type="text" value={newLead.state} onChange={(e) => setNewLead({ ...newLead, state: e.target.value })} style={inputStyle} placeholder="OH" maxLength={2} />
             </div>
             <div>
               <label style={labelStyle}>County</label>
@@ -267,7 +391,7 @@ export default function LeadsPage() {
             </div>
             <div>
               <label style={labelStyle}>Acreage</label>
-              <input type="text" value={newLead.acreage} onChange={(e) => setNewLead({ ...newLead, acreage: e.target.value })} style={inputStyle} placeholder="25" />
+              <input type="number" min="0" value={newLead.acreage} onChange={(e) => setNewLead({ ...newLead, acreage: e.target.value })} style={inputStyle} placeholder="25" />
             </div>
             <div>
               <label style={labelStyle}>Asking Price</label>
@@ -278,7 +402,7 @@ export default function LeadsPage() {
               <input type="text" value={newLead.current_use} onChange={(e) => setNewLead({ ...newLead, current_use: e.target.value })} style={inputStyle} placeholder="Former manufacturing" />
             </div>
             <div>
-              <label style={labelStyle}>Relationship</label>
+              <label style={labelStyle}>Relationship/Source</label>
               <input type="text" value={newLead.relationship} onChange={(e) => setNewLead({ ...newLead, relationship: e.target.value })} style={inputStyle} placeholder="CoStar, Broker, Direct" />
             </div>
           </div>
@@ -318,6 +442,15 @@ export default function LeadsPage() {
             />
           </div>
 
+          {/* Preview Score */}
+          {(newLead.address || newLead.acreage) && (
+            <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '6px' }}>
+              <span style={{ fontSize: '14px', color: '#166534' }}>
+                Estimated Lead Score: <strong style={{ color: getScoreColor(calculateLeadScore(newLead)) }}>{calculateLeadScore(newLead)}</strong>/100
+              </span>
+            </div>
+          )}
+
           <div style={{ display: 'flex', gap: '12px' }}>
             <button
               onClick={addLead}
@@ -355,43 +488,58 @@ export default function LeadsPage() {
         </div>
       )}
 
-      {/* Filter */}
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
-        <button
-          onClick={() => setFilter('all')}
+      {/* Search and Filter */}
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search by address, city, state..."
           style={{
-            padding: '6px 14px',
-            fontSize: '13px',
-            fontWeight: 500,
+            padding: '8px 12px',
+            border: '1px solid #d1d5db',
             borderRadius: '6px',
-            border: '1px solid',
-            borderColor: filter === 'all' ? '#2563eb' : '#d1d5db',
-            backgroundColor: filter === 'all' ? '#dbeafe' : 'white',
-            color: filter === 'all' ? '#2563eb' : '#374151',
-            cursor: 'pointer',
+            fontSize: '14px',
+            width: '250px',
           }}
-        >
-          All ({leads.length})
-        </button>
-        {statusOptions.map(opt => (
+        />
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           <button
-            key={opt.value}
-            onClick={() => setFilter(opt.value)}
+            onClick={() => setFilter('all')}
             style={{
               padding: '6px 14px',
               fontSize: '13px',
               fontWeight: 500,
               borderRadius: '6px',
               border: '1px solid',
-              borderColor: filter === opt.value ? getStatusStyle(opt.value).border : '#d1d5db',
-              backgroundColor: filter === opt.value ? getStatusStyle(opt.value).bg : 'white',
-              color: filter === opt.value ? getStatusStyle(opt.value).text : '#374151',
+              borderColor: filter === 'all' ? '#2563eb' : '#d1d5db',
+              backgroundColor: filter === 'all' ? '#dbeafe' : 'white',
+              color: filter === 'all' ? '#2563eb' : '#374151',
               cursor: 'pointer',
             }}
           >
-            {opt.label}
+            All ({leads.length})
           </button>
-        ))}
+          {statusOptions.map(opt => (
+            <button
+              key={opt.value}
+              onClick={() => setFilter(opt.value)}
+              style={{
+                padding: '6px 14px',
+                fontSize: '13px',
+                fontWeight: 500,
+                borderRadius: '6px',
+                border: '1px solid',
+                borderColor: filter === opt.value ? getStatusStyle(opt.value).border : '#d1d5db',
+                backgroundColor: filter === opt.value ? getStatusStyle(opt.value).bg : 'white',
+                color: filter === opt.value ? getStatusStyle(opt.value).text : '#374151',
+                cursor: 'pointer',
+              }}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Leads Table */}
@@ -427,6 +575,7 @@ export default function LeadsPage() {
                 <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Source</th>
                 <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Acreage</th>
                 <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Asking</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Score</th>
                 <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Status</th>
                 <th style={{ padding: '12px 16px', textAlign: 'right', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Actions</th>
               </tr>
@@ -434,6 +583,7 @@ export default function LeadsPage() {
             <tbody>
               {filteredLeads.map((lead, i) => {
                 const statusStyle = getStatusStyle(lead.lead_status);
+                const score = lead.lead_score || 0;
                 return (
                   <tr key={lead.id} style={{ borderTop: i > 0 ? '1px solid #f3f4f6' : 'none' }}>
                     <td style={{ padding: '12px 16px' }}>
@@ -443,10 +593,27 @@ export default function LeadsPage() {
                     <td style={{ padding: '12px 16px', color: '#6b7280' }}>{lead.relationship || '—'}</td>
                     <td style={{ padding: '12px 16px', color: '#111827' }}>{lead.acreage ? `${lead.acreage} acres` : '—'}</td>
                     <td style={{ padding: '12px 16px', color: '#111827' }}>{lead.asking_price || '—'}</td>
+                    <td style={{ padding: '12px 16px', textAlign: 'center' }}>
+                      <span style={{ 
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        backgroundColor: `${getScoreColor(score)}20`,
+                        color: getScoreColor(score),
+                        fontWeight: 600,
+                        fontSize: '12px',
+                      }}>
+                        {score}
+                      </span>
+                    </td>
                     <td style={{ padding: '12px 16px' }}>
                       <select
                         value={lead.lead_status}
                         onChange={(e) => updateLeadStatus(lead.id, e.target.value as LeadStatus)}
+                        disabled={lead.lead_status === 'converted'}
                         style={{
                           padding: '4px 8px',
                           fontSize: '12px',
@@ -455,7 +622,7 @@ export default function LeadsPage() {
                           border: `1px solid ${statusStyle.border}`,
                           backgroundColor: statusStyle.bg,
                           color: statusStyle.text,
-                          cursor: 'pointer',
+                          cursor: lead.lead_status === 'converted' ? 'not-allowed' : 'pointer',
                         }}
                       >
                         {statusOptions.map(opt => (
@@ -464,20 +631,59 @@ export default function LeadsPage() {
                       </select>
                     </td>
                     <td style={{ padding: '12px 16px', textAlign: 'right' }}>
-                      <button
-                        onClick={() => deleteLead(lead.id)}
-                        style={{
-                          color: '#6b7280',
-                          fontSize: '13px',
-                          background: 'none',
-                          border: 'none',
-                          cursor: 'pointer',
-                        }}
-                        onMouseOver={(e) => (e.currentTarget.style.color = '#dc2626')}
-                        onMouseOut={(e) => (e.currentTarget.style.color = '#6b7280')}
-                      >
-                        Delete
-                      </button>
+                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                        {lead.lead_status !== 'converted' && lead.lead_status !== 'passed' && (
+                          <button
+                            onClick={() => convertToSite(lead)}
+                            disabled={converting === lead.id}
+                            style={{
+                              padding: '4px 10px',
+                              fontSize: '12px',
+                              fontWeight: 500,
+                              borderRadius: '4px',
+                              border: '1px solid #16a34a',
+                              backgroundColor: '#dcfce7',
+                              color: '#16a34a',
+                              cursor: converting === lead.id ? 'not-allowed' : 'pointer',
+                              opacity: converting === lead.id ? 0.5 : 1,
+                            }}
+                          >
+                            {converting === lead.id ? 'Converting...' : '→ Site'}
+                          </button>
+                        )}
+                        {lead.converted_site_id && (
+                          <button
+                            onClick={() => router.push(`/portal/sites/${lead.converted_site_id}`)}
+                            style={{
+                              padding: '4px 10px',
+                              fontSize: '12px',
+                              fontWeight: 500,
+                              borderRadius: '4px',
+                              border: '1px solid #2563eb',
+                              backgroundColor: '#dbeafe',
+                              color: '#2563eb',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            View Site
+                          </button>
+                        )}
+                        <button
+                          onClick={() => deleteLead(lead.id)}
+                          style={{
+                            color: '#6b7280',
+                            fontSize: '13px',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            padding: '4px',
+                          }}
+                          onMouseOver={(e) => (e.currentTarget.style.color = '#dc2626')}
+                          onMouseOut={(e) => (e.currentTarget.style.color = '#6b7280')}
+                        >
+                          ✕
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

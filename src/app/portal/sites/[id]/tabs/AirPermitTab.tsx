@@ -1,50 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/lib/supabase';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
 
 type PermitType = 'minor' | 'synthetic_minor' | 'major' | 'psd';
+type ChecklistStatus = 'not_started' | 'in_progress' | 'complete' | 'blocked';
 
 const permitTypes = [
-  { 
-    id: 'minor', 
-    name: 'Minor Source', 
-    timeline: '3-6 months', 
-    cost: '$15-50K',
-    publicComment: 'None',
-    epaInvolvement: 'None',
-    bactRequired: 'No',
-    riskLevel: 'low'
-  },
-  { 
-    id: 'synthetic_minor', 
-    name: 'Synthetic Minor', 
-    timeline: '6-12 months', 
-    cost: '$50-150K',
-    publicComment: 'Sometimes',
-    epaInvolvement: 'Limited',
-    bactRequired: 'No',
-    riskLevel: 'medium'
-  },
-  { 
-    id: 'major', 
-    name: 'Major Source (Title V)', 
-    timeline: '12-18 months', 
-    cost: '$150-500K',
-    publicComment: 'Required',
-    epaInvolvement: 'Review',
-    bactRequired: 'Yes (BACT)',
-    riskLevel: 'high'
-  },
-  { 
-    id: 'psd', 
-    name: 'PSD (Attainment)', 
-    timeline: '18-24+ months', 
-    cost: '$500K-2M+',
-    publicComment: 'Required',
-    epaInvolvement: 'Full',
-    bactRequired: 'Yes (BACT/LAER)',
-    riskLevel: 'very_high'
-  },
+  { id: 'minor', name: 'Minor Source', timeline: '3-6 months', cost: '$15-50K', publicComment: 'None', epaInvolvement: 'None', bactRequired: 'No', riskLevel: 'low' },
+  { id: 'synthetic_minor', name: 'Synthetic Minor', timeline: '6-12 months', cost: '$50-150K', publicComment: 'Sometimes', epaInvolvement: 'Limited', bactRequired: 'No', riskLevel: 'medium' },
+  { id: 'major', name: 'Major Source (Title V)', timeline: '12-18 months', cost: '$150-500K', publicComment: 'Required', epaInvolvement: 'Review', bactRequired: 'Yes (BACT)', riskLevel: 'high' },
+  { id: 'psd', name: 'PSD (Attainment)', timeline: '18-24+ months', cost: '$500K-2M+', publicComment: 'Required', epaInvolvement: 'Full', bactRequired: 'Yes (BACT/LAER)', riskLevel: 'very_high' },
 ];
 
 const stateNotes = [
@@ -76,45 +43,187 @@ const permitChecklist = [
   { step: 15, name: 'Permit effective', description: 'Permit becomes effective, construction can begin' },
 ];
 
-type ChecklistStatus = 'not_started' | 'in_progress' | 'complete' | 'blocked';
+interface Props {
+  siteId: string;
+}
 
-export default function AirPermitTab() {
-  const [selectedPermitType, setSelectedPermitType] = useState<PermitType>('minor');
-  const [selectedState, setSelectedState] = useState('OH');
-  const [checklistItems, setChecklistItems] = useState<Record<number, { status: ChecklistStatus; date: string; cost: number; notes: string }>>(
-    Object.fromEntries(permitChecklist.map(item => [item.step, { status: 'not_started', date: '', cost: 0, notes: '' }]))
-  );
+interface AirPermitData {
+  permit_type: PermitType;
+  state: string;
+  consultant: string;
+  consultant_contact: string;
+  application_date: string;
+  expected_approval: string;
+  notes: string;
+  checklist: Record<number, { status: ChecklistStatus; notes: string }>;
+}
 
-  const updateChecklist = (step: number, field: string, value: string | number) => {
-    setChecklistItems({
-      ...checklistItems,
-      [step]: { ...checklistItems[step], [field]: value }
-    });
+export default function AirPermitTab({ siteId }: Props) {
+  const [data, setData] = useState<AirPermitData>({
+    permit_type: 'minor',
+    state: 'OH',
+    consultant: '',
+    consultant_contact: '',
+    application_date: '',
+    expected_approval: '',
+    notes: '',
+    checklist: Object.fromEntries(permitChecklist.map(item => [item.step, { status: 'not_started' as ChecklistStatus, notes: '' }])),
+  });
+  const [dbId, setDbId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  // Load from Supabase (stored in site inputs or a dedicated table)
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      const { data: siteData } = await supabase
+        .from('sites')
+        .select('inputs')
+        .eq('id', siteId)
+        .single();
+
+      if (siteData?.inputs?.airPermitData) {
+        setData(siteData.inputs.airPermitData);
+      }
+      setLoading(false);
+    };
+
+    loadData();
+  }, [siteId]);
+
+  // Save to Supabase
+  const saveData = useCallback(async (newData: AirPermitData) => {
+    setSaving(true);
+    
+    // Get current inputs
+    const { data: siteData } = await supabase
+      .from('sites')
+      .select('inputs')
+      .eq('id', siteId)
+      .single();
+
+    const currentInputs = siteData?.inputs || {};
+    
+    await supabase
+      .from('sites')
+      .update({
+        inputs: { ...currentInputs, airPermitData: newData },
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', siteId);
+
+    setSaving(false);
+  }, [siteId]);
+
+  const updateData = (field: string, value: string | Record<number, { status: ChecklistStatus; notes: string }>) => {
+    const newData = { ...data, [field]: value };
+    setData(newData);
+    setTimeout(() => saveData(newData), 500);
   };
 
-  const completedSteps = Object.values(checklistItems).filter(i => i.status === 'complete').length;
-  const selectedStateInfo = stateNotes.find(s => s.state === selectedState);
+  const updateChecklist = (step: number, field: string, value: string) => {
+    const newChecklist = {
+      ...data.checklist,
+      [step]: { ...data.checklist[step], [field]: value }
+    };
+    updateData('checklist', newChecklist);
+  };
+
+  const completedSteps = Object.values(data.checklist).filter(i => i.status === 'complete').length;
+  const selectedStateInfo = stateNotes.find(s => s.state === data.state);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <p className="text-gray-400">Loading air permit data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
-      {/* Permit Type Selector */}
+      {/* Save indicator */}
+      {saving && (
+        <div className="text-right text-sm text-gold">Saving...</div>
+      )}
+
+      {/* Permit Configuration */}
       <div className="bg-navy-card border border-navy rounded-xl p-6">
-        <h2 className="text-xl font-serif text-white mb-4">Permit Type for This Site</h2>
-        <div className="flex gap-4">
-          {permitTypes.map((type) => (
-            <button
-              key={type.id}
-              onClick={() => setSelectedPermitType(type.id as PermitType)}
-              className={`flex-1 p-4 rounded-lg border-2 transition-colors ${
-                selectedPermitType === type.id
-                  ? 'border-gold bg-gold/10'
-                  : 'border-navy hover:border-gold/50'
-              }`}
+        <h2 className="text-xl font-serif text-white mb-4">Permit Configuration</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div>
+            <label className="block text-sm text-gray-400 mb-2 flex items-center gap-1">
+              Permit Type
+              <span className="group relative cursor-help">
+                <InformationCircleIcon className="w-4 h-4 text-gray-400" />
+                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-navy text-xs text-gray-300 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  Select based on expected emissions. Minor &lt;100 tpy, Major &gt;100 tpy threshold pollutant.
+                </span>
+              </span>
+            </label>
+            <select
+              value={data.permit_type}
+              onChange={(e) => updateData('permit_type', e.target.value)}
+              className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
             >
-              <p className="text-white font-medium">{type.name}</p>
-              <p className="text-gray-400 text-sm">{type.timeline}</p>
-            </button>
-          ))}
+              {permitTypes.map(t => (
+                <option key={t.id} value={t.id}>{t.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-400 mb-2">State</label>
+            <select
+              value={data.state}
+              onChange={(e) => updateData('state', e.target.value)}
+              className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
+            >
+              {stateNotes.map(s => (
+                <option key={s.state} value={s.state}>{s.state} - {s.agency}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-400 mb-2">Consultant</label>
+            <input
+              type="text"
+              value={data.consultant}
+              onChange={(e) => updateData('consultant', e.target.value)}
+              placeholder="Firm name"
+              className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm text-gray-400 mb-2">Consultant Contact</label>
+            <input
+              type="text"
+              value={data.consultant_contact}
+              onChange={(e) => updateData('consultant_contact', e.target.value)}
+              placeholder="Name, email, phone"
+              className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-400 mb-2">Application Date</label>
+            <input
+              type="date"
+              value={data.application_date}
+              onChange={(e) => updateData('application_date', e.target.value)}
+              className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-400 mb-2">Expected Approval</label>
+            <input
+              type="date"
+              value={data.expected_approval}
+              onChange={(e) => updateData('expected_approval', e.target.value)}
+              className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
+            />
+          </div>
         </div>
       </div>
 
@@ -130,7 +239,7 @@ export default function AirPermitTab() {
                   <th 
                     key={type.id} 
                     className={`px-4 py-3 text-left text-sm font-medium ${
-                      selectedPermitType === type.id ? 'text-gold bg-gold/5' : 'text-gray-400'
+                      data.permit_type === type.id ? 'text-gold bg-gold/5' : 'text-gray-400'
                     }`}
                   >
                     {type.name}
@@ -142,7 +251,7 @@ export default function AirPermitTab() {
               <tr>
                 <td className="px-4 py-3 text-gray-400">Timeline</td>
                 {permitTypes.map((type) => (
-                  <td key={type.id} className={`px-4 py-3 text-white ${selectedPermitType === type.id ? 'bg-gold/5' : ''}`}>
+                  <td key={type.id} className={`px-4 py-3 text-white ${data.permit_type === type.id ? 'bg-gold/5' : ''}`}>
                     {type.timeline}
                   </td>
                 ))}
@@ -150,7 +259,7 @@ export default function AirPermitTab() {
               <tr>
                 <td className="px-4 py-3 text-gray-400">Cost</td>
                 {permitTypes.map((type) => (
-                  <td key={type.id} className={`px-4 py-3 text-white ${selectedPermitType === type.id ? 'bg-gold/5' : ''}`}>
+                  <td key={type.id} className={`px-4 py-3 text-white ${data.permit_type === type.id ? 'bg-gold/5' : ''}`}>
                     {type.cost}
                   </td>
                 ))}
@@ -158,7 +267,7 @@ export default function AirPermitTab() {
               <tr>
                 <td className="px-4 py-3 text-gray-400">Public Comment</td>
                 {permitTypes.map((type) => (
-                  <td key={type.id} className={`px-4 py-3 text-white ${selectedPermitType === type.id ? 'bg-gold/5' : ''}`}>
+                  <td key={type.id} className={`px-4 py-3 text-white ${data.permit_type === type.id ? 'bg-gold/5' : ''}`}>
                     {type.publicComment}
                   </td>
                 ))}
@@ -166,7 +275,7 @@ export default function AirPermitTab() {
               <tr>
                 <td className="px-4 py-3 text-gray-400">EPA Involvement</td>
                 {permitTypes.map((type) => (
-                  <td key={type.id} className={`px-4 py-3 text-white ${selectedPermitType === type.id ? 'bg-gold/5' : ''}`}>
+                  <td key={type.id} className={`px-4 py-3 text-white ${data.permit_type === type.id ? 'bg-gold/5' : ''}`}>
                     {type.epaInvolvement}
                   </td>
                 ))}
@@ -174,7 +283,7 @@ export default function AirPermitTab() {
               <tr>
                 <td className="px-4 py-3 text-gray-400">BACT/LAER Required</td>
                 {permitTypes.map((type) => (
-                  <td key={type.id} className={`px-4 py-3 text-white ${selectedPermitType === type.id ? 'bg-gold/5' : ''}`}>
+                  <td key={type.id} className={`px-4 py-3 text-white ${data.permit_type === type.id ? 'bg-gold/5' : ''}`}>
                     {type.bactRequired}
                   </td>
                 ))}
@@ -185,20 +294,9 @@ export default function AirPermitTab() {
       </div>
 
       {/* State Notes */}
-      <div className="bg-navy-card border border-navy rounded-xl p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-serif text-white">State-Specific Information</h2>
-          <select
-            value={selectedState}
-            onChange={(e) => setSelectedState(e.target.value)}
-            className="bg-navy border border-navy-card text-white px-4 py-2 rounded-lg focus:border-gold outline-none"
-          >
-            {stateNotes.map((s) => (
-              <option key={s.state} value={s.state}>{s.state}</option>
-            ))}
-          </select>
-        </div>
-        {selectedStateInfo && (
+      {selectedStateInfo && (
+        <div className="bg-navy-card border border-navy rounded-xl p-6">
+          <h2 className="text-xl font-serif text-white mb-4">State-Specific Information: {selectedStateInfo.state}</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-4 bg-navy/50 rounded-lg">
               <p className="text-gray-400 text-sm">Agency</p>
@@ -221,8 +319,8 @@ export default function AirPermitTab() {
               <p className="text-white text-sm">{selectedStateInfo.notes}</p>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Permit Pathway Checklist */}
       <div className="bg-navy-card border border-navy rounded-xl p-6">
@@ -251,12 +349,12 @@ export default function AirPermitTab() {
                     <p className="text-gray-400 text-sm">{item.description}</p>
                   </div>
                   <select
-                    value={checklistItems[item.step].status}
+                    value={data.checklist[item.step]?.status || 'not_started'}
                     onChange={(e) => updateChecklist(item.step, 'status', e.target.value)}
                     className={`bg-navy border rounded-lg px-3 py-2 text-sm focus:border-gold outline-none ${
-                      checklistItems[item.step].status === 'complete' ? 'border-success text-success' :
-                      checklistItems[item.step].status === 'in_progress' ? 'border-warning text-warning' :
-                      checklistItems[item.step].status === 'blocked' ? 'border-danger text-danger' :
+                      data.checklist[item.step]?.status === 'complete' ? 'border-success text-success' :
+                      data.checklist[item.step]?.status === 'in_progress' ? 'border-warning text-warning' :
+                      data.checklist[item.step]?.status === 'blocked' ? 'border-danger text-danger' :
                       'border-navy-card text-gray-400'
                     }`}
                   >
@@ -267,7 +365,7 @@ export default function AirPermitTab() {
                   </select>
                   <input
                     type="text"
-                    value={checklistItems[item.step].notes}
+                    value={data.checklist[item.step]?.notes || ''}
                     onChange={(e) => updateChecklist(item.step, 'notes', e.target.value)}
                     placeholder="Notes..."
                     className="bg-navy border border-navy-card rounded-lg px-3 py-2 text-white text-sm focus:border-gold outline-none"
@@ -277,6 +375,18 @@ export default function AirPermitTab() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Notes */}
+      <div className="bg-navy-card border border-navy rounded-xl p-6">
+        <h2 className="text-xl font-serif text-white mb-4">Additional Notes</h2>
+        <textarea
+          value={data.notes}
+          onChange={(e) => updateData('notes', e.target.value)}
+          rows={4}
+          placeholder="Key concerns, communications, timeline updates..."
+          className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none resize-none"
+        />
       </div>
     </div>
   );

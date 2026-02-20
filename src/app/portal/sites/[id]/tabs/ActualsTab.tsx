@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/lib/supabase';
 
 const costCategories = [
   { key: 'site_control', name: 'Site Control', description: 'Option, legal, title' },
@@ -14,31 +15,136 @@ const costCategories = [
   { key: 'exit_costs', name: 'Exit Costs', description: 'Legal, broker, closing' },
 ];
 
-export default function ActualsTab() {
-  const [actuals, setActuals] = useState<Record<string, { estimated: number; actual: number; notes: string }>>(
-    Object.fromEntries(costCategories.map(c => [c.key, { 
-      estimated: c.key === 'site_control' ? 85000 : 
-                 c.key === 'gas_studies' ? 75000 :
-                 c.key === 'enviro' ? 50000 :
-                 c.key === 'air_permit' ? 25000 : 0,
-      actual: 0, 
-      notes: '' 
-    }]))
-  );
+const defaultValues: Record<string, { estimated: number; actual: number; notes: string }> = {
+  site_control: { estimated: 85000, actual: 0, notes: '' },
+  gas_studies: { estimated: 75000, actual: 0, notes: '' },
+  enviro: { estimated: 50000, actual: 0, notes: '' },
+  air_permit: { estimated: 25000, actual: 0, notes: '' },
+  fiber: { estimated: 0, actual: 0, notes: '' },
+  political: { estimated: 0, actual: 0, notes: '' },
+  engineering: { estimated: 0, actual: 0, notes: '' },
+  demo: { estimated: 0, actual: 0, notes: '' },
+  exit_costs: { estimated: 0, actual: 0, notes: '' },
+};
 
-  const totalEstimated = Object.values(actuals).reduce((sum, a) => sum + a.estimated, 0);
-  const totalActual = Object.values(actuals).reduce((sum, a) => sum + a.actual, 0);
-  const totalVariance = totalActual - totalEstimated;
+interface Props {
+  siteId: string;
+}
+
+export default function ActualsTab({ siteId }: Props) {
+  const [actuals, setActuals] = useState<Record<string, { estimated: number; actual: number; notes: string; id?: string }>>(
+    Object.fromEntries(costCategories.map(c => [c.key, { ...defaultValues[c.key] }]))
+  );
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState<string | null>(null);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
+  // Load actuals from Supabase
+  useEffect(() => {
+    const loadActuals = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('site_actuals')
+        .select('*')
+        .eq('site_id', siteId);
+
+      if (!error && data) {
+        const loaded = { ...actuals };
+        data.forEach(row => {
+          if (loaded[row.category]) {
+            loaded[row.category] = {
+              id: row.id,
+              estimated: row.estimated || 0,
+              actual: row.actual || 0,
+              notes: row.notes || '',
+            };
+          }
+        });
+        setActuals(loaded);
+      }
+      setLoading(false);
+    };
+
+    loadActuals();
+  }, [siteId]);
+
+  // Debounced save function
+  const saveActual = useCallback(async (key: string, data: { estimated: number; actual: number; notes: string; id?: string }) => {
+    setSaving(key);
+    
+    if (data.id) {
+      // Update existing
+      await supabase
+        .from('site_actuals')
+        .update({
+          estimated: data.estimated,
+          actual: data.actual,
+          notes: data.notes,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', data.id);
+    } else {
+      // Insert new
+      const { data: newRow, error } = await supabase
+        .from('site_actuals')
+        .insert({
+          site_id: siteId,
+          category: key,
+          estimated: data.estimated,
+          actual: data.actual,
+          notes: data.notes,
+        })
+        .select()
+        .single();
+
+      if (!error && newRow) {
+        setActuals(prev => ({
+          ...prev,
+          [key]: { ...prev[key], id: newRow.id }
+        }));
+      }
+    }
+    
+    setSaving(null);
+    setLastSaved(new Date());
+  }, [siteId]);
 
   const updateActual = (key: string, field: string, value: number | string) => {
-    setActuals({
-      ...actuals,
-      [key]: { ...actuals[key], [field]: value }
-    });
+    const newData = {
+      ...actuals[key],
+      [field]: value
+    };
+    setActuals(prev => ({
+      ...prev,
+      [key]: newData
+    }));
+    
+    // Debounce save
+    const timeout = setTimeout(() => saveActual(key, newData), 500);
+    return () => clearTimeout(timeout);
   };
+
+  const totalEstimated = Object.values(actuals).reduce((sum, a) => sum + (a.estimated || 0), 0);
+  const totalActual = Object.values(actuals).reduce((sum, a) => sum + (a.actual || 0), 0);
+  const totalVariance = totalActual - totalEstimated;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <p className="text-gray-400">Loading budget data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
+      {/* Auto-save indicator */}
+      {lastSaved && (
+        <div className="text-right text-sm text-gray-400">
+          {saving ? 'Saving...' : `Last saved: ${lastSaved.toLocaleTimeString()}`}
+        </div>
+      )}
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-navy-card border border-navy rounded-xl p-6">
@@ -71,7 +177,7 @@ export default function ActualsTab() {
           </thead>
           <tbody>
             {costCategories.map((category) => {
-              const variance = actuals[category.key].actual - actuals[category.key].estimated;
+              const variance = (actuals[category.key]?.actual || 0) - (actuals[category.key]?.estimated || 0);
               return (
                 <tr key={category.key} className="border-b border-navy/50">
                   <td className="px-6 py-4">
@@ -81,21 +187,23 @@ export default function ActualsTab() {
                   <td className="px-6 py-4">
                     <input
                       type="number"
-                      value={actuals[category.key].estimated}
-                      onChange={(e) => updateActual(category.key, 'estimated', parseInt(e.target.value) || 0)}
+                      min="0"
+                      value={actuals[category.key]?.estimated || 0}
+                      onChange={(e) => updateActual(category.key, 'estimated', Math.max(0, parseInt(e.target.value) || 0))}
                       className="w-24 bg-navy border border-navy-card rounded px-2 py-1 text-white text-right focus:border-gold outline-none"
                     />
                   </td>
                   <td className="px-6 py-4">
                     <input
                       type="number"
-                      value={actuals[category.key].actual}
-                      onChange={(e) => updateActual(category.key, 'actual', parseInt(e.target.value) || 0)}
+                      min="0"
+                      value={actuals[category.key]?.actual || 0}
+                      onChange={(e) => updateActual(category.key, 'actual', Math.max(0, parseInt(e.target.value) || 0))}
                       className="w-24 bg-navy border border-navy-card rounded px-2 py-1 text-white text-right focus:border-gold outline-none"
                     />
                   </td>
                   <td className="px-6 py-4 text-right">
-                    {actuals[category.key].actual > 0 && (
+                    {(actuals[category.key]?.actual || 0) > 0 && (
                       <span className={variance > 0 ? 'text-danger' : 'text-success'}>
                         {variance > 0 ? '+' : ''}${(variance / 1000).toFixed(0)}K
                       </span>
@@ -104,7 +212,7 @@ export default function ActualsTab() {
                   <td className="px-6 py-4">
                     <input
                       type="text"
-                      value={actuals[category.key].notes}
+                      value={actuals[category.key]?.notes || ''}
                       onChange={(e) => updateActual(category.key, 'notes', e.target.value)}
                       placeholder="Vendor, invoice..."
                       className="w-full bg-navy border border-navy-card rounded px-2 py-1 text-white text-sm focus:border-gold outline-none"
@@ -132,8 +240,8 @@ export default function ActualsTab() {
       <div className="bg-navy-card border border-navy rounded-xl p-6">
         <h3 className="text-lg font-serif text-white mb-4">Budget Burn by Category</h3>
         <div className="space-y-4">
-          {costCategories.filter(c => actuals[c.key].estimated > 0).map((category) => {
-            const pct = actuals[category.key].actual / actuals[category.key].estimated * 100;
+          {costCategories.filter(c => (actuals[c.key]?.estimated || 0) > 0).map((category) => {
+            const pct = actuals[category.key]?.estimated ? (actuals[category.key].actual / actuals[category.key].estimated) * 100 : 0;
             return (
               <div key={category.key}>
                 <div className="flex justify-between text-sm mb-1">

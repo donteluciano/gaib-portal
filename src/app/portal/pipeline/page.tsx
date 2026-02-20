@@ -81,6 +81,8 @@ export default function PipelinePage() {
   const [sites, setSites] = useState<SiteWithProgress[]>([]);
   const [loading, setLoading] = useState(true);
   const [stageFilter, setStageFilter] = useState<number | 'all'>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const loadSites = async () => {
     // Fetch sites
@@ -147,9 +149,20 @@ export default function PipelinePage() {
     loadSites();
   }, []);
 
-  const filteredSites = stageFilter === 'all' 
-    ? sites 
-    : sites.filter(s => s.stage === stageFilter);
+  // Filter sites
+  const filteredSites = sites.filter(s => {
+    if (stageFilter !== 'all' && s.stage !== stageFilter) return false;
+    if (statusFilter !== 'all' && s.status !== statusFilter) return false;
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      return (
+        s.name?.toLowerCase().includes(term) ||
+        s.city?.toLowerCase().includes(term) ||
+        s.state?.toLowerCase().includes(term)
+      );
+    }
+    return true;
+  });
 
   if (loading) {
     return <div style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>Loading...</div>;
@@ -175,39 +188,71 @@ export default function PipelinePage() {
         </Link>
       </div>
 
-      {/* Filters */}
-      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '24px' }}>
-        <label style={{ fontSize: '14px', color: '#6b7280' }}>Filter by stage:</label>
-        <select
-          value={stageFilter}
-          onChange={(e) => setStageFilter(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
-          style={{ border: '1px solid #d1d5db', borderRadius: '6px', padding: '8px 12px', fontSize: '14px', color: '#111827', backgroundColor: 'white' }}
-        >
-          <option value="all">All Stages</option>
-          {Object.entries(stageNames).map(([num, name]) => (
-            <option key={num} value={num}>Stage {num}: {name}</option>
-          ))}
-        </select>
+      {/* Search and Filters */}
+      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap' }}>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search by name, city, or state..."
+          style={{
+            padding: '8px 12px',
+            border: '1px solid #d1d5db',
+            borderRadius: '6px',
+            fontSize: '14px',
+            width: '250px',
+          }}
+        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <label style={{ fontSize: '14px', color: '#6b7280' }}>Stage:</label>
+          <select
+            value={stageFilter}
+            onChange={(e) => setStageFilter(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
+            style={{ border: '1px solid #d1d5db', borderRadius: '6px', padding: '8px 12px', fontSize: '14px', color: '#111827', backgroundColor: 'white' }}
+          >
+            <option value="all">All Stages</option>
+            {Object.entries(stageNames).map(([num, name]) => (
+              <option key={num} value={num}>Stage {num}: {name}</option>
+            ))}
+          </select>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <label style={{ fontSize: '14px', color: '#6b7280' }}>Status:</label>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            style={{ border: '1px solid #d1d5db', borderRadius: '6px', padding: '8px 12px', fontSize: '14px', color: '#111827', backgroundColor: 'white' }}
+          >
+            <option value="all">All</option>
+            <option value="active">Active</option>
+            <option value="paused">Paused</option>
+            <option value="killed">Killed</option>
+          </select>
+        </div>
         <span style={{ fontSize: '14px', color: '#6b7280' }}>{filteredSites.length} sites</span>
       </div>
 
       {filteredSites.length === 0 ? (
         <div style={{ backgroundColor: 'white', padding: '40px', borderRadius: '8px', border: '1px solid #e5e7eb', textAlign: 'center' }}>
-          <p style={{ color: '#6b7280', marginBottom: '16px' }}>No sites found.</p>
-          <Link
-            href="/portal/new-site"
-            style={{ 
-              padding: '10px 20px', 
-              backgroundColor: '#2563eb', 
-              color: 'white', 
-              fontSize: '14px',
-              fontWeight: 500,
-              borderRadius: '6px',
-              textDecoration: 'none'
-            }}
-          >
-            + Add Site
-          </Link>
+          <p style={{ color: '#6b7280', marginBottom: '16px' }}>
+            {sites.length === 0 ? 'No sites found.' : 'No sites match the current filters.'}
+          </p>
+          {sites.length === 0 && (
+            <Link
+              href="/portal/new-site"
+              style={{ 
+                padding: '10px 20px', 
+                backgroundColor: '#2563eb', 
+                color: 'white', 
+                fontSize: '14px',
+                fontWeight: 500,
+                borderRadius: '6px',
+                textDecoration: 'none'
+              }}
+            >
+              + Add Site
+            </Link>
+          )}
         </div>
       ) : (
         <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e5e7eb', overflow: 'hidden' }}>

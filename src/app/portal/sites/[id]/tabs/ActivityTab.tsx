@@ -10,6 +10,7 @@ interface Activity {
   notes: string;
   cost: number;
   stage: number;
+  created_at?: string;
 }
 
 const stageNames: Record<number, string> = {
@@ -22,6 +23,27 @@ const stageNames: Record<number, string> = {
   7: 'Packaging & Exit',
 };
 
+// Relative time helper
+function getRelativeTime(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffSecs = Math.floor(diffMs / 1000);
+  const diffMins = Math.floor(diffSecs / 60);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+  const diffWeeks = Math.floor(diffDays / 7);
+  const diffMonths = Math.floor(diffDays / 30);
+
+  if (diffSecs < 60) return 'just now';
+  if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+  if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+  if (diffWeeks < 4) return `${diffWeeks} week${diffWeeks > 1 ? 's' : ''} ago`;
+  if (diffMonths < 12) return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
+  return date.toLocaleDateString();
+}
+
 interface Props {
   siteId: string;
 }
@@ -32,6 +54,7 @@ export default function ActivityTab({ siteId }: Props) {
   const [newActivity, setNewActivity] = useState({ date: '', action: '', notes: '', cost: 0, stage: 1 });
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   useEffect(() => {
     const loadActivities = async () => {
@@ -85,6 +108,7 @@ export default function ActivityTab({ siteId }: Props) {
     if (!error) {
       setActivities(activities.filter(a => a.id !== id));
     }
+    setDeleteConfirm(null);
   }
 
   const totalCosts = activities.reduce((sum, a) => sum + (a.cost || 0), 0);
@@ -181,8 +205,9 @@ export default function ActivityTab({ siteId }: Props) {
                 <label className="block text-sm text-gray-400 mb-1">Cost ($)</label>
                 <input
                   type="number"
+                  min="0"
                   value={newActivity.cost || ''}
-                  onChange={(e) => setNewActivity({ ...newActivity, cost: parseInt(e.target.value) || 0 })}
+                  onChange={(e) => setNewActivity({ ...newActivity, cost: Math.max(0, parseInt(e.target.value) || 0) })}
                   className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
                 />
               </div>
@@ -239,8 +264,13 @@ export default function ActivityTab({ siteId }: Props) {
         ) : (
           <div className="space-y-4">
             {activities.map((activity) => (
-              <div key={activity.id} className="flex items-start gap-4 p-4 bg-navy/30 rounded-lg group">
-                <div className="w-24 text-gray-400 text-sm flex-shrink-0">{activity.date}</div>
+              <div key={activity.id} className="flex items-start gap-4 p-4 bg-navy/30 rounded-lg group relative">
+                <div className="w-24 flex-shrink-0">
+                  <p className="text-gray-400 text-sm">{activity.date}</p>
+                  {activity.created_at && (
+                    <p className="text-gray-500 text-xs">{getRelativeTime(activity.created_at)}</p>
+                  )}
+                </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <p className="text-white font-medium">{activity.action}</p>
@@ -255,13 +285,32 @@ export default function ActivityTab({ siteId }: Props) {
                 {activity.cost > 0 && (
                   <div className="text-gold font-medium">${activity.cost.toLocaleString()}</div>
                 )}
-                <button
-                  onClick={() => deleteActivity(activity.id)}
-                  className="text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
-                  title="Delete"
-                >
-                  ✕
-                </button>
+                
+                {/* Delete button with confirmation */}
+                {deleteConfirm === activity.id ? (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => deleteActivity(activity.id)}
+                      className="text-red-400 text-sm font-medium hover:text-red-300"
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      onClick={() => setDeleteConfirm(null)}
+                      className="text-gray-400 text-sm hover:text-white"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setDeleteConfirm(activity.id)}
+                    className="text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                    title="Delete"
+                  >
+                    ✕
+                  </button>
+                )}
               </div>
             ))}
           </div>

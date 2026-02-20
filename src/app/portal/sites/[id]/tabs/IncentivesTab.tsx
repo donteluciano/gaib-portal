@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/lib/supabase';
 
 type IncentiveStatus = 'not_explored' | 'in_discussion' | 'agreed' | 'denied';
 
@@ -24,35 +25,122 @@ const statusColors: Record<IncentiveStatus, string> = {
   denied: 'bg-danger/20 text-danger border-danger/30',
 };
 
-export default function IncentivesTab() {
-  const [incentives, setIncentives] = useState<Record<string, {
-    available: 'yes' | 'no' | 'maybe';
-    estimatedValue: number;
-    status: IncentiveStatus;
-    contact: string;
-    notes: string;
-  }>>(Object.fromEntries(incentiveTypes.map(t => [t.key, {
-    available: 'maybe',
-    estimatedValue: 0,
-    status: 'not_explored',
-    contact: '',
-    notes: '',
-  }])));
+interface IncentiveState {
+  dbId?: string;
+  status: IncentiveStatus;
+  estimatedValue: number;
+  notes: string;
+}
 
+interface Props {
+  siteId: string;
+}
+
+export default function IncentivesTab({ siteId }: Props) {
+  const [incentives, setIncentives] = useState<Record<string, IncentiveState>>(
+    Object.fromEntries(incentiveTypes.map(t => [t.key, {
+      status: 'not_explored' as IncentiveStatus,
+      estimatedValue: 0,
+      notes: '',
+    }]))
+  );
   const [expandedType, setExpandedType] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState<string | null>(null);
+
+  // Load incentives from Supabase
+  useEffect(() => {
+    const loadIncentives = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('site_incentives')
+        .select('*')
+        .eq('site_id', siteId);
+
+      if (!error && data) {
+        const loaded: Record<string, IncentiveState> = { ...incentives };
+        data.forEach(row => {
+          if (loaded[row.type] !== undefined) {
+            loaded[row.type] = {
+              dbId: row.id,
+              status: row.status as IncentiveStatus || 'not_explored',
+              estimatedValue: row.estimated_value || 0,
+              notes: row.notes || '',
+            };
+          }
+        });
+        setIncentives(loaded);
+      }
+      setLoading(false);
+    };
+
+    loadIncentives();
+  }, [siteId]);
+
+  // Save incentive to Supabase
+  const saveIncentive = useCallback(async (type: string, state: IncentiveState) => {
+    setSaving(type);
+    
+    if (state.dbId) {
+      await supabase
+        .from('site_incentives')
+        .update({
+          status: state.status,
+          estimated_value: state.estimatedValue,
+          notes: state.notes,
+        })
+        .eq('id', state.dbId);
+    } else {
+      const { data, error } = await supabase
+        .from('site_incentives')
+        .insert({
+          site_id: siteId,
+          type,
+          status: state.status,
+          estimated_value: state.estimatedValue,
+          notes: state.notes,
+        })
+        .select()
+        .single();
+
+      if (!error && data) {
+        setIncentives(prev => ({
+          ...prev,
+          [type]: { ...prev[type], dbId: data.id }
+        }));
+      }
+    }
+    
+    setSaving(null);
+  }, [siteId]);
+
+  const updateIncentive = (key: string, field: string, value: string | number) => {
+    const newState = {
+      ...incentives[key],
+      [field]: value
+    };
+    setIncentives(prev => ({
+      ...prev,
+      [key]: newState
+    }));
+    
+    // Debounce save
+    setTimeout(() => saveIncentive(key, newState), 500);
+  };
 
   const totalEstimatedValue = Object.values(incentives).reduce((sum, i) => 
-    i.available !== 'no' ? sum + i.estimatedValue : sum, 0
+    i.status !== 'denied' ? sum + (i.estimatedValue || 0) : sum, 0
   );
 
   const agreedIncentives = Object.values(incentives).filter(i => i.status === 'agreed').length;
 
-  const updateIncentive = (key: string, field: string, value: string | number) => {
-    setIncentives({
-      ...incentives,
-      [key]: { ...incentives[key], [field]: value }
-    });
-  };
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <p className="text-gray-400">Loading incentives...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -63,7 +151,10 @@ export default function IncentivesTab() {
           <p className="text-3xl font-bold text-gold mt-2">
             ${(totalEstimatedValue / 1000000).toFixed(1)}M
           </p>
-          <p className="text-gray-400 text-sm mt-1">Across all incentives</p>
+          <p className="text-gray-400 text-sm mt-1">
+            Across all incentives
+            {saving && <span className="text-gold"> • Saving...</span>}
+          </p>
         </div>
         <div className="bg-navy-card border border-navy rounded-xl p-6">
           <p className="text-gray-400 text-sm">Incentives Agreed</p>
@@ -90,14 +181,14 @@ export default function IncentivesTab() {
             >
               <div className="flex items-center gap-4">
                 <h3 className="text-lg font-medium text-white">{type.name}</h3>
-                <span className={`px-2 py-1 text-xs font-medium rounded border ${statusColors[incentives[type.key].status]}`}>
-                  {incentives[type.key].status.replace('_', ' ')}
+                <span className={`px-2 py-1 text-xs font-medium rounded border ${statusColors[incentives[type.key]?.status || 'not_explored']}`}>
+                  {(incentives[type.key]?.status || 'not_explored').replace(/_/g, ' ')}
                 </span>
               </div>
               <div className="flex items-center gap-4">
-                {incentives[type.key].estimatedValue > 0 && (
+                {(incentives[type.key]?.estimatedValue || 0) > 0 && (
                   <span className="text-gold font-medium">
-                    ${(incentives[type.key].estimatedValue / 1000000).toFixed(1)}M
+                    ${((incentives[type.key]?.estimatedValue || 0) / 1000000).toFixed(1)}M
                   </span>
                 )}
                 <svg 
@@ -133,33 +224,11 @@ export default function IncentivesTab() {
                 </div>
 
                 {/* Site-specific Tracking */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div>
-                    <label className="block text-sm text-gray-400 mb-2">Available?</label>
-                    <select
-                      value={incentives[type.key].available}
-                      onChange={(e) => updateIncentive(type.key, 'available', e.target.value)}
-                      className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
-                    >
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
-                      <option value="maybe">Maybe</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm text-gray-400 mb-2">Estimated Value ($)</label>
-                    <input
-                      type="number"
-                      value={incentives[type.key].estimatedValue}
-                      onChange={(e) => updateIncentive(type.key, 'estimatedValue', parseInt(e.target.value) || 0)}
-                      className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
-                      placeholder="0"
-                    />
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm text-gray-400 mb-2">Status</label>
                     <select
-                      value={incentives[type.key].status}
+                      value={incentives[type.key]?.status || 'not_explored'}
                       onChange={(e) => updateIncentive(type.key, 'status', e.target.value)}
                       className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
                     >
@@ -170,24 +239,25 @@ export default function IncentivesTab() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-400 mb-2">Contact</label>
+                    <label className="block text-sm text-gray-400 mb-2">Estimated Value ($)</label>
                     <input
-                      type="text"
-                      value={incentives[type.key].contact}
-                      onChange={(e) => updateIncentive(type.key, 'contact', e.target.value)}
+                      type="number"
+                      min="0"
+                      value={incentives[type.key]?.estimatedValue || 0}
+                      onChange={(e) => updateIncentive(type.key, 'estimatedValue', Math.max(0, parseInt(e.target.value) || 0))}
                       className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
-                      placeholder="Name, title"
+                      placeholder="0"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Notes</label>
+                  <label className="block text-sm text-gray-400 mb-2">Notes (Contact, Terms, Negotiations)</label>
                   <textarea
-                    value={incentives[type.key].notes}
+                    value={incentives[type.key]?.notes || ''}
                     onChange={(e) => updateIncentive(type.key, 'notes', e.target.value)}
                     rows={2}
                     className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none resize-none"
-                    placeholder="Terms, conditions, negotiation notes..."
+                    placeholder="Contact name, terms, conditions, negotiation notes..."
                   />
                 </div>
               </div>
@@ -205,11 +275,11 @@ export default function IncentivesTab() {
             municipal incentives, including:
           </p>
           <ul className="mt-4 space-y-2">
-            {incentiveTypes.filter(t => incentives[t.key].status === 'agreed' || incentives[t.key].estimatedValue > 0).map(type => (
+            {incentiveTypes.filter(t => incentives[t.key]?.status === 'agreed' || (incentives[t.key]?.estimatedValue || 0) > 0).map(type => (
               <li key={type.key} className="flex items-center gap-2 text-gray-400">
-                <span className={`w-2 h-2 rounded-full ${incentives[type.key].status === 'agreed' ? 'bg-success' : 'bg-warning'}`} />
-                {type.name}: ${(incentives[type.key].estimatedValue / 1000).toFixed(0)}K
-                {incentives[type.key].status === 'agreed' && <span className="text-success text-xs">(confirmed)</span>}
+                <span className={`w-2 h-2 rounded-full ${incentives[type.key]?.status === 'agreed' ? 'bg-success' : 'bg-warning'}`} />
+                {type.name}: ${((incentives[type.key]?.estimatedValue || 0) / 1000).toFixed(0)}K
+                {incentives[type.key]?.status === 'agreed' && <span className="text-success text-xs">(confirmed)</span>}
               </li>
             ))}
           </ul>

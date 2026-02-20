@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 
 // Stage labels per spec
@@ -17,7 +17,10 @@ const stageLabels = [
 export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [fundSettings, setFundSettings] = useState({
     id: null as string | null,
@@ -98,6 +101,137 @@ export default function SettingsPage() {
     setSaving(false);
   }
 
+  async function exportAllData() {
+    setExporting(true);
+    setSaveMessage('');
+
+    try {
+      // Fetch all data from relevant tables
+      const [sitesRes, leadsRes, activitiesRes, checklistRes, settingsRes] = await Promise.all([
+        supabase.from('sites').select('*'),
+        supabase.from('leads').select('*'),
+        supabase.from('activities').select('*'),
+        supabase.from('checklist_items').select('*'),
+        supabase.from('fund_settings').select('*'),
+      ]);
+
+      // Try to get additional tables (may not exist)
+      let actualsRes = { data: [] as unknown[] };
+      let ddAnswersRes = { data: [] as unknown[] };
+      let incentivesRes = { data: [] as unknown[] };
+      
+      try {
+        const res = await supabase.from('site_actuals').select('*');
+        if (res.data) actualsRes = res;
+      } catch { /* table may not exist */ }
+      
+      try {
+        const res = await supabase.from('dd_answers').select('*');
+        if (res.data) ddAnswersRes = res;
+      } catch { /* table may not exist */ }
+      
+      try {
+        const res = await supabase.from('site_incentives').select('*');
+        if (res.data) incentivesRes = res;
+      } catch { /* table may not exist */ }
+
+      const exportData = {
+        exportDate: new Date().toISOString(),
+        version: '1.0',
+        sites: sitesRes.data || [],
+        leads: leadsRes.data || [],
+        activities: activitiesRes.data || [],
+        checklistItems: checklistRes.data || [],
+        fundSettings: settingsRes.data || [],
+        siteActuals: actualsRes.data || [],
+        ddAnswers: ddAnswersRes.data || [],
+        siteIncentives: incentivesRes.data || [],
+      };
+
+      // Download as JSON
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `gaib-export-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      setSaveMessage(`Exported ${exportData.sites.length} sites, ${exportData.leads.length} leads, and all related data.`);
+      setTimeout(() => setSaveMessage(''), 5000);
+    } catch (err) {
+      setSaveMessage(`Export error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    }
+    setExporting(false);
+  }
+
+  async function handleImport(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!confirm('Importing data will add to your existing data. Continue?')) {
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    setImporting(true);
+    setSaveMessage('');
+
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+
+      let imported = { sites: 0, leads: 0, activities: 0 };
+
+      // Import sites (update existing or insert new)
+      if (data.sites?.length > 0) {
+        for (const site of data.sites) {
+          const { error } = await supabase
+            .from('sites')
+            .upsert(site, { onConflict: 'id' });
+          if (!error) imported.sites++;
+        }
+      }
+
+      // Import leads
+      if (data.leads?.length > 0) {
+        for (const lead of data.leads) {
+          const { error } = await supabase
+            .from('leads')
+            .upsert(lead, { onConflict: 'id' });
+          if (!error) imported.leads++;
+        }
+      }
+
+      // Import activities
+      if (data.activities?.length > 0) {
+        for (const activity of data.activities) {
+          const { error } = await supabase
+            .from('activities')
+            .upsert(activity, { onConflict: 'id' });
+          if (!error) imported.activities++;
+        }
+      }
+
+      // Import checklist items
+      if (data.checklistItems?.length > 0) {
+        for (const item of data.checklistItems) {
+          await supabase
+            .from('checklist_items')
+            .upsert(item, { onConflict: 'id' });
+        }
+      }
+
+      setSaveMessage(`Imported: ${imported.sites} sites, ${imported.leads} leads, ${imported.activities} activities`);
+      setTimeout(() => setSaveMessage(''), 5000);
+    } catch (err) {
+      setSaveMessage(`Import error: ${err instanceof Error ? err.message : 'Invalid JSON file'}`);
+    }
+
+    setImporting(false);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -120,7 +254,7 @@ export default function SettingsPage() {
         <p className="text-gray-400 text-sm mb-6">These values are used in all site calculations and projections.</p>
         
         {saveMessage && (
-          <div className={`mb-6 p-3 rounded-lg ${saveMessage.includes('Error') ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
+          <div className={`mb-6 p-3 rounded-lg ${saveMessage.includes('Error') || saveMessage.includes('error') ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
             {saveMessage}
           </div>
         )}
@@ -132,8 +266,9 @@ export default function SettingsPage() {
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
               <input
                 type="number"
+                min="0"
                 value={fundSettings.fundSize}
-                onChange={(e) => setFundSettings({ ...fundSettings, fundSize: parseInt(e.target.value) || 0 })}
+                onChange={(e) => setFundSettings({ ...fundSettings, fundSize: Math.max(0, parseInt(e.target.value) || 0) })}
                 className="w-full pl-8 pr-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
               />
             </div>
@@ -144,8 +279,11 @@ export default function SettingsPage() {
             <div className="relative">
               <input
                 type="number"
+                min="0"
+                max="100"
+                step="0.1"
                 value={fundSettings.prefReturn}
-                onChange={(e) => setFundSettings({ ...fundSettings, prefReturn: parseFloat(e.target.value) || 0 })}
+                onChange={(e) => setFundSettings({ ...fundSettings, prefReturn: Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)) })}
                 className="w-full pr-8 px-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
@@ -157,8 +295,11 @@ export default function SettingsPage() {
             <div className="relative">
               <input
                 type="number"
+                min="0"
+                max="100"
+                step="0.1"
                 value={fundSettings.lpSplit}
-                onChange={(e) => setFundSettings({ ...fundSettings, lpSplit: parseFloat(e.target.value) || 0 })}
+                onChange={(e) => setFundSettings({ ...fundSettings, lpSplit: Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)) })}
                 className="w-full pr-8 px-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
@@ -170,8 +311,11 @@ export default function SettingsPage() {
             <div className="relative">
               <input
                 type="number"
+                min="0"
+                max="100"
+                step="0.1"
                 value={fundSettings.gpSplit}
-                onChange={(e) => setFundSettings({ ...fundSettings, gpSplit: parseFloat(e.target.value) || 0 })}
+                onChange={(e) => setFundSettings({ ...fundSettings, gpSplit: Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)) })}
                 className="w-full pr-8 px-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
@@ -183,8 +327,11 @@ export default function SettingsPage() {
             <div className="relative">
               <input
                 type="number"
+                min="0"
+                max="100"
+                step="0.1"
                 value={fundSettings.managementFee}
-                onChange={(e) => setFundSettings({ ...fundSettings, managementFee: parseFloat(e.target.value) || 0 })}
+                onChange={(e) => setFundSettings({ ...fundSettings, managementFee: Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)) })}
                 className="w-full pr-8 px-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
@@ -197,8 +344,9 @@ export default function SettingsPage() {
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
               <input
                 type="number"
+                min="0"
                 value={fundSettings.commitmentFeePerM}
-                onChange={(e) => setFundSettings({ ...fundSettings, commitmentFeePerM: parseInt(e.target.value) || 0 })}
+                onChange={(e) => setFundSettings({ ...fundSettings, commitmentFeePerM: Math.max(0, parseInt(e.target.value) || 0) })}
                 className="w-full pl-8 pr-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
               />
             </div>
@@ -235,14 +383,42 @@ export default function SettingsPage() {
       {/* Data Management */}
       <div className="bg-navy-card border border-navy rounded-xl p-6">
         <h2 className="text-xl font-serif text-white mb-6">Data Management</h2>
+        <p className="text-gray-400 text-sm mb-6">Export all portal data or import from a previous backup.</p>
         <div className="flex flex-wrap gap-4">
-          <button className="px-6 py-3 bg-navy hover:bg-navy-dark text-white font-medium rounded-lg transition-colors border border-navy-card">
-            Export All Data (JSON)
+          <button 
+            onClick={exportAllData}
+            disabled={exporting}
+            className="px-6 py-3 bg-navy hover:bg-navy-dark text-white font-medium rounded-lg transition-colors border border-navy-card disabled:opacity-50"
+          >
+            {exporting ? 'Exporting...' : '📥 Export All Data (JSON)'}
           </button>
-          <button className="px-6 py-3 bg-navy hover:bg-navy-dark text-white font-medium rounded-lg transition-colors border border-navy-card">
-            Import Data
-          </button>
+          <label className="px-6 py-3 bg-navy hover:bg-navy-dark text-white font-medium rounded-lg transition-colors border border-navy-card cursor-pointer">
+            {importing ? 'Importing...' : '📤 Import Data'}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              onChange={handleImport}
+              disabled={importing}
+              className="hidden"
+            />
+          </label>
         </div>
+        <p className="text-gray-400 text-xs mt-4">
+          Export creates a complete backup of all sites, leads, activities, and settings. Import will add/update records based on IDs.
+        </p>
+      </div>
+
+      {/* Danger Zone */}
+      <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6">
+        <h2 className="text-xl font-serif text-red-400 mb-4">Danger Zone</h2>
+        <p className="text-gray-400 text-sm mb-4">Irreversible actions. Use with caution.</p>
+        <button 
+          onClick={() => alert('Contact administrator to clear data.')}
+          className="px-6 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-medium rounded-lg transition-colors border border-red-500/30"
+        >
+          Clear All Data
+        </button>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 
 interface Site {
@@ -31,6 +31,7 @@ export default function ReportsPage() {
   const [sites, setSites] = useState<Site[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
+  const printRef = useRef<HTMLDivElement>(null);
 
   const loadSites = async () => {
     const { data } = await supabase
@@ -100,6 +101,122 @@ export default function ReportsPage() {
     URL.revokeObjectURL(url);
   }
 
+  function exportPDF() {
+    // Create a printable HTML document
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>GAIB Capital - Portfolio Report</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
+          h1 { color: #1a365d; border-bottom: 2px solid #c5a03f; padding-bottom: 10px; }
+          h2 { color: #2d3748; margin-top: 30px; }
+          .summary { display: flex; gap: 20px; margin: 20px 0; }
+          .stat { background: #f7fafc; padding: 15px 25px; border-radius: 8px; border-left: 4px solid #c5a03f; }
+          .stat-value { font-size: 28px; font-weight: bold; color: #1a365d; }
+          .stat-label { font-size: 12px; color: #718096; text-transform: uppercase; }
+          table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+          th { background: #1a365d; color: white; padding: 12px; text-align: left; font-size: 12px; text-transform: uppercase; }
+          td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; }
+          tr:nth-child(even) { background: #f7fafc; }
+          .stage-badge { display: inline-block; padding: 4px 8px; background: #edf2f7; border-radius: 4px; font-size: 12px; }
+          .status-active { color: #38a169; }
+          .status-paused { color: #d69e2e; }
+          .status-killed { color: #e53e3e; }
+          .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #718096; }
+          @media print { body { padding: 20px; } }
+        </style>
+      </head>
+      <body>
+        <h1>GAIB Capital - Portfolio Report</h1>
+        <p style="color: #718096;">Generated: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</p>
+        
+        <div class="summary">
+          <div class="stat">
+            <div class="stat-value">${sites.length}</div>
+            <div class="stat-label">Total Sites</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">${sites.filter(s => s.status === 'active').length}</div>
+            <div class="stat-label">Active Sites</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">${sites.reduce((sum, s) => sum + calculateMW(s), 0)} MW</div>
+            <div class="stat-label">Total Capacity</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">${(sites.length > 0 ? (sites.reduce((sum, s) => sum + s.stage, 0) / sites.length).toFixed(1) : 0)}</div>
+            <div class="stat-label">Avg Stage</div>
+          </div>
+        </div>
+
+        <h2>Portfolio Summary</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Site</th>
+              <th>Location</th>
+              <th>Stage</th>
+              <th>Est. MW</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${sites.map(site => `
+              <tr>
+                <td><strong>${site.name}</strong></td>
+                <td>${site.city}, ${site.state}</td>
+                <td><span class="stage-badge">${site.stage}. ${stageNames[site.stage]}</span></td>
+                <td>${calculateMW(site)} MW</td>
+                <td class="status-${site.status}">${site.status.charAt(0).toUpperCase() + site.status.slice(1)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <h2>Stage Distribution</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Stage</th>
+              <th>Count</th>
+              <th>Percentage</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${[1, 2, 3, 4, 5, 6, 7].map(stage => {
+              const count = sites.filter(s => s.stage === stage).length;
+              const pct = sites.length > 0 ? Math.round((count / sites.length) * 100) : 0;
+              return `
+                <tr>
+                  <td>Stage ${stage}: ${stageNames[stage]}</td>
+                  <td>${count}</td>
+                  <td>${pct}%</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+
+        <div class="footer">
+          <p>GAIB Capital Portfolio Report • Confidential</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    // Open in new window for printing
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      setTimeout(() => {
+        printWindow.print();
+      }, 250);
+    }
+  }
+
   // Calculate summary stats
   const totalMW = sites.reduce((sum, s) => sum + calculateMW(s), 0);
   const activeSites = sites.filter(s => s.status === 'active').length;
@@ -116,7 +233,7 @@ export default function ReportsPage() {
   }
 
   return (
-    <div>
+    <div ref={printRef}>
       {/* Header */}
       <div style={{ marginBottom: '24px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#111827' }}>Reports</h1>
@@ -383,20 +500,24 @@ export default function ReportsPage() {
           >
             📋 Export JSON
           </button>
+          <button
+            onClick={exportPDF}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2563eb',
+              color: 'white',
+              fontWeight: 500,
+              fontSize: '14px',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+            }}
+          >
+            📑 Export PDF
+          </button>
         </div>
-      </div>
-
-      {/* Coming Soon */}
-      <div style={{ 
-        backgroundColor: '#fffbeb', 
-        border: '1px solid #fcd34d', 
-        borderRadius: '8px', 
-        padding: '16px', 
-        marginTop: '24px',
-        textAlign: 'center' 
-      }}>
-        <p style={{ color: '#92400e', fontSize: '14px' }}>
-          💡 PDF export and automated LP update reports coming soon.
+        <p style={{ fontSize: '12px', color: '#6b7280', marginTop: '12px' }}>
+          PDF export opens a print dialog - use &quot;Save as PDF&quot; option for best results.
         </p>
       </div>
     </div>
