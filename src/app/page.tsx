@@ -112,43 +112,75 @@ export default function HomePage() {
       <div className="min-h-screen" style={{ backgroundColor: 'var(--navy)', color: 'var(--cream)' }}>
         {/* Navigation */}
         <nav 
-          className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center transition-all duration-400"
+          className="fixed top-0 left-0 right-0 z-50 transition-all duration-400"
           style={{
-            padding: scrolled ? '18px 60px' : '28px 60px',
+            padding: scrolled ? '14px 20px' : '20px 20px',
             background: scrolled ? 'rgba(10, 22, 40, 0.95)' : 'transparent',
             backdropFilter: scrolled ? 'blur(20px)' : 'none',
             borderBottom: scrolled ? '1px solid rgba(184, 150, 90, 0.1)' : 'none',
+            overflowX: 'auto',
           }}
         >
-          <Link 
-            href="/"
-            className="text-[22px] tracking-[3px] uppercase"
-            style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, color: 'var(--cream)' }}
-          >
-            Gaib Capital <span style={{ color: 'var(--gold)' }}>Partners</span>
-          </Link>
-          <div className="flex items-center gap-8">
-            <a 
-              href="#contact" 
-              className="text-xs tracking-[2.5px] uppercase no-underline transition-colors duration-300 hover:text-[var(--gold)]"
-              style={{ color: 'var(--text-muted)', fontWeight: 400 }}
-            >
-              Contact
-            </a>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', minWidth: 'max-content', gap: '20px' }}>
             <Link 
-              href="/investor-login" 
-              className="text-xs tracking-[2.5px] uppercase no-underline transition-colors duration-300 hover:text-[var(--gold)]"
-              style={{ color: 'var(--text-muted)', fontWeight: 400 }}
+              href="/"
+              style={{ 
+                fontFamily: "'Cormorant Garamond', serif", 
+                fontWeight: 400, 
+                color: 'var(--cream)',
+                fontSize: '18px',
+                letterSpacing: '2px',
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+                whiteSpace: 'nowrap'
+              }}
             >
-              Investor Login
+              Gaib Capital <span style={{ color: 'var(--gold)' }}>Partners</span>
             </Link>
-            <Link 
-              href="/login" 
-              className="text-xs tracking-[2.5px] uppercase no-underline transition-colors duration-300 hover:text-[var(--gold)]"
-              style={{ color: 'var(--text-muted)', fontWeight: 400 }}
-            >
-              Portal
-            </Link>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+              <a 
+                href="#contact" 
+                style={{ 
+                  color: 'var(--text-muted)', 
+                  fontWeight: 400,
+                  fontSize: '11px',
+                  letterSpacing: '2px',
+                  textTransform: 'uppercase',
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                Contact
+              </a>
+              <Link 
+                href="/investor-login" 
+                style={{ 
+                  color: 'var(--text-muted)', 
+                  fontWeight: 400,
+                  fontSize: '11px',
+                  letterSpacing: '2px',
+                  textTransform: 'uppercase',
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                Investor Login
+              </Link>
+              <Link 
+                href="/login" 
+                style={{ 
+                  color: 'var(--text-muted)', 
+                  fontWeight: 400,
+                  fontSize: '11px',
+                  letterSpacing: '2px',
+                  textTransform: 'uppercase',
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                Portal
+              </Link>
+            </div>
           </div>
         </nav>
 
