@@ -18,7 +18,7 @@ const incentiveTypes = [
 ];
 
 const statusColors: Record<IncentiveStatus, string> = {
-  not_explored: 'bg-muted/20 text-muted border-muted/30',
+  not_explored: 'bg-muted/20 text-gray-400 border-muted/30',
   in_discussion: 'bg-warning/20 text-warning border-warning/30',
   agreed: 'bg-success/20 text-success border-success/30',
   denied: 'bg-danger/20 text-danger border-danger/30',
@@ -59,23 +59,23 @@ export default function IncentivesTab() {
       {/* Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-navy-card border border-navy rounded-xl p-6">
-          <p className="text-muted text-sm">Total Estimated Value</p>
+          <p className="text-gray-400 text-sm">Total Estimated Value</p>
           <p className="text-3xl font-bold text-gold mt-2">
             ${(totalEstimatedValue / 1000000).toFixed(1)}M
           </p>
-          <p className="text-muted text-sm mt-1">Across all incentives</p>
+          <p className="text-gray-400 text-sm mt-1">Across all incentives</p>
         </div>
         <div className="bg-navy-card border border-navy rounded-xl p-6">
-          <p className="text-muted text-sm">Incentives Agreed</p>
+          <p className="text-gray-400 text-sm">Incentives Agreed</p>
           <p className="text-3xl font-bold text-success mt-2">{agreedIncentives}</p>
-          <p className="text-muted text-sm mt-1">of {incentiveTypes.length} types</p>
+          <p className="text-gray-400 text-sm mt-1">of {incentiveTypes.length} types</p>
         </div>
         <div className="bg-navy-card border border-navy rounded-xl p-6">
-          <p className="text-muted text-sm">In Discussion</p>
+          <p className="text-gray-400 text-sm">In Discussion</p>
           <p className="text-3xl font-bold text-warning mt-2">
             {Object.values(incentives).filter(i => i.status === 'in_discussion').length}
           </p>
-          <p className="text-muted text-sm mt-1">Active negotiations</p>
+          <p className="text-gray-400 text-sm mt-1">Active negotiations</p>
         </div>
       </div>
 
@@ -101,7 +101,7 @@ export default function IncentivesTab() {
                   </span>
                 )}
                 <svg 
-                  className={`w-5 h-5 text-muted transition-transform ${expandedType === type.key ? 'rotate-180' : ''}`}
+                  className={`w-5 h-5 text-gray-400 transition-transform ${expandedType === type.key ? 'rotate-180' : ''}`}
                   fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -115,19 +115,19 @@ export default function IncentivesTab() {
                 {/* Reference Info */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-navy/30 rounded-lg">
                   <div>
-                    <p className="text-muted text-xs">Typical Value</p>
+                    <p className="text-gray-400 text-xs">Typical Value</p>
                     <p className="text-white text-sm">{type.typicalValue}</p>
                   </div>
                   <div>
-                    <p className="text-muted text-xs">Duration</p>
+                    <p className="text-gray-400 text-xs">Duration</p>
                     <p className="text-white text-sm">{type.duration}</p>
                   </div>
                   <div>
-                    <p className="text-muted text-xs">How to Obtain</p>
+                    <p className="text-gray-400 text-xs">How to Obtain</p>
                     <p className="text-white text-sm">{type.howToObtain}</p>
                   </div>
                   <div>
-                    <p className="text-muted text-xs">Buyer Impact</p>
+                    <p className="text-gray-400 text-xs">Buyer Impact</p>
                     <p className="text-white text-sm">{type.buyerImpact}</p>
                   </div>
                 </div>
@@ -135,7 +135,7 @@ export default function IncentivesTab() {
                 {/* Site-specific Tracking */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
-                    <label className="block text-sm text-muted mb-2">Available?</label>
+                    <label className="block text-sm text-gray-400 mb-2">Available?</label>
                     <select
                       value={incentives[type.key].available}
                       onChange={(e) => updateIncentive(type.key, 'available', e.target.value)}
@@ -147,7 +147,7 @@ export default function IncentivesTab() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm text-muted mb-2">Estimated Value ($)</label>
+                    <label className="block text-sm text-gray-400 mb-2">Estimated Value ($)</label>
                     <input
                       type="number"
                       value={incentives[type.key].estimatedValue}
@@ -157,7 +157,7 @@ export default function IncentivesTab() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-muted mb-2">Status</label>
+                    <label className="block text-sm text-gray-400 mb-2">Status</label>
                     <select
                       value={incentives[type.key].status}
                       onChange={(e) => updateIncentive(type.key, 'status', e.target.value)}
@@ -170,7 +170,7 @@ export default function IncentivesTab() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm text-muted mb-2">Contact</label>
+                    <label className="block text-sm text-gray-400 mb-2">Contact</label>
                     <input
                       type="text"
                       value={incentives[type.key].contact}
@@ -181,7 +181,7 @@ export default function IncentivesTab() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm text-muted mb-2">Notes</label>
+                  <label className="block text-sm text-gray-400 mb-2">Notes</label>
                   <textarea
                     value={incentives[type.key].notes}
                     onChange={(e) => updateIncentive(type.key, 'notes', e.target.value)}
@@ -206,7 +206,7 @@ export default function IncentivesTab() {
           </p>
           <ul className="mt-4 space-y-2">
             {incentiveTypes.filter(t => incentives[t.key].status === 'agreed' || incentives[t.key].estimatedValue > 0).map(type => (
-              <li key={type.key} className="flex items-center gap-2 text-muted">
+              <li key={type.key} className="flex items-center gap-2 text-gray-400">
                 <span className={`w-2 h-2 rounded-full ${incentives[type.key].status === 'agreed' ? 'bg-success' : 'bg-warning'}`} />
                 {type.name}: ${(incentives[type.key].estimatedValue / 1000).toFixed(0)}K
                 {incentives[type.key].status === 'agreed' && <span className="text-success text-xs">(confirmed)</span>}

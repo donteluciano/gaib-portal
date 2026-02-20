@@ -107,13 +107,6 @@ const stageDefinitions: Record<number, { name: string; items: ChecklistDefinitio
   },
 };
 
-const statusIcons: Record<ItemStatus, string> = {
-  not_started: '☐',
-  in_progress: '🔄',
-  complete: '✅',
-  blocked: '🚫',
-};
-
 const statusColors: Record<ItemStatus, string> = {
   not_started: 'border-gray-500',
   in_progress: 'border-yellow-500 bg-yellow-500/10',
@@ -141,7 +134,7 @@ function ProgressBar({ completed, total, size = 'normal' }: { completed: number;
         <div className="w-20 bg-navy rounded-full h-1.5">
           <div className={`h-1.5 rounded-full ${barColor}`} style={{ width: `${percent}%` }} />
         </div>
-        <span className="text-xs text-muted">{percent}%</span>
+        <span className="text-xs text-gray-400">{percent}%</span>
       </div>
     );
   }
@@ -150,7 +143,7 @@ function ProgressBar({ completed, total, size = 'normal' }: { completed: number;
     <div className="mb-6">
       <div className="flex justify-between mb-2">
         <span className="text-white font-medium">{completed}/{total} Complete</span>
-        <span className="text-muted">{percent}%</span>
+        <span className="text-gray-400">{percent}%</span>
       </div>
       <div className="w-full bg-navy rounded-full h-3">
         <div className={`h-3 rounded-full ${barColor} transition-all duration-300`} style={{ width: `${percent}%` }} />
@@ -166,7 +159,22 @@ export default function ChecklistTab({ siteId, currentStage, onStageAdvance }: P
   const [showAdvancePrompt, setShowAdvancePrompt] = useState<number | null>(null);
 
   useEffect(() => {
+    const loadChecklist = async () => {
+      setLoading(true);
+      const { data } = await supabase
+        .from('checklist_items')
+        .select('*')
+        .eq('site_id', siteId)
+        .order('stage', { ascending: true });
+      
+      if (data) {
+        setItems(data);
+      }
+      setLoading(false);
+    };
+
     loadChecklist();
+    
     // Expand current and previous stages by default
     const expanded: Record<number, boolean> = {};
     for (let i = 1; i <= currentStage; i++) {
@@ -174,20 +182,6 @@ export default function ChecklistTab({ siteId, currentStage, onStageAdvance }: P
     }
     setExpandedStages(expanded);
   }, [siteId, currentStage]);
-
-  async function loadChecklist() {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('checklist_items')
-      .select('*')
-      .eq('site_id', siteId)
-      .order('stage', { ascending: true });
-    
-    if (!error && data) {
-      setItems(data);
-    }
-    setLoading(false);
-  }
 
   async function updateItemStatus(itemKey: string, newStatus: ItemStatus) {
     const item = items.find(i => i.item_key === itemKey);
@@ -279,7 +273,7 @@ export default function ChecklistTab({ siteId, currentStage, onStageAdvance }: P
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-muted">Loading checklist...</p>
+        <p className="text-gray-400">Loading checklist...</p>
       </div>
     );
   }
@@ -296,7 +290,7 @@ export default function ChecklistTab({ siteId, currentStage, onStageAdvance }: P
         <div className="bg-gold/20 border border-gold/30 rounded-xl p-4 flex items-center justify-between">
           <div>
             <p className="text-gold font-medium">🎉 All Stage {showAdvancePrompt - 1} items complete!</p>
-            <p className="text-muted text-sm">Ready to advance to {stageDefinitions[showAdvancePrompt]?.name}?</p>
+            <p className="text-gray-400 text-sm">Ready to advance to {stageDefinitions[showAdvancePrompt]?.name}?</p>
           </div>
           <div className="flex gap-2">
             <button
@@ -343,7 +337,7 @@ export default function ChecklistTab({ siteId, currentStage, onStageAdvance }: P
                     {isComplete && <span className="text-green-400">✓</span>}
                     {isCurrent && <span className="px-2 py-0.5 text-xs bg-gold/20 text-gold rounded">Current</span>}
                   </div>
-                  <p className="text-muted text-sm">{complete}/{total} complete</p>
+                  <p className="text-gray-400 text-sm">{complete}/{total} complete</p>
                 </div>
               </div>
               <div className="w-24">
@@ -398,7 +392,7 @@ export default function ChecklistTab({ siteId, currentStage, onStageAdvance }: P
                         {/* Item Content */}
                         <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
                           <div className="md:col-span-2">
-                            <p className={`font-medium ${status === 'complete' ? 'text-muted line-through' : 'text-white'} ${isGate ? 'text-gold' : ''}`}>
+                            <p className={`font-medium ${status === 'complete' ? 'text-gray-400 line-through' : 'text-white'} ${isGate ? 'text-gold' : ''}`}>
                               {isGate && '🚪 '}{def.name}
                             </p>
                             {item?.completed_date && (
@@ -414,7 +408,7 @@ export default function ChecklistTab({ siteId, currentStage, onStageAdvance }: P
                               status === 'complete' ? 'border-green-500 text-green-400' :
                               status === 'in_progress' ? 'border-yellow-500 text-yellow-400' :
                               status === 'blocked' ? 'border-red-500 text-red-400' :
-                              'border-navy-card text-muted'
+                              'border-navy-card text-gray-400'
                             }`}
                           >
                             <option value="not_started">☐ Not Started</option>
@@ -444,7 +438,7 @@ export default function ChecklistTab({ siteId, currentStage, onStageAdvance }: P
 
       {/* Legend */}
       <div className="bg-navy-card border border-navy rounded-xl p-4">
-        <p className="text-muted text-sm mb-2">Status Legend:</p>
+        <p className="text-gray-400 text-sm mb-2">Status Legend:</p>
         <div className="flex flex-wrap gap-4 text-sm">
           <span className="flex items-center gap-2"><span>☐</span> Not Started</span>
           <span className="flex items-center gap-2 text-yellow-400"><span>🔄</span> In Progress</span>

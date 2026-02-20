@@ -99,11 +99,7 @@ export default function DashboardPage() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  async function loadData() {
+  const loadData = async () => {
     const [sitesRes, activitiesRes, checklistRes] = await Promise.all([
       supabase.from('sites').select('*').eq('status', 'active').order('updated_at', { ascending: false }),
       supabase.from('activities').select('*, sites(name)').order('created_at', { ascending: false }).limit(5),
@@ -155,7 +151,11 @@ export default function DashboardPage() {
     setSites(sitesWithProgress);
     setActivities(activitiesRes.data || []);
     setLoading(false);
-  }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const totalMW = sites.reduce((sum, s) => sum + (s.estimatedMW || 0), 0);
   const avgProgress = sites.length > 0 

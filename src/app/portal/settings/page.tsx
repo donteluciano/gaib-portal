@@ -29,13 +29,9 @@ export default function SettingsPage() {
     commitmentFeePerM: 50000,
   });
 
-  useEffect(() => {
-    loadFundSettings();
-  }, []);
-
-  async function loadFundSettings() {
+  const loadFundSettings = async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('fund_settings')
       .select('*')
       .order('updated_at', { ascending: false })
@@ -54,7 +50,11 @@ export default function SettingsPage() {
       });
     }
     setLoading(false);
-  }
+  };
+
+  useEffect(() => {
+    loadFundSettings();
+  }, []);
 
   async function saveFundSettings() {
     setSaving(true);
@@ -101,7 +101,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-muted">Loading settings...</p>
+        <p className="text-gray-400">Loading settings...</p>
       </div>
     );
   }
@@ -111,13 +111,13 @@ export default function SettingsPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-serif text-white">Settings</h1>
-        <p className="text-muted mt-1">Configure portal and fund assumptions.</p>
+        <p className="text-gray-400 mt-1">Configure portal and fund assumptions.</p>
       </div>
 
       {/* Fund Assumptions */}
       <div className="bg-navy-card border border-navy rounded-xl p-6">
         <h2 className="text-xl font-serif text-white mb-6">Fund Assumptions</h2>
-        <p className="text-muted text-sm mb-6">These values are used in all site calculations and projections.</p>
+        <p className="text-gray-400 text-sm mb-6">These values are used in all site calculations and projections.</p>
         
         {saveMessage && (
           <div className={`mb-6 p-3 rounded-lg ${saveMessage.includes('Error') ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
@@ -127,9 +127,9 @@ export default function SettingsPage() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-muted mb-2">Fund Size</label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Fund Size</label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted">$</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
               <input
                 type="number"
                 value={fundSettings.fundSize}
@@ -137,10 +137,10 @@ export default function SettingsPage() {
                 className="w-full pl-8 pr-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
               />
             </div>
-            <p className="text-xs text-muted mt-1">Default: $10,000,000</p>
+            <p className="text-xs text-gray-400 mt-1">Default: $10,000,000</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-muted mb-2">Preferred Return</label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Preferred Return</label>
             <div className="relative">
               <input
                 type="number"
@@ -148,12 +148,12 @@ export default function SettingsPage() {
                 onChange={(e) => setFundSettings({ ...fundSettings, prefReturn: parseFloat(e.target.value) || 0 })}
                 className="w-full pr-8 px-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted">%</span>
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
             </div>
-            <p className="text-xs text-muted mt-1">Default: 16%</p>
+            <p className="text-xs text-gray-400 mt-1">Default: 16%</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-muted mb-2">LP Split</label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">LP Split</label>
             <div className="relative">
               <input
                 type="number"
@@ -161,12 +161,12 @@ export default function SettingsPage() {
                 onChange={(e) => setFundSettings({ ...fundSettings, lpSplit: parseFloat(e.target.value) || 0 })}
                 className="w-full pr-8 px-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted">%</span>
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
             </div>
-            <p className="text-xs text-muted mt-1">Default: 60%</p>
+            <p className="text-xs text-gray-400 mt-1">Default: 60%</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-muted mb-2">GP Split (Carry)</label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">GP Split (Carry)</label>
             <div className="relative">
               <input
                 type="number"
@@ -174,12 +174,12 @@ export default function SettingsPage() {
                 onChange={(e) => setFundSettings({ ...fundSettings, gpSplit: parseFloat(e.target.value) || 0 })}
                 className="w-full pr-8 px-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted">%</span>
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
             </div>
-            <p className="text-xs text-muted mt-1">Default: 40%</p>
+            <p className="text-xs text-gray-400 mt-1">Default: 40%</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-muted mb-2">Management Fee</label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Management Fee</label>
             <div className="relative">
               <input
                 type="number"
@@ -187,14 +187,14 @@ export default function SettingsPage() {
                 onChange={(e) => setFundSettings({ ...fundSettings, managementFee: parseFloat(e.target.value) || 0 })}
                 className="w-full pr-8 px-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted">%</span>
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
             </div>
-            <p className="text-xs text-muted mt-1">Default: 0%</p>
+            <p className="text-xs text-gray-400 mt-1">Default: 0%</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-muted mb-2">Commitment Fee (per $1M)</label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Commitment Fee (per $1M)</label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted">$</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
               <input
                 type="number"
                 value={fundSettings.commitmentFeePerM}
@@ -202,7 +202,7 @@ export default function SettingsPage() {
                 className="w-full pl-8 pr-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
               />
             </div>
-            <p className="text-xs text-muted mt-1">Default: $50,000</p>
+            <p className="text-xs text-gray-400 mt-1">Default: $50,000</p>
           </div>
         </div>
         <div className="mt-6">
@@ -219,7 +219,7 @@ export default function SettingsPage() {
       {/* Stage Labels (Read-only per spec) */}
       <div className="bg-navy-card border border-navy rounded-xl p-6">
         <h2 className="text-xl font-serif text-white mb-6">Stage Labels</h2>
-        <p className="text-muted text-sm mb-6">Standard pipeline stages for site progression.</p>
+        <p className="text-gray-400 text-sm mb-6">Standard pipeline stages for site progression.</p>
         <div className="space-y-3">
           {stageLabels.map((stage, i) => (
             <div key={i} className="flex items-center gap-4">

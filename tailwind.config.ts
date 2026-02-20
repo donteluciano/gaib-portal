@@ -21,8 +21,10 @@ const config: Config = {
         },
         offwhite: '#F7F5F2',
         body: '#333333',
-        muted: '#666666',
-        'light-gray': '#999999',
+        // Improved muted colors for better readability on dark backgrounds
+        muted: '#9CA3AF', // gray-400 - much more readable
+        'muted-dark': '#6B7280', // gray-500 - for light backgrounds
+        'light-gray': '#D1D5DB', // gray-300
         success: '#27AE60',
         warning: '#F39C12',
         danger: '#E74C3C',

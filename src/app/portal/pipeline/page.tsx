@@ -82,11 +82,7 @@ export default function PipelinePage() {
   const [loading, setLoading] = useState(true);
   const [stageFilter, setStageFilter] = useState<number | 'all'>('all');
 
-  useEffect(() => {
-    loadSites();
-  }, []);
-
-  async function loadSites() {
+  const loadSites = async () => {
     // Fetch sites
     const { data: sitesData } = await supabase
       .from('sites')
@@ -145,7 +141,11 @@ export default function PipelinePage() {
     
     setSites(sitesWithProgress);
     setLoading(false);
-  }
+  };
+
+  useEffect(() => {
+    loadSites();
+  }, []);
 
   const filteredSites = stageFilter === 'all' 
     ? sites 

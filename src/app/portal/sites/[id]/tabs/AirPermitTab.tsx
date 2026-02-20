@@ -112,7 +112,7 @@ export default function AirPermitTab() {
               }`}
             >
               <p className="text-white font-medium">{type.name}</p>
-              <p className="text-muted text-sm">{type.timeline}</p>
+              <p className="text-gray-400 text-sm">{type.timeline}</p>
             </button>
           ))}
         </div>
@@ -125,12 +125,12 @@ export default function AirPermitTab() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-navy">
-                <th className="px-4 py-3 text-left text-muted font-medium text-sm">Attribute</th>
+                <th className="px-4 py-3 text-left text-gray-400 font-medium text-sm">Attribute</th>
                 {permitTypes.map((type) => (
                   <th 
                     key={type.id} 
                     className={`px-4 py-3 text-left text-sm font-medium ${
-                      selectedPermitType === type.id ? 'text-gold bg-gold/5' : 'text-muted'
+                      selectedPermitType === type.id ? 'text-gold bg-gold/5' : 'text-gray-400'
                     }`}
                   >
                     {type.name}
@@ -140,7 +140,7 @@ export default function AirPermitTab() {
             </thead>
             <tbody className="divide-y divide-navy/50">
               <tr>
-                <td className="px-4 py-3 text-muted">Timeline</td>
+                <td className="px-4 py-3 text-gray-400">Timeline</td>
                 {permitTypes.map((type) => (
                   <td key={type.id} className={`px-4 py-3 text-white ${selectedPermitType === type.id ? 'bg-gold/5' : ''}`}>
                     {type.timeline}
@@ -148,7 +148,7 @@ export default function AirPermitTab() {
                 ))}
               </tr>
               <tr>
-                <td className="px-4 py-3 text-muted">Cost</td>
+                <td className="px-4 py-3 text-gray-400">Cost</td>
                 {permitTypes.map((type) => (
                   <td key={type.id} className={`px-4 py-3 text-white ${selectedPermitType === type.id ? 'bg-gold/5' : ''}`}>
                     {type.cost}
@@ -156,7 +156,7 @@ export default function AirPermitTab() {
                 ))}
               </tr>
               <tr>
-                <td className="px-4 py-3 text-muted">Public Comment</td>
+                <td className="px-4 py-3 text-gray-400">Public Comment</td>
                 {permitTypes.map((type) => (
                   <td key={type.id} className={`px-4 py-3 text-white ${selectedPermitType === type.id ? 'bg-gold/5' : ''}`}>
                     {type.publicComment}
@@ -164,7 +164,7 @@ export default function AirPermitTab() {
                 ))}
               </tr>
               <tr>
-                <td className="px-4 py-3 text-muted">EPA Involvement</td>
+                <td className="px-4 py-3 text-gray-400">EPA Involvement</td>
                 {permitTypes.map((type) => (
                   <td key={type.id} className={`px-4 py-3 text-white ${selectedPermitType === type.id ? 'bg-gold/5' : ''}`}>
                     {type.epaInvolvement}
@@ -172,7 +172,7 @@ export default function AirPermitTab() {
                 ))}
               </tr>
               <tr>
-                <td className="px-4 py-3 text-muted">BACT/LAER Required</td>
+                <td className="px-4 py-3 text-gray-400">BACT/LAER Required</td>
                 {permitTypes.map((type) => (
                   <td key={type.id} className={`px-4 py-3 text-white ${selectedPermitType === type.id ? 'bg-gold/5' : ''}`}>
                     {type.bactRequired}
@@ -201,15 +201,15 @@ export default function AirPermitTab() {
         {selectedStateInfo && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-4 bg-navy/50 rounded-lg">
-              <p className="text-muted text-sm">Agency</p>
+              <p className="text-gray-400 text-sm">Agency</p>
               <p className="text-white font-medium">{selectedStateInfo.agency}</p>
             </div>
             <div className="p-4 bg-navy/50 rounded-lg">
-              <p className="text-muted text-sm">Typical Timeline</p>
+              <p className="text-gray-400 text-sm">Typical Timeline</p>
               <p className="text-white font-medium">{selectedStateInfo.timeline}</p>
             </div>
             <div className="p-4 bg-navy/50 rounded-lg">
-              <p className="text-muted text-sm">Difficulty</p>
+              <p className="text-gray-400 text-sm">Difficulty</p>
               <p className={`font-medium ${
                 selectedStateInfo.difficulty === 'Easy' ? 'text-success' :
                 selectedStateInfo.difficulty === 'Moderate' ? 'text-warning' :
@@ -217,7 +217,7 @@ export default function AirPermitTab() {
               }`}>{selectedStateInfo.difficulty}</p>
             </div>
             <div className="p-4 bg-navy/50 rounded-lg col-span-2 md:col-span-1">
-              <p className="text-muted text-sm">Notes</p>
+              <p className="text-gray-400 text-sm">Notes</p>
               <p className="text-white text-sm">{selectedStateInfo.notes}</p>
             </div>
           </div>
@@ -229,7 +229,7 @@ export default function AirPermitTab() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-serif text-white">Permit Pathway Checklist</h2>
-            <p className="text-muted text-sm">{completedSteps} of {permitChecklist.length} steps complete</p>
+            <p className="text-gray-400 text-sm">{completedSteps} of {permitChecklist.length} steps complete</p>
           </div>
           <div className="w-32 bg-navy rounded-full h-2">
             <div 
@@ -248,7 +248,7 @@ export default function AirPermitTab() {
                 <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="md:col-span-2">
                     <p className="text-white font-medium">{item.name}</p>
-                    <p className="text-muted text-sm">{item.description}</p>
+                    <p className="text-gray-400 text-sm">{item.description}</p>
                   </div>
                   <select
                     value={checklistItems[item.step].status}
@@ -257,7 +257,7 @@ export default function AirPermitTab() {
                       checklistItems[item.step].status === 'complete' ? 'border-success text-success' :
                       checklistItems[item.step].status === 'in_progress' ? 'border-warning text-warning' :
                       checklistItems[item.step].status === 'blocked' ? 'border-danger text-danger' :
-                      'border-navy-card text-muted'
+                      'border-navy-card text-gray-400'
                     }`}
                   >
                     <option value="not_started">Not Started</option>

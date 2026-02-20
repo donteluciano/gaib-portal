@@ -99,7 +99,7 @@ export default function Sidebar() {
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 isActive
                   ? 'bg-gold/10 text-gold border border-gold/20'
-                  : 'text-muted hover:text-white hover:bg-navy-card/50'
+                  : 'text-gray-400 hover:text-white hover:bg-navy-card/50'
               }`}
             >
               <item.icon className="w-5 h-5" />
@@ -114,7 +114,7 @@ export default function Sidebar() {
         <form action="/api/logout" method="POST">
           <button
             type="submit"
-            className="flex items-center gap-3 px-4 py-3 w-full text-muted hover:text-white hover:bg-navy-card/50 rounded-lg transition-colors"
+            className="flex items-center gap-3 px-4 py-3 w-full text-gray-400 hover:text-white hover:bg-navy-card/50 rounded-lg transition-colors"
           >
             <LogoutIcon className="w-5 h-5" />
             <span className="font-medium">Logout</span>

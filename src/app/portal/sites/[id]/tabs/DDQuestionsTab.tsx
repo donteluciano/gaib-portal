@@ -107,7 +107,7 @@ export default function DDQuestionsTab() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-serif text-white">Due Diligence Questions</h2>
-          <p className="text-muted text-sm mt-1">
+          <p className="text-gray-400 text-sm mt-1">
             {askedCount} of {questions.length} questions answered
           </p>
         </div>
@@ -122,7 +122,7 @@ export default function DDQuestionsTab() {
       {/* Filters */}
       <div className="flex flex-wrap gap-4 p-4 bg-navy-card rounded-xl">
         <div className="flex items-center gap-2">
-          <span className="text-muted text-sm">Category:</span>
+          <span className="text-gray-400 text-sm">Category:</span>
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value as Category | 'all')}
@@ -135,7 +135,7 @@ export default function DDQuestionsTab() {
           </select>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-muted text-sm">Priority:</span>
+          <span className="text-gray-400 text-sm">Priority:</span>
           <select
             value={filterPriority}
             onChange={(e) => setFilterPriority(e.target.value as Priority | 'all')}
@@ -154,7 +154,7 @@ export default function DDQuestionsTab() {
             onChange={(e) => setShowAskedOnly(e.target.checked)}
             className="w-4 h-4 bg-navy border-navy-card rounded text-gold focus:ring-gold"
           />
-          <span className="text-muted text-sm">Show answered only</span>
+          <span className="text-gray-400 text-sm">Show answered only</span>
         </label>
       </div>
 
@@ -164,7 +164,7 @@ export default function DDQuestionsTab() {
           <div key={category} className="bg-navy-card border border-navy rounded-xl overflow-hidden">
             <div className="px-6 py-4 border-b border-navy bg-navy/50">
               <h3 className="text-lg font-serif text-white">{categoryLabels[category as Category]}</h3>
-              <p className="text-muted text-sm">
+              <p className="text-gray-400 text-sm">
                 {categoryQuestions.filter(q => q.asked).length} of {categoryQuestions.length} answered
               </p>
             </div>
@@ -193,7 +193,7 @@ export default function DDQuestionsTab() {
                           {q.priority}
                         </span>
                       </div>
-                      <p className="text-muted text-sm">Ask: {q.whoAnswers}</p>
+                      <p className="text-gray-400 text-sm">Ask: {q.whoAnswers}</p>
                       <textarea
                         value={q.answer}
                         onChange={(e) => updateAnswer(q.id, e.target.value)}
@@ -202,7 +202,7 @@ export default function DDQuestionsTab() {
                         className="w-full px-3 py-2 bg-navy border border-navy-card rounded-lg text-white text-sm placeholder-muted focus:border-gold outline-none resize-none"
                       />
                       {q.dateAsked && (
-                        <p className="text-muted text-xs">Answered: {q.dateAsked}</p>
+                        <p className="text-gray-400 text-xs">Answered: {q.dateAsked}</p>
                       )}
                     </div>
                   </div>

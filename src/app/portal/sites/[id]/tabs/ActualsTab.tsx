@@ -42,15 +42,15 @@ export default function ActualsTab() {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-navy-card border border-navy rounded-xl p-6">
-          <p className="text-muted text-sm">Total Estimated</p>
+          <p className="text-gray-400 text-sm">Total Estimated</p>
           <p className="text-2xl font-bold text-white">${(totalEstimated / 1000).toFixed(0)}K</p>
         </div>
         <div className="bg-navy-card border border-navy rounded-xl p-6">
-          <p className="text-muted text-sm">Total Actual</p>
+          <p className="text-gray-400 text-sm">Total Actual</p>
           <p className="text-2xl font-bold text-white">${(totalActual / 1000).toFixed(0)}K</p>
         </div>
         <div className="bg-navy-card border border-navy rounded-xl p-6">
-          <p className="text-muted text-sm">Variance</p>
+          <p className="text-gray-400 text-sm">Variance</p>
           <p className={`text-2xl font-bold ${totalVariance > 0 ? 'text-danger' : 'text-success'}`}>
             {totalVariance > 0 ? '+' : ''}${(totalVariance / 1000).toFixed(0)}K
           </p>
@@ -62,11 +62,11 @@ export default function ActualsTab() {
         <table className="w-full">
           <thead>
             <tr className="border-b border-navy bg-navy/50">
-              <th className="px-6 py-4 text-left text-muted font-medium">Category</th>
-              <th className="px-6 py-4 text-right text-muted font-medium">Estimated</th>
-              <th className="px-6 py-4 text-right text-muted font-medium">Actual</th>
-              <th className="px-6 py-4 text-right text-muted font-medium">Variance</th>
-              <th className="px-6 py-4 text-left text-muted font-medium">Notes</th>
+              <th className="px-6 py-4 text-left text-gray-400 font-medium">Category</th>
+              <th className="px-6 py-4 text-right text-gray-400 font-medium">Estimated</th>
+              <th className="px-6 py-4 text-right text-gray-400 font-medium">Actual</th>
+              <th className="px-6 py-4 text-right text-gray-400 font-medium">Variance</th>
+              <th className="px-6 py-4 text-left text-gray-400 font-medium">Notes</th>
             </tr>
           </thead>
           <tbody>
@@ -76,7 +76,7 @@ export default function ActualsTab() {
                 <tr key={category.key} className="border-b border-navy/50">
                   <td className="px-6 py-4">
                     <p className="text-white font-medium">{category.name}</p>
-                    <p className="text-muted text-sm">{category.description}</p>
+                    <p className="text-gray-400 text-sm">{category.description}</p>
                   </td>
                   <td className="px-6 py-4">
                     <input
@@ -137,7 +137,7 @@ export default function ActualsTab() {
             return (
               <div key={category.key}>
                 <div className="flex justify-between text-sm mb-1">
-                  <span className="text-muted">{category.name}</span>
+                  <span className="text-gray-400">{category.name}</span>
                   <span className={pct > 100 ? 'text-danger' : 'text-white'}>{pct.toFixed(0)}%</span>
                 </div>
                 <div className="w-full bg-navy rounded-full h-3">

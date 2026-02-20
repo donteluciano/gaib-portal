@@ -34,22 +34,22 @@ export default function ActivityTab({ siteId }: Props) {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    const loadActivities = async () => {
+      setLoading(true);
+      const { data } = await supabase
+        .from('activities')
+        .select('*')
+        .eq('site_id', siteId)
+        .order('date', { ascending: false });
+
+      if (data) {
+        setActivities(data);
+      }
+      setLoading(false);
+    };
+
     loadActivities();
   }, [siteId]);
-
-  async function loadActivities() {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('activities')
-      .select('*')
-      .eq('site_id', siteId)
-      .order('date', { ascending: false });
-
-    if (!error && data) {
-      setActivities(data);
-    }
-    setLoading(false);
-  }
 
   async function addActivity() {
     if (!newActivity.date || !newActivity.action) return;
@@ -102,7 +102,7 @@ export default function ActivityTab({ siteId }: Props) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-muted">Loading activities...</p>
+        <p className="text-gray-400">Loading activities...</p>
       </div>
     );
   }
@@ -119,7 +119,7 @@ export default function ActivityTab({ siteId }: Props) {
             
             return (
               <div key={stage} className="flex items-center">
-                <div className={`flex flex-col items-center ${isReached ? 'text-gold' : 'text-muted'}`}>
+                <div className={`flex flex-col items-center ${isReached ? 'text-gold' : 'text-gray-400'}`}>
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-medium ${
                     isReached ? 'bg-gold text-navy' : 'bg-navy-card border border-navy'
                   }`}>
@@ -127,7 +127,7 @@ export default function ActivityTab({ siteId }: Props) {
                   </div>
                   <p className="text-xs mt-2 text-center w-20">{stageNames[stage]?.split(' ')[0]}</p>
                   {stageEntry && (
-                    <p className="text-xs text-muted">{stageEntry.date}</p>
+                    <p className="text-xs text-gray-400">{stageEntry.date}</p>
                   )}
                 </div>
                 {i < 6 && (
@@ -144,7 +144,7 @@ export default function ActivityTab({ siteId }: Props) {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-serif text-white">Activity Log</h2>
-            <p className="text-muted text-sm">{activities.length} entries • ${totalCosts.toLocaleString()} total costs</p>
+            <p className="text-gray-400 text-sm">{activities.length} entries • ${totalCosts.toLocaleString()} total costs</p>
           </div>
           <button
             onClick={() => setShowForm(!showForm)}
@@ -159,7 +159,7 @@ export default function ActivityTab({ siteId }: Props) {
           <div className="mb-6 p-4 bg-navy/50 rounded-lg border border-gold/20">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
               <div>
-                <label className="block text-sm text-muted mb-1">Date *</label>
+                <label className="block text-sm text-gray-400 mb-1">Date *</label>
                 <input
                   type="date"
                   value={newActivity.date}
@@ -168,7 +168,7 @@ export default function ActivityTab({ siteId }: Props) {
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm text-muted mb-1">Action *</label>
+                <label className="block text-sm text-gray-400 mb-1">Action *</label>
                 <input
                   type="text"
                   value={newActivity.action}
@@ -178,7 +178,7 @@ export default function ActivityTab({ siteId }: Props) {
                 />
               </div>
               <div>
-                <label className="block text-sm text-muted mb-1">Cost ($)</label>
+                <label className="block text-sm text-gray-400 mb-1">Cost ($)</label>
                 <input
                   type="number"
                   value={newActivity.cost || ''}
@@ -189,7 +189,7 @@ export default function ActivityTab({ siteId }: Props) {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm text-muted mb-1">Notes</label>
+                <label className="block text-sm text-gray-400 mb-1">Notes</label>
                 <textarea
                   value={newActivity.notes}
                   onChange={(e) => setNewActivity({ ...newActivity, notes: e.target.value })}
@@ -199,7 +199,7 @@ export default function ActivityTab({ siteId }: Props) {
                 />
               </div>
               <div>
-                <label className="block text-sm text-muted mb-1">Stage</label>
+                <label className="block text-sm text-gray-400 mb-1">Stage</label>
                 <select
                   value={newActivity.stage}
                   onChange={(e) => setNewActivity({ ...newActivity, stage: parseInt(e.target.value) })}
@@ -234,30 +234,30 @@ export default function ActivityTab({ siteId }: Props) {
           <div className="text-center py-12">
             <div className="text-4xl mb-4">📋</div>
             <p className="text-white font-medium mb-2">No activities yet</p>
-            <p className="text-muted text-sm">Start logging key events and milestones for this site.</p>
+            <p className="text-gray-400 text-sm">Start logging key events and milestones for this site.</p>
           </div>
         ) : (
           <div className="space-y-4">
             {activities.map((activity) => (
               <div key={activity.id} className="flex items-start gap-4 p-4 bg-navy/30 rounded-lg group">
-                <div className="w-24 text-muted text-sm flex-shrink-0">{activity.date}</div>
+                <div className="w-24 text-gray-400 text-sm flex-shrink-0">{activity.date}</div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <p className="text-white font-medium">{activity.action}</p>
                     {activity.stage && (
-                      <span className="text-xs px-2 py-0.5 bg-navy-card rounded text-muted">
+                      <span className="text-xs px-2 py-0.5 bg-navy-card rounded text-gray-400">
                         Stage {activity.stage}
                       </span>
                     )}
                   </div>
-                  {activity.notes && <p className="text-muted text-sm mt-1">{activity.notes}</p>}
+                  {activity.notes && <p className="text-gray-400 text-sm mt-1">{activity.notes}</p>}
                 </div>
                 {activity.cost > 0 && (
                   <div className="text-gold font-medium">${activity.cost.toLocaleString()}</div>
                 )}
                 <button
                   onClick={() => deleteActivity(activity.id)}
-                  className="text-muted hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
                   title="Delete"
                 >
                   ✕

@@ -8,7 +8,9 @@
   --white: #FFFFFF;
   --offwhite: #F7F5F2;
   --body: #333333;
-  --muted: #666666;
+  /* Improved muted color for better readability */
+  --muted: #9CA3AF;
+  --muted-dark: #6B7280;
   --success: #27AE60;
   --warning: #F39C12;
   --danger: #E74C3C;

@@ -77,21 +77,21 @@ export default function EvaluationTab({ site }: { site: Site }) {
   const [showWaterRef, setShowWaterRef] = useState(false);
 
   useEffect(() => {
+    const loadFundSettings = async () => {
+      const { data } = await supabase
+        .from('fund_settings')
+        .select('*')
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      if (data) {
+        setFundSettings(data);
+      }
+    };
+
     loadFundSettings();
   }, []);
-
-  async function loadFundSettings() {
-    const { data } = await supabase
-      .from('fund_settings')
-      .select('*')
-      .order('updated_at', { ascending: false })
-      .limit(1)
-      .single();
-    
-    if (data) {
-      setFundSettings(data);
-    }
-  }
 
   // Calculate MW from gas volume and pressure per spec
   // Base: 192 MCFD = 1 MW (from reference table: 14400 MCFD = 75 MW)
@@ -342,23 +342,23 @@ export default function EvaluationTab({ site }: { site: Site }) {
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div className="p-4 bg-navy-card border border-navy rounded-xl">
-          <p className="text-muted text-sm">Est. MW</p>
+          <p className="text-gray-400 text-sm">Est. MW</p>
           <p className="text-2xl font-bold text-white">{calculatedMW || '—'}</p>
         </div>
         <div className="p-4 bg-navy-card border border-navy rounded-xl">
-          <p className="text-muted text-sm">Gas Cost</p>
+          <p className="text-gray-400 text-sm">Gas Cost</p>
           <p className="text-2xl font-bold text-white">{formatCurrency(totalGasCost)}</p>
         </div>
         <div className="p-4 bg-navy-card border border-navy rounded-xl">
-          <p className="text-muted text-sm">De-risking</p>
+          <p className="text-gray-400 text-sm">De-risking</p>
           <p className="text-2xl font-bold text-white">{formatCurrency(deRiskingCosts.total)}</p>
         </div>
         <div className={`p-4 ${riskLevel.bg} border border-navy rounded-xl`}>
-          <p className="text-muted text-sm">Risk Score</p>
+          <p className="text-gray-400 text-sm">Risk Score</p>
           <p className={`text-2xl font-bold ${riskLevel.color}`}>{riskScore} ({riskLevel.label})</p>
         </div>
         <div className="p-4 bg-navy-card border border-navy rounded-xl">
-          <p className="text-muted text-sm">Timeline</p>
+          <p className="text-gray-400 text-sm">Timeline</p>
           <p className="text-2xl font-bold text-white">{timeline.low}-{timeline.high}mo</p>
         </div>
       </div>
@@ -373,7 +373,7 @@ export default function EvaluationTab({ site }: { site: Site }) {
         </div>
 
         {showGasRef && (
-          <div className="mb-6 p-4 bg-navy/50 rounded-lg text-sm text-muted">
+          <div className="mb-6 p-4 bg-navy/50 rounded-lg text-sm text-gray-400">
             <p className="font-medium text-white mb-2">MW Calculation Formula:</p>
             <ul className="list-disc list-inside space-y-1">
               <li>PSI &gt; 500: MW = MCFD ÷ 7 ÷ 192</li>
@@ -385,7 +385,7 @@ export default function EvaluationTab({ site }: { site: Site }) {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm text-muted mb-2">Gas Volume (MCFD)</label>
+            <label className="block text-sm text-gray-400 mb-2">Gas Volume (MCFD)</label>
             <input
               type="number"
               value={inputs.gasVolume || ''}
@@ -395,7 +395,7 @@ export default function EvaluationTab({ site }: { site: Site }) {
             />
           </div>
           <div>
-            <label className="block text-sm text-muted mb-2">Gas Pressure (PSI)</label>
+            <label className="block text-sm text-gray-400 mb-2">Gas Pressure (PSI)</label>
             <input
               type="number"
               value={inputs.gasPressure || ''}
@@ -405,7 +405,7 @@ export default function EvaluationTab({ site }: { site: Site }) {
             />
           </div>
           <div>
-            <label className="block text-sm text-muted mb-2">Pipeline Diameter (in)</label>
+            <label className="block text-sm text-gray-400 mb-2">Pipeline Diameter (in)</label>
             <input
               type="number"
               value={inputs.pipelineDiameter || ''}
@@ -415,7 +415,7 @@ export default function EvaluationTab({ site }: { site: Site }) {
             />
           </div>
           <div>
-            <label className="block text-sm text-muted mb-2">Pipeline Distance (mi)</label>
+            <label className="block text-sm text-gray-400 mb-2">Pipeline Distance (mi)</label>
             <input
               type="number"
               step="0.1"
@@ -429,7 +429,7 @@ export default function EvaluationTab({ site }: { site: Site }) {
 
         <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm text-muted mb-2">Terrain</label>
+            <label className="block text-sm text-gray-400 mb-2">Terrain</label>
             <select
               value={inputs.terrain || 'easy'}
               onChange={(e) => setInputs({ ...inputs, terrain: e.target.value })}
@@ -441,15 +441,15 @@ export default function EvaluationTab({ site }: { site: Site }) {
             </select>
           </div>
           <div className="p-4 bg-navy/50 rounded-lg">
-            <p className="text-muted text-sm">Tap Cost</p>
+            <p className="text-gray-400 text-sm">Tap Cost</p>
             <p className="text-lg font-bold text-white">{formatCurrency(tapCost)}</p>
           </div>
           <div className="p-4 bg-navy/50 rounded-lg">
-            <p className="text-muted text-sm">Lateral Cost</p>
+            <p className="text-gray-400 text-sm">Lateral Cost</p>
             <p className="text-lg font-bold text-white">{formatCurrency(lateralCost)}</p>
           </div>
           <div className="p-4 bg-navy/50 rounded-lg">
-            <p className="text-muted text-sm">Meter Station</p>
+            <p className="text-gray-400 text-sm">Meter Station</p>
             <p className="text-lg font-bold text-white">{formatCurrency(meterCost)}</p>
           </div>
         </div>
@@ -460,39 +460,39 @@ export default function EvaluationTab({ site }: { site: Site }) {
         <h2 className="text-xl font-serif text-white mb-6">De-risking Cost Breakdown</h2>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <div className="p-3 bg-navy/50 rounded-lg">
-            <p className="text-muted text-xs">Site Control</p>
+            <p className="text-gray-400 text-xs">Site Control</p>
             <p className="text-white font-medium">{formatCurrency(deRiskingCosts.siteControl)}</p>
           </div>
           <div className="p-3 bg-navy/50 rounded-lg">
-            <p className="text-muted text-xs">Gas Studies</p>
+            <p className="text-gray-400 text-xs">Gas Studies</p>
             <p className="text-white font-medium">{formatCurrency(deRiskingCosts.gasStudies)}</p>
           </div>
           <div className="p-3 bg-navy/50 rounded-lg">
-            <p className="text-muted text-xs">Environmental</p>
+            <p className="text-gray-400 text-xs">Environmental</p>
             <p className="text-white font-medium">{formatCurrency(deRiskingCosts.enviro)}</p>
           </div>
           <div className="p-3 bg-navy/50 rounded-lg">
-            <p className="text-muted text-xs">Air Permit</p>
+            <p className="text-gray-400 text-xs">Air Permit</p>
             <p className="text-white font-medium">{formatCurrency(deRiskingCosts.airPermit)}</p>
           </div>
           <div className="p-3 bg-navy/50 rounded-lg">
-            <p className="text-muted text-xs">Fiber</p>
+            <p className="text-gray-400 text-xs">Fiber</p>
             <p className="text-white font-medium">{formatCurrency(deRiskingCosts.fiber)}</p>
           </div>
           <div className="p-3 bg-navy/50 rounded-lg">
-            <p className="text-muted text-xs">Political</p>
+            <p className="text-gray-400 text-xs">Political</p>
             <p className="text-white font-medium">{formatCurrency(deRiskingCosts.political)}</p>
           </div>
           <div className="p-3 bg-navy/50 rounded-lg">
-            <p className="text-muted text-xs">Engineering</p>
+            <p className="text-gray-400 text-xs">Engineering</p>
             <p className="text-white font-medium">{formatCurrency(deRiskingCosts.engineering)}</p>
           </div>
           <div className="p-3 bg-navy/50 rounded-lg">
-            <p className="text-muted text-xs">Demo</p>
+            <p className="text-gray-400 text-xs">Demo</p>
             <p className="text-white font-medium">{formatCurrency(deRiskingCosts.demo)}</p>
           </div>
           <div className="p-3 bg-navy/50 rounded-lg">
-            <p className="text-muted text-xs">Exit Costs</p>
+            <p className="text-gray-400 text-xs">Exit Costs</p>
             <p className="text-white font-medium">{formatCurrency(deRiskingCosts.exitCosts)}</p>
           </div>
           <div className="p-3 bg-gold/20 border border-gold/30 rounded-lg">
@@ -512,7 +512,7 @@ export default function EvaluationTab({ site }: { site: Site }) {
         </div>
 
         {showWaterRef && (
-          <div className="mb-6 p-4 bg-navy/50 rounded-lg text-sm text-muted">
+          <div className="mb-6 p-4 bg-navy/50 rounded-lg text-sm text-gray-400">
             <p className="font-medium text-white mb-2">GPD per MW by Cooling Type:</p>
             <ul className="list-disc list-inside space-y-1">
               <li>Air-cooled: 500 GPD/MW</li>
@@ -524,7 +524,7 @@ export default function EvaluationTab({ site }: { site: Site }) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm text-muted mb-2">Cooling Type</label>
+            <label className="block text-sm text-gray-400 mb-2">Cooling Type</label>
             <select
               value={inputs.coolingType || 'air'}
               onChange={(e) => setInputs({ ...inputs, coolingType: e.target.value })}
@@ -536,11 +536,11 @@ export default function EvaluationTab({ site }: { site: Site }) {
             </select>
           </div>
           <div className="p-4 bg-navy/50 rounded-lg">
-            <p className="text-muted text-sm">Daily Usage</p>
+            <p className="text-gray-400 text-sm">Daily Usage</p>
             <p className="text-lg font-bold text-white">{waterBudget.dailyGPD.toLocaleString()} GPD</p>
           </div>
           <div className="p-4 bg-navy/50 rounded-lg">
-            <p className="text-muted text-sm">Annual Usage</p>
+            <p className="text-gray-400 text-sm">Annual Usage</p>
             <p className="text-lg font-bold text-white">{(waterBudget.annualGallons / 1000000).toFixed(2)}M gal</p>
           </div>
         </div>
@@ -551,7 +551,7 @@ export default function EvaluationTab({ site }: { site: Site }) {
         <h2 className="text-xl font-serif text-gold mb-6">Fund Returns Waterfall</h2>
         
         <div className="mb-4">
-          <label className="block text-sm text-muted mb-2">Exit Price per MW ($M)</label>
+          <label className="block text-sm text-gray-400 mb-2">Exit Price per MW ($M)</label>
           <input
             type="number"
             step="0.01"
@@ -564,27 +564,27 @@ export default function EvaluationTab({ site }: { site: Site }) {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 bg-navy/50 rounded-lg">
-            <p className="text-muted text-sm">Gross Exit</p>
+            <p className="text-gray-400 text-sm">Gross Exit</p>
             <p className="text-2xl font-bold text-white">{formatCurrency(fundReturns.grossExit)}</p>
           </div>
           <div className="p-4 bg-navy/50 rounded-lg">
-            <p className="text-muted text-sm">LP Preferred ({(fundSettings.pref_return * 100).toFixed(0)}%)</p>
+            <p className="text-gray-400 text-sm">LP Preferred ({(fundSettings.pref_return * 100).toFixed(0)}%)</p>
             <p className="text-2xl font-bold text-white">{formatCurrency(fundReturns.lpPreferred)}</p>
           </div>
           <div className="p-4 bg-navy/50 rounded-lg">
-            <p className="text-muted text-sm">LP First (Return of Capital)</p>
+            <p className="text-gray-400 text-sm">LP First (Return of Capital)</p>
             <p className="text-2xl font-bold text-white">{formatCurrency(fundReturns.lpFirst)}</p>
           </div>
           <div className="p-4 bg-navy/50 rounded-lg">
-            <p className="text-muted text-sm">Remaining</p>
+            <p className="text-gray-400 text-sm">Remaining</p>
             <p className="text-2xl font-bold text-white">{formatCurrency(fundReturns.remaining)}</p>
           </div>
           <div className="p-4 bg-navy/50 rounded-lg">
-            <p className="text-muted text-sm">LP Share ({(fundSettings.lp_split * 100).toFixed(0)}%)</p>
+            <p className="text-gray-400 text-sm">LP Share ({(fundSettings.lp_split * 100).toFixed(0)}%)</p>
             <p className="text-2xl font-bold text-white">{formatCurrency(fundReturns.lpShare)}</p>
           </div>
           <div className="p-4 bg-navy/50 rounded-lg">
-            <p className="text-muted text-sm">GP Share ({(fundSettings.gp_split * 100).toFixed(0)}%)</p>
+            <p className="text-gray-400 text-sm">GP Share ({(fundSettings.gp_split * 100).toFixed(0)}%)</p>
             <p className="text-2xl font-bold text-white">{formatCurrency(fundReturns.gpShare)}</p>
           </div>
           <div className="p-4 bg-gold/20 border border-gold/30 rounded-lg">
@@ -613,7 +613,7 @@ export default function EvaluationTab({ site }: { site: Site }) {
             { label: 'Title', value: inputs.titleComplexity, risk: inputs.titleComplexity === 'complex' },
           ].map((item, i) => (
             <div key={i} className={`p-3 rounded-lg ${item.risk ? 'bg-red-500/10 border border-red-500/30' : 'bg-navy/50'}`}>
-              <p className="text-muted text-xs">{item.label}</p>
+              <p className="text-gray-400 text-xs">{item.label}</p>
               <p className={`font-medium capitalize ${item.risk ? 'text-red-400' : 'text-white'}`}>
                 {(item.value || '—').replace(/_/g, ' ')}
               </p>

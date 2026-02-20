@@ -80,7 +80,7 @@ export default function PoliticalTab() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-serif text-white">Political Risk Matrix</h2>
-            <p className="text-muted text-sm mt-1">Score each factor 1-5 based on site conditions</p>
+            <p className="text-gray-400 text-sm mt-1">Score each factor 1-5 based on site conditions</p>
           </div>
           <div className="text-right">
             <p className={`text-3xl font-bold ${getRatingColor(politicalTotal, politicalMax)}`}>
@@ -97,7 +97,7 @@ export default function PoliticalTab() {
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <p className="text-white font-medium">{factor.label}</p>
-                  <p className="text-muted text-xs">Weight: {factor.weight}%</p>
+                  <p className="text-gray-400 text-xs">Weight: {factor.weight}%</p>
                 </div>
                 <div className="flex items-center gap-2">
                   {[1, 2, 3, 4, 5].map((score) => (
@@ -107,7 +107,7 @@ export default function PoliticalTab() {
                       className={`w-8 h-8 rounded-full text-sm font-medium transition-colors ${
                         politicalScores[factor.key] === score
                           ? score <= 2 ? 'bg-danger text-white' : score <= 3 ? 'bg-warning text-black' : 'bg-success text-white'
-                          : 'bg-navy text-muted hover:bg-navy-card'
+                          : 'bg-navy text-gray-400 hover:bg-navy-card'
                       }`}
                     >
                       {score}
@@ -115,7 +115,7 @@ export default function PoliticalTab() {
                   ))}
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-2 text-xs text-muted mt-2">
+              <div className="grid grid-cols-3 gap-2 text-xs text-gray-400 mt-2">
                 <p><span className="text-danger">1:</span> {factor.desc1}</p>
                 <p><span className="text-warning">3:</span> {factor.desc3}</p>
                 <p><span className="text-success">5:</span> {factor.desc5}</p>
@@ -130,7 +130,7 @@ export default function PoliticalTab() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-serif text-white">Community Sentiment Scorecard</h2>
-            <p className="text-muted text-sm mt-1">Assess community acceptance factors</p>
+            <p className="text-gray-400 text-sm mt-1">Assess community acceptance factors</p>
           </div>
           <div className="text-right">
             <p className={`text-3xl font-bold ${getRatingColor(communityTotal, communityMax)}`}>
@@ -147,7 +147,7 @@ export default function PoliticalTab() {
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <p className="text-white font-medium">{factor.label}</p>
-                  <p className="text-muted text-xs">Weight: {factor.weight}%</p>
+                  <p className="text-gray-400 text-xs">Weight: {factor.weight}%</p>
                 </div>
                 <div className="flex items-center gap-2">
                   {[1, 2, 3, 4, 5].map((score) => (
@@ -157,7 +157,7 @@ export default function PoliticalTab() {
                       className={`w-8 h-8 rounded-full text-sm font-medium transition-colors ${
                         communityScores[factor.key] === score
                           ? score <= 2 ? 'bg-danger text-white' : score <= 3 ? 'bg-warning text-black' : 'bg-success text-white'
-                          : 'bg-navy text-muted hover:bg-navy-card'
+                          : 'bg-navy text-gray-400 hover:bg-navy-card'
                       }`}
                     >
                       {score}
@@ -175,13 +175,13 @@ export default function PoliticalTab() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-serif text-white">Community Benefit Agreement Builder</h2>
-            <p className="text-muted text-sm mt-1">Toggle offerings and estimate costs</p>
+            <p className="text-gray-400 text-sm mt-1">Toggle offerings and estimate costs</p>
           </div>
           <div className="text-right">
             <p className="text-3xl font-bold text-gold">
               ${(cbaTotal / 1000).toFixed(0)}K
             </p>
-            <p className="text-muted text-sm">Est. CBA Cost</p>
+            <p className="text-gray-400 text-sm">Est. CBA Cost</p>
           </div>
         </div>
         <div className="space-y-3">
@@ -204,7 +204,7 @@ export default function PoliticalTab() {
               </button>
               <div className="flex-1">
                 <p className="text-white font-medium">{option.label}</p>
-                <p className="text-muted text-sm">{option.description}</p>
+                <p className="text-gray-400 text-sm">{option.description}</p>
               </div>
               <div className="w-32">
                 <input

@@ -69,25 +69,25 @@ export default function SiteDetailPage() {
   const [activeTab, setActiveTab] = useState('evaluation');
 
   useEffect(() => {
+    const loadSite = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('sites')
+        .select('*')
+        .eq('id', siteId)
+        .single();
+
+      if (error || !data) {
+        router.push('/portal/pipeline');
+        return;
+      }
+
+      setSite(data);
+      setLoading(false);
+    };
+
     loadSite();
-  }, [siteId]);
-
-  async function loadSite() {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('sites')
-      .select('*')
-      .eq('id', siteId)
-      .single();
-
-    if (error || !data) {
-      router.push('/portal/pipeline');
-      return;
-    }
-
-    setSite(data);
-    setLoading(false);
-  }
+  }, [siteId, router]);
 
   async function handleStageAdvance(newStage: number) {
     if (!site) return;
@@ -132,7 +132,7 @@ export default function SiteDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-muted">Loading site...</p>
+        <p className="text-gray-400">Loading site...</p>
       </div>
     );
   }
@@ -140,7 +140,7 @@ export default function SiteDetailPage() {
   if (!site) {
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-muted">Site not found.</p>
+        <p className="text-gray-400">Site not found.</p>
       </div>
     );
   }
@@ -162,12 +162,12 @@ export default function SiteDetailPage() {
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <Link href="/portal/pipeline" className="text-muted hover:text-gold">
+            <Link href="/portal/pipeline" className="text-gray-400 hover:text-gold">
               ← Pipeline
             </Link>
           </div>
           <h1 className="text-3xl font-serif text-white">{site.name}</h1>
-          <p className="text-muted mt-1">
+          <p className="text-gray-400 mt-1">
             {site.city}, {site.state} 
             {site.inputs?.acreage && ` • ${site.inputs.acreage} acres`}
             {estimatedMW > 0 && ` • ${estimatedMW} MW`}
@@ -199,7 +199,7 @@ export default function SiteDetailPage() {
               className={`px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'text-gold border-b-2 border-gold'
-                  : 'text-muted hover:text-white'
+                  : 'text-gray-400 hover:text-white'
               }`}
             >
               {tab.name}
