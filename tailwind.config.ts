@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
 
-export default {
+const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,20 +9,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Gaib Capital Partners brand colors
         navy: {
           DEFAULT: '#0A1628',
           dark: '#0D1B2A',
           card: '#1A3050',
-          light: '#2A4060',
         },
         gold: {
           DEFAULT: '#B8965A',
           light: '#D4B87A',
-          dark: '#96784A',
+          dark: '#9A7B48',
         },
         offwhite: '#F7F5F2',
-        // Status colors
+        body: '#333333',
+        muted: '#666666',
+        'light-gray': '#999999',
         success: '#27AE60',
         warning: '#F39C12',
         danger: '#E74C3C',
@@ -34,4 +34,6 @@ export default {
     },
   },
   plugins: [],
-} satisfies Config;
+};
+
+export default config;

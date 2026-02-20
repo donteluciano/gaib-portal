@@ -4,12 +4,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: DashboardIcon },
-  { name: 'Pipeline', href: '/pipeline', icon: PipelineIcon },
-  { name: 'My Investments', href: '/sites', icon: BuildingIcon },
-  { name: 'Reports', href: '/reports', icon: ReportIcon },
-  { name: 'Documents', href: '/documents', icon: DocumentIcon },
-  { name: 'Settings', href: '/settings', icon: SettingsIcon },
+  { name: 'Dashboard', href: '/portal/dashboard', icon: DashboardIcon },
+  { name: 'New Site', href: '/portal/new-site', icon: PlusIcon },
+  { name: 'Pipeline', href: '/portal/pipeline', icon: PipelineIcon },
+  { name: 'Leads', href: '/portal/leads', icon: LeadsIcon },
+  { name: 'Reports', href: '/portal/reports', icon: ReportIcon },
+  { name: 'Settings', href: '/portal/settings', icon: SettingsIcon },
 ];
 
 function DashboardIcon({ className }: { className?: string }) {
@@ -20,18 +20,26 @@ function DashboardIcon({ className }: { className?: string }) {
   );
 }
 
-function PipelineIcon({ className }: { className?: string }) {
+function PlusIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
     </svg>
   );
 }
 
-function BuildingIcon({ className }: { className?: string }) {
+function PipelineIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+    </svg>
+  );
+}
+
+function LeadsIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
     </svg>
   );
 }
@@ -40,14 +48,6 @@ function ReportIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
-    </svg>
-  );
-}
-
-function DocumentIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
     </svg>
   );
 }
@@ -61,21 +61,27 @@ function SettingsIcon({ className }: { className?: string }) {
   );
 }
 
+function LogoutIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+    </svg>
+  );
+}
+
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-zinc-950 border-r border-zinc-800 flex flex-col h-screen fixed left-0 top-0">
+    <aside className="w-64 bg-navy border-r border-navy-card flex flex-col h-screen fixed left-0 top-0">
       {/* Logo */}
-      <div className="p-6 border-b border-zinc-800">
-        <Link href="/dashboard" className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center">
-            <span className="text-black font-bold text-xl">G</span>
-          </div>
-          <div>
-            <h1 className="text-white font-bold text-lg">GAIB Capital</h1>
-            <p className="text-zinc-500 text-xs">Investor Portal</p>
-          </div>
+      <div className="p-6 border-b border-navy-card">
+        <Link href="/portal/dashboard" className="block">
+          <h1 className="text-white font-serif text-lg tracking-[4px] leading-tight">
+            GAIB CAPITAL<br />PARTNERS
+          </h1>
+          <div className="gold-line mt-3 w-16" />
+          <p className="text-gold text-xs mt-2 tracking-wider">PORTAL</p>
         </Link>
       </div>
 
@@ -89,8 +95,8 @@ export default function Sidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 isActive
-                  ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
+                  ? 'bg-gold/10 text-gold border border-gold/20'
+                  : 'text-muted hover:text-white hover:bg-navy-card/50'
               }`}
             >
               <item.icon className="w-5 h-5" />
@@ -100,24 +106,17 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* User section */}
-      <div className="p-4 border-t border-zinc-800">
-        <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-zinc-900">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-zinc-600 to-zinc-800 flex items-center justify-center">
-            <span className="text-white font-semibold">DB</span>
-          </div>
-          <div className="flex-1">
-            <p className="text-white text-sm font-medium">Donte B.</p>
-            <p className="text-zinc-500 text-xs">Investor</p>
-          </div>
-          <form action="/api/logout" method="POST">
-            <button type="submit" className="text-zinc-400 hover:text-white transition-colors">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
-              </svg>
-            </button>
-          </form>
-        </div>
+      {/* Logout */}
+      <div className="p-4 border-t border-navy-card">
+        <form action="/api/logout" method="POST">
+          <button
+            type="submit"
+            className="flex items-center gap-3 px-4 py-3 w-full text-muted hover:text-white hover:bg-navy-card/50 rounded-lg transition-colors"
+          >
+            <LogoutIcon className="w-5 h-5" />
+            <span className="font-medium">Logout</span>
+          </button>
+        </form>
       </div>
     </aside>
   );

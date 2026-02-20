@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 export async function POST(request: NextRequest) {
-  const { email, password } = await request.json();
+  const { password } = await request.json();
   
-  // Demo mode: accept any email with password "gaib2026" or "demo"
-  const validPasswords = ['gaib2026', 'demo', 'password'];
+  // Password from environment variable, with fallback for demo
+  const validPassword = process.env.PORTAL_PASSWORD || 'gaib2026';
   
-  if (email && validPasswords.includes(password)) {
+  // Also accept 'demo' for testing
+  if (password === validPassword || password === 'demo') {
     // Set auth cookie (30 days)
     const cookieStore = await cookies();
     cookieStore.set('gaib-auth', 'authenticated', {
@@ -21,5 +22,5 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true });
   }
   
-  return NextResponse.json({ error: 'Invalid credentials. Try password: demo' }, { status: 401 });
+  return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
 }
