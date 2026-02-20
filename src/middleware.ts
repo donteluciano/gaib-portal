@@ -17,15 +17,9 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/portal/dashboard', request.url));
   }
 
-  // Redirect root to appropriate page
-  if (request.nextUrl.pathname === '/') {
-    // For now, redirect to login. Later this will be the public landing page.
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
-
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/', '/login', '/portal/:path*'],
+  matcher: ['/login', '/portal/:path*'],
 };
