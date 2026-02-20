@@ -1,68 +1,118 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 
-type DocCategory = 'legal' | 'gas' | 'enviro' | 'political' | 'engineering' | 'fiber' | 'other';
+type DocCategory = 'legal' | 'gas' | 'environmental' | 'political' | 'engineering' | 'fiber' | 'financial' | 'other';
 
 interface Document {
   id: string;
   name: string;
   url: string;
   category: DocCategory;
-  dateAdded: string;
+  date_added: string;
 }
-
-const initialDocs: Document[] = [
-  { id: '1', name: 'Option Agreement', url: 'https://drive.google.com/xxx', category: 'legal', dateAdded: '2026-02-20' },
-  { id: '2', name: 'Title Report', url: 'https://drive.google.com/yyy', category: 'legal', dateAdded: '2026-02-18' },
-  { id: '3', name: 'CoStar Listing', url: 'https://costar.com/listing/123', category: 'other', dateAdded: '2026-02-15' },
-];
 
 const categoryLabels: Record<DocCategory, string> = {
   legal: 'Legal',
   gas: 'Gas',
-  enviro: 'Environmental',
+  environmental: 'Environmental',
   political: 'Political',
   engineering: 'Engineering',
   fiber: 'Fiber',
+  financial: 'Financial',
   other: 'Other',
 };
 
 const categoryColors: Record<DocCategory, string> = {
   legal: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
   gas: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-  enviro: 'bg-green-500/20 text-green-400 border-green-500/30',
+  environmental: 'bg-green-500/20 text-green-400 border-green-500/30',
   political: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
   engineering: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
   fiber: 'bg-pink-500/20 text-pink-400 border-pink-500/30',
+  financial: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
   other: 'bg-muted/20 text-muted border-muted/30',
 };
 
-export default function DocumentsTab() {
-  const [docs, setDocs] = useState(initialDocs);
+interface Props {
+  siteId: string;
+}
+
+export default function DocumentsTab({ siteId }: Props) {
+  const [docs, setDocs] = useState<Document[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [newDoc, setNewDoc] = useState({ name: '', url: '', category: 'other' as DocCategory });
 
-  const addDoc = () => {
-    if (!newDoc.name || !newDoc.url) return;
-    setDocs([
-      ...docs,
-      { ...newDoc, id: Date.now().toString(), dateAdded: new Date().toISOString().split('T')[0] }
-    ]);
-    setNewDoc({ name: '', url: '', category: 'other' });
-    setShowForm(false);
-  };
+  useEffect(() => {
+    loadDocuments();
+  }, [siteId]);
 
-  const removeDoc = (id: string) => {
-    setDocs(docs.filter(d => d.id !== id));
-  };
+  async function loadDocuments() {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('documents')
+      .select('*')
+      .eq('site_id', siteId)
+      .order('date_added', { ascending: false });
+    
+    if (!error && data) {
+      setDocs(data);
+    }
+    setLoading(false);
+  }
+
+  async function addDoc() {
+    if (!newDoc.name || !newDoc.url) return;
+    
+    setSaving(true);
+    const { data, error } = await supabase
+      .from('documents')
+      .insert({
+        site_id: siteId,
+        name: newDoc.name,
+        url: newDoc.url,
+        category: newDoc.category,
+        date_added: new Date().toISOString().split('T')[0],
+      })
+      .select()
+      .single();
+
+    if (!error && data) {
+      setDocs([data, ...docs]);
+      setNewDoc({ name: '', url: '', category: 'other' });
+      setShowForm(false);
+    }
+    setSaving(false);
+  }
+
+  async function removeDoc(id: string) {
+    const { error } = await supabase
+      .from('documents')
+      .delete()
+      .eq('id', id);
+
+    if (!error) {
+      setDocs(docs.filter(d => d.id !== id));
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <p className="text-muted">Loading documents...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-serif text-white">Documents & Links</h2>
-          <p className="text-muted text-sm">{docs.length} documents</p>
+          <p className="text-muted text-sm">{docs.length} document{docs.length !== 1 ? 's' : ''}</p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
@@ -77,7 +127,7 @@ export default function DocumentsTab() {
         <div className="p-4 bg-navy-card border border-gold/20 rounded-xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
-              <label className="block text-sm text-muted mb-1">Document Name</label>
+              <label className="block text-sm text-muted mb-1">Document Name *</label>
               <input
                 type="text"
                 value={newDoc.name}
@@ -87,7 +137,7 @@ export default function DocumentsTab() {
               />
             </div>
             <div>
-              <label className="block text-sm text-muted mb-1">URL</label>
+              <label className="block text-sm text-muted mb-1">URL *</label>
               <input
                 type="url"
                 value={newDoc.url}
@@ -112,9 +162,10 @@ export default function DocumentsTab() {
           <div className="flex gap-2">
             <button
               onClick={addDoc}
-              className="px-4 py-2 bg-gold hover:bg-gold-dark text-navy font-medium rounded-lg"
+              disabled={saving || !newDoc.name || !newDoc.url}
+              className="px-4 py-2 bg-gold hover:bg-gold-dark text-navy font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Add
+              {saving ? 'Adding...' : 'Add'}
             </button>
             <button
               onClick={() => setShowForm(false)}
@@ -130,7 +181,9 @@ export default function DocumentsTab() {
       <div className="bg-navy-card border border-navy rounded-xl overflow-hidden">
         {docs.length === 0 ? (
           <div className="p-12 text-center">
-            <p className="text-muted">No documents yet. Add links to Google Drive, Dropbox, or other file storage.</p>
+            <div className="text-4xl mb-4">📄</div>
+            <p className="text-white font-medium mb-2">No documents yet</p>
+            <p className="text-muted text-sm">Add links to Google Drive, Dropbox, or other file storage.</p>
           </div>
         ) : (
           <table className="w-full">
@@ -156,11 +209,11 @@ export default function DocumentsTab() {
                     </a>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 text-xs font-medium rounded border ${categoryColors[doc.category]}`}>
-                      {categoryLabels[doc.category]}
+                    <span className={`px-2 py-1 text-xs font-medium rounded border ${categoryColors[doc.category] || categoryColors.other}`}>
+                      {categoryLabels[doc.category] || 'Other'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-muted">{doc.dateAdded}</td>
+                  <td className="px-6 py-4 text-muted">{doc.date_added}</td>
                   <td className="px-6 py-4 text-right">
                     <button
                       onClick={() => removeDoc(doc.id)}
