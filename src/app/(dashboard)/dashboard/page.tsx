@@ -1,224 +1,138 @@
 'use client';
 
-import Link from 'next/link';
-import { 
-  BuildingOfficeIcon, 
-  BoltIcon, 
-  CurrencyDollarIcon,
-  ExclamationTriangleIcon,
-  PlusIcon 
-} from '@heroicons/react/24/outline';
+import { useState } from 'react';
 
-// Mock data - will be replaced with Supabase
-const mockStats = {
-  totalSites: 8,
-  totalMW: 245,
-  totalExitValue: 287500000,
-  avgRiskScore: 2.3,
-};
-
-const mockSites = [
-  { id: '1', name: 'Site Alpha', location: 'Springfield, OH', stage: 3, mw: 50, riskScore: 2, exitValue: 45000000, lastUpdated: '2026-02-15' },
-  { id: '2', name: 'Site Beta', location: 'Toledo, OH', stage: 2, mw: 35, riskScore: 3, exitValue: 32000000, lastUpdated: '2026-02-18' },
-  { id: '3', name: 'Site Gamma', location: 'Columbus, OH', stage: 4, mw: 75, riskScore: 1, exitValue: 68000000, lastUpdated: '2026-02-19' },
-  { id: '4', name: 'Site Delta', location: 'Cincinnati, OH', stage: 1, mw: 40, riskScore: 4, exitValue: 36000000, lastUpdated: '2026-02-20' },
-  { id: '5', name: 'Site Epsilon', location: 'Dayton, OH', stage: 5, mw: 45, riskScore: 2, exitValue: 41000000, lastUpdated: '2026-02-14' },
-];
-
-const stageFunnel = [
-  { stage: 1, name: 'Identification', count: 5 },
-  { stage: 2, name: 'Gas Viability', count: 3 },
-  { stage: 3, name: 'Environmental', count: 2 },
-  { stage: 4, name: 'Permitting', count: 2 },
-  { stage: 5, name: 'Engineering', count: 1 },
-  { stage: 6, name: 'Exit Process', count: 0 },
-  { stage: 7, name: 'Closed', count: 0 },
+// Mock data - will be replaced with real API calls
+const stats = [
+  { label: 'Total Invested', value: '$24.5M', change: '+12.3%', positive: true },
+  { label: 'Active Deals', value: '12', change: '+3', positive: true },
+  { label: 'Avg. IRR', value: '18.7%', change: '+2.1%', positive: true },
+  { label: 'Portfolio Value', value: '$31.2M', change: '+8.4%', positive: true },
 ];
 
 const recentActivity = [
-  { id: '1', site: 'Site Gamma', action: 'Moved to Stage 4', time: '2 hours ago' },
-  { id: '2', site: 'Site Beta', action: 'Gas utility response received', time: '5 hours ago' },
-  { id: '3', site: 'Site Delta', action: 'New site added to pipeline', time: '1 day ago' },
-  { id: '4', site: 'Site Alpha', action: 'Phase I ESA completed', time: '2 days ago' },
+  { id: 1, type: 'investment', title: 'New Investment: Riverside Plaza', amount: '$2.5M', date: '2 hours ago' },
+  { id: 2, type: 'distribution', title: 'Q4 Distribution Received', amount: '$125K', date: '1 day ago' },
+  { id: 3, type: 'update', title: 'Construction Update: Tech Campus', amount: null, date: '2 days ago' },
+  { id: 4, type: 'document', title: 'K-1 Documents Available', amount: null, date: '3 days ago' },
+  { id: 5, type: 'investment', title: 'Capital Call: Marina Heights', amount: '$500K', date: '1 week ago' },
 ];
 
-function formatCurrency(value: number) {
-  if (value >= 1000000000) return `$${(value / 1000000000).toFixed(1)}B`;
-  if (value >= 1000000) return `$${(value / 1000000).toFixed(0)}M`;
-  return `$${value.toLocaleString()}`;
-}
-
-function getRiskColor(score: number) {
-  if (score <= 2) return 'bg-success';
-  if (score <= 3) return 'bg-warning';
-  return 'bg-danger';
-}
-
-function getStageColor(stage: number) {
-  const colors = [
-    'bg-gray-500',
-    'bg-blue-500',
-    'bg-indigo-500',
-    'bg-purple-500',
-    'bg-gold',
-    'bg-gold-light',
-    'bg-success',
-  ];
-  return colors[stage - 1] || 'bg-gray-500';
-}
+const activeSites = [
+  { id: 1, name: 'Riverside Plaza', location: 'Austin, TX', status: 'Construction', progress: 65, invested: '$2.5M' },
+  { id: 2, name: 'Tech Campus North', location: 'Denver, CO', status: 'Development', progress: 30, invested: '$4.2M' },
+  { id: 3, name: 'Marina Heights', location: 'Miami, FL', status: 'Stabilized', progress: 100, invested: '$3.8M' },
+  { id: 4, name: 'Urban Core Apts', location: 'Nashville, TN', status: 'Due Diligence', progress: 15, invested: '$1.5M' },
+];
 
 export default function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-serif text-white">Dashboard</h1>
-          <p className="text-gray-400 mt-1">Pipeline overview and recent activity</p>
-        </div>
-        <Link
-          href="/sites/new"
-          className="flex items-center gap-2 bg-gold text-navy px-4 py-2 rounded-lg font-semibold hover:bg-gold-light transition-colors"
-        >
-          <PlusIcon className="w-5 h-5" />
-          New Site
-        </Link>
+      <div>
+        <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+        <p className="text-zinc-400 mt-1">Welcome back. Here&apos;s your portfolio overview.</p>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-navy-card rounded-lg p-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-navy rounded-lg">
-              <BuildingOfficeIcon className="w-6 h-6 text-gold" />
-            </div>
-            <div>
-              <p className="text-gray-400 text-sm">Active Sites</p>
-              <p className="text-2xl font-bold text-white">{mockStats.totalSites}</p>
-            </div>
+        {stats.map((stat) => (
+          <div key={stat.label} className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+            <p className="text-zinc-400 text-sm font-medium">{stat.label}</p>
+            <p className="text-3xl font-bold text-white mt-2">{stat.value}</p>
+            <p className={`text-sm mt-2 ${stat.positive ? 'text-emerald-400' : 'text-red-400'}`}>
+              {stat.change} from last quarter
+            </p>
           </div>
-        </div>
-
-        <div className="bg-navy-card rounded-lg p-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-navy rounded-lg">
-              <BoltIcon className="w-6 h-6 text-gold" />
-            </div>
-            <div>
-              <p className="text-gray-400 text-sm">Total MW</p>
-              <p className="text-2xl font-bold text-white">{mockStats.totalMW} MW</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-navy-card rounded-lg p-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-navy rounded-lg">
-              <CurrencyDollarIcon className="w-6 h-6 text-gold" />
-            </div>
-            <div>
-              <p className="text-gray-400 text-sm">Est. Exit Value</p>
-              <p className="text-2xl font-bold text-white">{formatCurrency(mockStats.totalExitValue)}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-navy-card rounded-lg p-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-navy rounded-lg">
-              <ExclamationTriangleIcon className="w-6 h-6 text-gold" />
-            </div>
-            <div>
-              <p className="text-gray-400 text-sm">Avg Risk Score</p>
-              <p className="text-2xl font-bold text-white">{mockStats.avgRiskScore.toFixed(1)}</p>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Pipeline Table */}
-        <div className="lg:col-span-2 bg-navy-card rounded-lg overflow-hidden">
-          <div className="p-4 border-b border-navy">
-            <h2 className="text-lg font-semibold text-white">Pipeline</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Active Sites */}
+        <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-white">Active Investments</h2>
+            <a href="/sites" className="text-amber-500 hover:text-amber-400 text-sm font-medium">
+              View all →
+            </a>
           </div>
-          <div className="overflow-x-auto">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Site</th>
-                  <th>Location</th>
-                  <th>Stage</th>
-                  <th>MW</th>
-                  <th>Risk</th>
-                  <th>Exit Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {mockSites.map((site) => (
-                  <tr key={site.id} className="cursor-pointer">
-                    <td>
-                      <Link href={`/sites/${site.id}`} className="text-gold hover:text-gold-light">
-                        {site.name}
-                      </Link>
-                    </td>
-                    <td className="text-gray-300">{site.location}</td>
-                    <td>
-                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getStageColor(site.stage)} text-white`}>
-                        Stage {site.stage}
-                      </span>
-                    </td>
-                    <td className="text-white">{site.mw} MW</td>
-                    <td>
-                      <span className={`inline-block w-3 h-3 rounded-full ${getRiskColor(site.riskScore)}`} />
-                    </td>
-                    <td className="text-white">{formatCurrency(site.exitValue)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="space-y-4">
+            {activeSites.map((site) => (
+              <div key={site.id} className="flex items-center justify-between p-4 bg-zinc-800/50 rounded-lg hover:bg-zinc-800 transition-colors">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3">
+                    <h3 className="font-medium text-white">{site.name}</h3>
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      site.status === 'Stabilized' ? 'bg-emerald-500/20 text-emerald-400' :
+                      site.status === 'Construction' ? 'bg-amber-500/20 text-amber-400' :
+                      site.status === 'Development' ? 'bg-blue-500/20 text-blue-400' :
+                      'bg-zinc-500/20 text-zinc-400'
+                    }`}>
+                      {site.status}
+                    </span>
+                  </div>
+                  <p className="text-zinc-400 text-sm mt-1">{site.location}</p>
+                  {/* Progress bar */}
+                  <div className="mt-3 w-full bg-zinc-700 rounded-full h-2">
+                    <div 
+                      className="bg-amber-500 h-2 rounded-full transition-all duration-500"
+                      style={{ width: `${site.progress}%` }}
+                    />
+                  </div>
+                </div>
+                <div className="text-right ml-4">
+                  <p className="text-white font-semibold">{site.invested}</p>
+                  <p className="text-zinc-400 text-sm">invested</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Right Column */}
-        <div className="space-y-8">
-          {/* Stage Funnel */}
-          <div className="bg-navy-card rounded-lg p-4">
-            <h2 className="text-lg font-semibold text-white mb-4">Stage Funnel</h2>
-            <div className="space-y-3">
-              {stageFunnel.map((stage) => (
-                <div key={stage.stage} className="flex items-center gap-3">
-                  <span className="text-xs text-gray-400 w-24 truncate">{stage.name}</span>
-                  <div className="flex-1 bg-navy rounded-full h-4 overflow-hidden">
-                    <div 
-                      className={`h-full ${getStageColor(stage.stage)}`}
-                      style={{ width: `${Math.max(stage.count * 15, stage.count > 0 ? 10 : 0)}%` }}
-                    />
+        {/* Recent Activity */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+          <h2 className="text-xl font-semibold text-white mb-6">Recent Activity</h2>
+          <div className="space-y-4">
+            {recentActivity.map((activity) => (
+              <div key={activity.id} className="flex items-start gap-3 pb-4 border-b border-zinc-800 last:border-0 last:pb-0">
+                <div className={`w-2 h-2 rounded-full mt-2 ${
+                  activity.type === 'investment' ? 'bg-emerald-400' :
+                  activity.type === 'distribution' ? 'bg-amber-400' :
+                  activity.type === 'update' ? 'bg-blue-400' :
+                  'bg-zinc-400'
+                }`} />
+                <div className="flex-1">
+                  <p className="text-white text-sm font-medium">{activity.title}</p>
+                  <div className="flex items-center justify-between mt-1">
+                    {activity.amount && (
+                      <p className="text-amber-400 text-sm font-semibold">{activity.amount}</p>
+                    )}
+                    <p className="text-zinc-500 text-xs">{activity.date}</p>
                   </div>
-                  <span className="text-white text-sm w-6 text-right">{stage.count}</span>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
+        </div>
+      </div>
 
-          {/* Recent Activity */}
-          <div className="bg-navy-card rounded-lg p-4">
-            <h2 className="text-lg font-semibold text-white mb-4">Recent Activity</h2>
-            <div className="space-y-4">
-              {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-gold rounded-full mt-2" />
-                  <div>
-                    <p className="text-white text-sm">
-                      <span className="text-gold">{activity.site}</span> — {activity.action}
-                    </p>
-                    <p className="text-gray-500 text-xs">{activity.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+      {/* Quick Actions */}
+      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+        <h2 className="text-xl font-semibold text-white mb-4">Quick Actions</h2>
+        <div className="flex flex-wrap gap-4">
+          <button className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-lg transition-colors">
+            View New Opportunities
+          </button>
+          <button className="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-lg transition-colors border border-zinc-700">
+            Download Reports
+          </button>
+          <button className="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-lg transition-colors border border-zinc-700">
+            Schedule Call
+          </button>
+          <button className="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-lg transition-colors border border-zinc-700">
+            Tax Documents
+          </button>
         </div>
       </div>
     </div>
