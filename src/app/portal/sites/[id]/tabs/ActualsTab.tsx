@@ -27,99 +27,43 @@ const defaultValues: Record<string, { estimated: number; actual: number; notes: 
   exit_costs: { estimated: 0, actual: 0, notes: '' },
 };
 
-interface Props {
-  siteId: string;
-}
+interface Props { siteId: string; }
 
 export default function ActualsTab({ siteId }: Props) {
-  const [actuals, setActuals] = useState<Record<string, { estimated: number; actual: number; notes: string; id?: string }>>(
-    Object.fromEntries(costCategories.map(c => [c.key, { ...defaultValues[c.key] }]))
-  );
+  const [actuals, setActuals] = useState<Record<string, { estimated: number; actual: number; notes: string; id?: string }>>(Object.fromEntries(costCategories.map(c => [c.key, { ...defaultValues[c.key] }])));
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
-  // Load actuals from Supabase
   useEffect(() => {
     const loadActuals = async () => {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('site_actuals')
-        .select('*')
-        .eq('site_id', siteId);
-
+      const { data, error } = await supabase.from('site_actuals').select('*').eq('site_id', siteId);
       if (!error && data) {
         const loaded = { ...actuals };
-        data.forEach(row => {
-          if (loaded[row.category]) {
-            loaded[row.category] = {
-              id: row.id,
-              estimated: row.estimated || 0,
-              actual: row.actual || 0,
-              notes: row.notes || '',
-            };
-          }
-        });
+        data.forEach(row => { if (loaded[row.category]) loaded[row.category] = { id: row.id, estimated: row.estimated || 0, actual: row.actual || 0, notes: row.notes || '' }; });
         setActuals(loaded);
       }
       setLoading(false);
     };
-
     loadActuals();
   }, [siteId]);
 
-  // Debounced save function
   const saveActual = useCallback(async (key: string, data: { estimated: number; actual: number; notes: string; id?: string }) => {
     setSaving(key);
-    
     if (data.id) {
-      // Update existing
-      await supabase
-        .from('site_actuals')
-        .update({
-          estimated: data.estimated,
-          actual: data.actual,
-          notes: data.notes,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', data.id);
+      await supabase.from('site_actuals').update({ estimated: data.estimated, actual: data.actual, notes: data.notes, updated_at: new Date().toISOString() }).eq('id', data.id);
     } else {
-      // Insert new
-      const { data: newRow, error } = await supabase
-        .from('site_actuals')
-        .insert({
-          site_id: siteId,
-          category: key,
-          estimated: data.estimated,
-          actual: data.actual,
-          notes: data.notes,
-        })
-        .select()
-        .single();
-
-      if (!error && newRow) {
-        setActuals(prev => ({
-          ...prev,
-          [key]: { ...prev[key], id: newRow.id }
-        }));
-      }
+      const { data: newRow, error } = await supabase.from('site_actuals').insert({ site_id: siteId, category: key, estimated: data.estimated, actual: data.actual, notes: data.notes }).select().single();
+      if (!error && newRow) setActuals(prev => ({ ...prev, [key]: { ...prev[key], id: newRow.id } }));
     }
-    
     setSaving(null);
     setLastSaved(new Date());
   }, [siteId]);
 
   const updateActual = (key: string, field: string, value: number | string) => {
-    const newData = {
-      ...actuals[key],
-      [field]: value
-    };
-    setActuals(prev => ({
-      ...prev,
-      [key]: newData
-    }));
-    
-    // Debounce save
+    const newData = { ...actuals[key], [field]: value };
+    setActuals(prev => ({ ...prev, [key]: newData }));
     const timeout = setTimeout(() => saveActual(key, newData), 500);
     return () => clearTimeout(timeout);
   };
@@ -128,108 +72,65 @@ export default function ActualsTab({ siteId }: Props) {
   const totalActual = Object.values(actuals).reduce((sum, a) => sum + (a.actual || 0), 0);
   const totalVariance = totalActual - totalEstimated;
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-gray-400">Loading budget data...</p>
-      </div>
-    );
-  }
+  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: '#6B7280' }}>Loading budget data...</p></div>;
+
+  const inputStyle = { width: '96px', backgroundColor: '#FFFFFF', border: '1px solid #D1D5DB', borderRadius: '4px', padding: '4px 8px', color: '#111827', textAlign: 'right' as const, fontSize: '14px' };
 
   return (
-    <div className="space-y-6">
-      {/* Auto-save indicator */}
-      {lastSaved && (
-        <div className="text-right text-sm text-gray-400">
-          {saving ? 'Saving...' : `Last saved: ${lastSaved.toLocaleTimeString()}`}
-        </div>
-      )}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      {lastSaved && <div style={{ textAlign: 'right', fontSize: '14px', color: '#6B7280' }}>{saving ? 'Saving...' : `Last saved: ${lastSaved.toLocaleTimeString()}`}</div>}
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-navy-card border border-navy rounded-xl p-6">
-          <p className="text-gray-400 text-sm">Total Estimated</p>
-          <p className="text-2xl font-bold text-white">${(totalEstimated / 1000).toFixed(0)}K</p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+        <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
+          <p style={{ color: '#6B7280', fontSize: '14px' }}>Total Estimated</p>
+          <p style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>${(totalEstimated / 1000).toFixed(0)}K</p>
         </div>
-        <div className="bg-navy-card border border-navy rounded-xl p-6">
-          <p className="text-gray-400 text-sm">Total Actual</p>
-          <p className="text-2xl font-bold text-white">${(totalActual / 1000).toFixed(0)}K</p>
+        <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
+          <p style={{ color: '#6B7280', fontSize: '14px' }}>Total Actual</p>
+          <p style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>${(totalActual / 1000).toFixed(0)}K</p>
         </div>
-        <div className="bg-navy-card border border-navy rounded-xl p-6">
-          <p className="text-gray-400 text-sm">Variance</p>
-          <p className={`text-2xl font-bold ${totalVariance > 0 ? 'text-danger' : 'text-success'}`}>
-            {totalVariance > 0 ? '+' : ''}${(totalVariance / 1000).toFixed(0)}K
-          </p>
+        <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
+          <p style={{ color: '#6B7280', fontSize: '14px' }}>Variance</p>
+          <p style={{ fontSize: '24px', fontWeight: 700, color: totalVariance > 0 ? '#DC2626' : '#16A34A' }}>{totalVariance > 0 ? '+' : ''}${(totalVariance / 1000).toFixed(0)}K</p>
         </div>
       </div>
 
       {/* Cost Table */}
-      <div className="bg-navy-card border border-navy rounded-xl overflow-hidden">
-        <table className="w-full">
+      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', overflow: 'hidden' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
-            <tr className="border-b border-navy bg-navy/50">
-              <th className="px-6 py-4 text-left text-gray-400 font-medium">Category</th>
-              <th className="px-6 py-4 text-right text-gray-400 font-medium">Estimated</th>
-              <th className="px-6 py-4 text-right text-gray-400 font-medium">Actual</th>
-              <th className="px-6 py-4 text-right text-gray-400 font-medium">Variance</th>
-              <th className="px-6 py-4 text-left text-gray-400 font-medium">Notes</th>
+            <tr style={{ borderBottom: '1px solid #E5E7EB', backgroundColor: '#F9FAFB' }}>
+              <th style={{ padding: '16px 24px', textAlign: 'left', color: '#374151', fontWeight: 500 }}>Category</th>
+              <th style={{ padding: '16px 24px', textAlign: 'right', color: '#374151', fontWeight: 500 }}>Estimated</th>
+              <th style={{ padding: '16px 24px', textAlign: 'right', color: '#374151', fontWeight: 500 }}>Actual</th>
+              <th style={{ padding: '16px 24px', textAlign: 'right', color: '#374151', fontWeight: 500 }}>Variance</th>
+              <th style={{ padding: '16px 24px', textAlign: 'left', color: '#374151', fontWeight: 500 }}>Notes</th>
             </tr>
           </thead>
           <tbody>
             {costCategories.map((category) => {
               const variance = (actuals[category.key]?.actual || 0) - (actuals[category.key]?.estimated || 0);
               return (
-                <tr key={category.key} className="border-b border-navy/50">
-                  <td className="px-6 py-4">
-                    <p className="text-white font-medium">{category.name}</p>
-                    <p className="text-gray-400 text-sm">{category.description}</p>
+                <tr key={category.key} style={{ borderBottom: '1px solid #E5E7EB' }}>
+                  <td style={{ padding: '16px 24px' }}>
+                    <p style={{ color: '#111827', fontWeight: 500 }}>{category.name}</p>
+                    <p style={{ color: '#6B7280', fontSize: '14px' }}>{category.description}</p>
                   </td>
-                  <td className="px-6 py-4">
-                    <input
-                      type="number"
-                      min="0"
-                      value={actuals[category.key]?.estimated || 0}
-                      onChange={(e) => updateActual(category.key, 'estimated', Math.max(0, parseInt(e.target.value) || 0))}
-                      className="w-24 bg-navy border border-navy-card rounded px-2 py-1 text-white text-right focus:border-gold outline-none"
-                    />
-                  </td>
-                  <td className="px-6 py-4">
-                    <input
-                      type="number"
-                      min="0"
-                      value={actuals[category.key]?.actual || 0}
-                      onChange={(e) => updateActual(category.key, 'actual', Math.max(0, parseInt(e.target.value) || 0))}
-                      className="w-24 bg-navy border border-navy-card rounded px-2 py-1 text-white text-right focus:border-gold outline-none"
-                    />
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    {(actuals[category.key]?.actual || 0) > 0 && (
-                      <span className={variance > 0 ? 'text-danger' : 'text-success'}>
-                        {variance > 0 ? '+' : ''}${(variance / 1000).toFixed(0)}K
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <input
-                      type="text"
-                      value={actuals[category.key]?.notes || ''}
-                      onChange={(e) => updateActual(category.key, 'notes', e.target.value)}
-                      placeholder="Vendor, invoice..."
-                      className="w-full bg-navy border border-navy-card rounded px-2 py-1 text-white text-sm focus:border-gold outline-none"
-                    />
-                  </td>
+                  <td style={{ padding: '16px 24px' }}><input type="number" min="0" value={actuals[category.key]?.estimated || 0} onChange={(e) => updateActual(category.key, 'estimated', Math.max(0, parseInt(e.target.value) || 0))} style={inputStyle} /></td>
+                  <td style={{ padding: '16px 24px' }}><input type="number" min="0" value={actuals[category.key]?.actual || 0} onChange={(e) => updateActual(category.key, 'actual', Math.max(0, parseInt(e.target.value) || 0))} style={inputStyle} /></td>
+                  <td style={{ padding: '16px 24px', textAlign: 'right' }}>{(actuals[category.key]?.actual || 0) > 0 && <span style={{ color: variance > 0 ? '#DC2626' : '#16A34A' }}>{variance > 0 ? '+' : ''}${(variance / 1000).toFixed(0)}K</span>}</td>
+                  <td style={{ padding: '16px 24px' }}><input type="text" value={actuals[category.key]?.notes || ''} onChange={(e) => updateActual(category.key, 'notes', e.target.value)} placeholder="Vendor, invoice..." style={{ ...inputStyle, width: '100%', textAlign: 'left' as const }} /></td>
                 </tr>
               );
             })}
           </tbody>
           <tfoot>
-            <tr className="bg-navy/30">
-              <td className="px-6 py-4 text-white font-semibold">Total</td>
-              <td className="px-6 py-4 text-white font-semibold text-right">${(totalEstimated / 1000).toFixed(0)}K</td>
-              <td className="px-6 py-4 text-white font-semibold text-right">${(totalActual / 1000).toFixed(0)}K</td>
-              <td className={`px-6 py-4 font-semibold text-right ${totalVariance > 0 ? 'text-danger' : 'text-success'}`}>
-                {totalVariance > 0 ? '+' : ''}${(totalVariance / 1000).toFixed(0)}K
-              </td>
+            <tr style={{ backgroundColor: '#F9FAFB' }}>
+              <td style={{ padding: '16px 24px', color: '#111827', fontWeight: 600 }}>Total</td>
+              <td style={{ padding: '16px 24px', color: '#111827', fontWeight: 600, textAlign: 'right' }}>${(totalEstimated / 1000).toFixed(0)}K</td>
+              <td style={{ padding: '16px 24px', color: '#111827', fontWeight: 600, textAlign: 'right' }}>${(totalActual / 1000).toFixed(0)}K</td>
+              <td style={{ padding: '16px 24px', fontWeight: 600, textAlign: 'right', color: totalVariance > 0 ? '#DC2626' : '#16A34A' }}>{totalVariance > 0 ? '+' : ''}${(totalVariance / 1000).toFixed(0)}K</td>
               <td></td>
             </tr>
           </tfoot>
@@ -237,22 +138,19 @@ export default function ActualsTab({ siteId }: Props) {
       </div>
 
       {/* Budget Burn Chart */}
-      <div className="bg-navy-card border border-navy rounded-xl p-6">
-        <h3 className="text-lg font-serif text-white mb-4">Budget Burn by Category</h3>
-        <div className="space-y-4">
+      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Budget Burn by Category</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {costCategories.filter(c => (actuals[c.key]?.estimated || 0) > 0).map((category) => {
             const pct = actuals[category.key]?.estimated ? (actuals[category.key].actual / actuals[category.key].estimated) * 100 : 0;
             return (
               <div key={category.key}>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-gray-400">{category.name}</span>
-                  <span className={pct > 100 ? 'text-danger' : 'text-white'}>{pct.toFixed(0)}%</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', marginBottom: '4px' }}>
+                  <span style={{ color: '#6B7280' }}>{category.name}</span>
+                  <span style={{ color: pct > 100 ? '#DC2626' : '#111827' }}>{pct.toFixed(0)}%</span>
                 </div>
-                <div className="w-full bg-navy rounded-full h-3">
-                  <div 
-                    className={`h-3 rounded-full ${pct > 100 ? 'bg-danger' : pct > 80 ? 'bg-warning' : 'bg-success'}`}
-                    style={{ width: `${Math.min(pct, 100)}%` }}
-                  />
+                <div style={{ width: '100%', backgroundColor: '#E5E7EB', borderRadius: '9999px', height: '12px' }}>
+                  <div style={{ height: '12px', borderRadius: '9999px', backgroundColor: pct > 100 ? '#DC2626' : pct > 80 ? '#F59E0B' : '#22C55E', width: `${Math.min(pct, 100)}%` }} />
                 </div>
               </div>
             );

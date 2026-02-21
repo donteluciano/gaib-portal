@@ -3,50 +3,24 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 
-interface Activity {
-  id: string;
-  date: string;
-  action: string;
-  notes: string;
-  cost: number;
-  stage: number;
-  created_at?: string;
-}
+interface Activity { id: string; date: string; action: string; notes: string; cost: number; stage: number; created_at?: string; }
 
-const stageNames: Record<number, string> = {
-  1: 'Site Control',
-  2: 'Gas & Power',
-  3: 'Water & Environmental',
-  4: 'Fiber & Access',
-  5: 'Political & Community',
-  6: 'Engineering & Feasibility',
-  7: 'Packaging & Exit',
-};
+const stageNames: Record<number, string> = { 1: 'Site Control', 2: 'Gas & Power', 3: 'Water & Environmental', 4: 'Fiber & Access', 5: 'Political & Community', 6: 'Engineering & Feasibility', 7: 'Packaging & Exit' };
 
-// Relative time helper
 function getRelativeTime(dateString: string): string {
   const date = new Date(dateString);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
-  const diffSecs = Math.floor(diffMs / 1000);
-  const diffMins = Math.floor(diffSecs / 60);
+  const diffMins = Math.floor(diffMs / 60000);
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
-  const diffWeeks = Math.floor(diffDays / 7);
-  const diffMonths = Math.floor(diffDays / 30);
-
-  if (diffSecs < 60) return 'just now';
-  if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+  if (diffMins < 60) return `${diffMins} min ago`;
   if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
   if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-  if (diffWeeks < 4) return `${diffWeeks} week${diffWeeks > 1 ? 's' : ''} ago`;
-  if (diffMonths < 12) return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
   return date.toLocaleDateString();
 }
 
-interface Props {
-  siteId: string;
-}
+interface Props { siteId: string; }
 
 export default function ActivityTab({ siteId }: Props) {
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -59,104 +33,51 @@ export default function ActivityTab({ siteId }: Props) {
   useEffect(() => {
     const loadActivities = async () => {
       setLoading(true);
-      const { data } = await supabase
-        .from('activities')
-        .select('*')
-        .eq('site_id', siteId)
-        .order('date', { ascending: false });
-
-      if (data) {
-        setActivities(data);
-      }
+      const { data } = await supabase.from('activities').select('*').eq('site_id', siteId).order('date', { ascending: false });
+      if (data) setActivities(data);
       setLoading(false);
     };
-
     loadActivities();
   }, [siteId]);
 
   async function addActivity() {
     if (!newActivity.date || !newActivity.action) return;
-    
     setSaving(true);
-    const { data, error } = await supabase
-      .from('activities')
-      .insert({
-        site_id: siteId,
-        date: newActivity.date,
-        action: newActivity.action,
-        notes: newActivity.notes,
-        cost: newActivity.cost,
-        stage: newActivity.stage,
-      })
-      .select()
-      .single();
-
-    if (!error && data) {
-      setActivities([data, ...activities]);
-      setNewActivity({ date: '', action: '', notes: '', cost: 0, stage: 1 });
-      setShowForm(false);
-    }
+    const { data, error } = await supabase.from('activities').insert({ site_id: siteId, date: newActivity.date, action: newActivity.action, notes: newActivity.notes, cost: newActivity.cost, stage: newActivity.stage }).select().single();
+    if (!error && data) { setActivities([data, ...activities]); setNewActivity({ date: '', action: '', notes: '', cost: 0, stage: 1 }); setShowForm(false); }
     setSaving(false);
   }
 
   async function deleteActivity(id: string) {
-    const { error } = await supabase
-      .from('activities')
-      .delete()
-      .eq('id', id);
-
-    if (!error) {
-      setActivities(activities.filter(a => a.id !== id));
-    }
+    const { error } = await supabase.from('activities').delete().eq('id', id);
+    if (!error) setActivities(activities.filter(a => a.id !== id));
     setDeleteConfirm(null);
   }
 
   const totalCosts = activities.reduce((sum, a) => sum + (a.cost || 0), 0);
+  const stageHistory = Array.from(new Map(activities.filter(a => a.stage).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(a => [a.stage, a.date]))).map(([stage, date]) => ({ stage, date }));
 
-  // Get stage history from activities
-  const stageHistory = Array.from(
-    new Map(
-      activities
-        .filter(a => a.stage)
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-        .map(a => [a.stage, a.date])
-    )
-  ).map(([stage, date]) => ({ stage, date }));
+  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: '#6B7280' }}>Loading activities...</p></div>;
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-gray-400">Loading activities...</p>
-      </div>
-    );
-  }
+  const inputStyle = { width: '100%', padding: '8px 12px', backgroundColor: '#FFFFFF', border: '1px solid #D1D5DB', borderRadius: '8px', color: '#111827', fontSize: '14px' };
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Stage Timeline */}
-      <div className="bg-navy-card border border-navy rounded-xl p-6">
-        <h2 className="text-xl font-serif text-white mb-4">Stage Progression</h2>
-        <div className="flex items-center gap-2 flex-wrap">
+      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Stage Progression</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           {[1, 2, 3, 4, 5, 6, 7].map((stage, i) => {
             const stageEntry = stageHistory.find(s => s.stage === stage);
             const isReached = !!stageEntry;
-            
             return (
-              <div key={stage} className="flex items-center">
-                <div className={`flex flex-col items-center ${isReached ? 'text-gold' : 'text-gray-400'}`}>
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-medium ${
-                    isReached ? 'bg-gold text-navy' : 'bg-navy-card border border-navy'
-                  }`}>
-                    {stage}
-                  </div>
-                  <p className="text-xs mt-2 text-center w-20">{stageNames[stage]?.split(' ')[0]}</p>
-                  {stageEntry && (
-                    <p className="text-xs text-gray-400">{stageEntry.date}</p>
-                  )}
+              <div key={stage} style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: isReached ? '#2563EB' : '#9CA3AF' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 500, backgroundColor: isReached ? '#2563EB' : '#F3F4F6', color: isReached ? '#FFFFFF' : '#9CA3AF', border: isReached ? 'none' : '1px solid #E5E7EB' }}>{stage}</div>
+                  <p style={{ fontSize: '12px', marginTop: '8px', textAlign: 'center', width: '80px' }}>{stageNames[stage]?.split(' ')[0]}</p>
+                  {stageEntry && <p style={{ fontSize: '12px', color: '#6B7280' }}>{stageEntry.date}</p>}
                 </div>
-                {i < 6 && (
-                  <div className={`w-8 h-0.5 mx-1 ${isReached ? 'bg-gold' : 'bg-navy-card'}`} />
-                )}
+                {i < 6 && <div style={{ width: '32px', height: '2px', margin: '0 4px', backgroundColor: isReached ? '#2563EB' : '#E5E7EB' }} />}
               </div>
             );
           })}
@@ -164,152 +85,62 @@ export default function ActivityTab({ siteId }: Props) {
       </div>
 
       {/* Activity Log */}
-      <div className="bg-navy-card border border-navy rounded-xl p-6">
-        <div className="flex items-center justify-between mb-6">
+      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
           <div>
-            <h2 className="text-xl font-serif text-white">Activity Log</h2>
-            <p className="text-gray-400 text-sm">{activities.length} entries • ${totalCosts.toLocaleString()} total costs</p>
+            <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', fontFamily: 'Georgia, serif' }}>Activity Log</h2>
+            <p style={{ color: '#6B7280', fontSize: '14px' }}>{activities.length} entries • ${totalCosts.toLocaleString()} total costs</p>
           </div>
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="px-4 py-2 bg-gold hover:bg-gold-dark text-navy font-medium rounded-lg transition-colors"
-          >
-            + Add Entry
-          </button>
+          <button onClick={() => setShowForm(!showForm)} style={{ padding: '10px 16px', backgroundColor: '#2563EB', color: '#FFFFFF', fontWeight: 500, borderRadius: '8px', border: 'none', cursor: 'pointer' }}>+ Add Entry</button>
         </div>
 
-        {/* Add Form */}
         {showForm && (
-          <div className="mb-6 p-4 bg-navy/50 rounded-lg border border-gold/20">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Date *</label>
-                <input
-                  type="date"
-                  value={newActivity.date}
-                  onChange={(e) => setNewActivity({ ...newActivity, date: e.target.value })}
-                  className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm text-gray-400 mb-1">Action *</label>
-                <input
-                  type="text"
-                  value={newActivity.action}
-                  onChange={(e) => setNewActivity({ ...newActivity, action: e.target.value })}
-                  placeholder="What happened?"
-                  className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Cost ($)</label>
-                <input
-                  type="number"
-                  min="0"
-                  value={newActivity.cost || ''}
-                  onChange={(e) => setNewActivity({ ...newActivity, cost: Math.max(0, parseInt(e.target.value) || 0) })}
-                  className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
-                />
-              </div>
+          <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: '#F9FAFB', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '16px' }}>
+              <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '4px' }}>Date *</label><input type="date" value={newActivity.date} onChange={(e) => setNewActivity({ ...newActivity, date: e.target.value })} style={inputStyle} /></div>
+              <div style={{ gridColumn: 'span 2' }}><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '4px' }}>Action *</label><input type="text" value={newActivity.action} onChange={(e) => setNewActivity({ ...newActivity, action: e.target.value })} placeholder="What happened?" style={inputStyle} /></div>
+              <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '4px' }}>Cost ($)</label><input type="number" min="0" value={newActivity.cost || ''} onChange={(e) => setNewActivity({ ...newActivity, cost: Math.max(0, parseInt(e.target.value) || 0) })} style={inputStyle} /></div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Notes</label>
-                <textarea
-                  value={newActivity.notes}
-                  onChange={(e) => setNewActivity({ ...newActivity, notes: e.target.value })}
-                  placeholder="Additional details..."
-                  rows={2}
-                  className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none resize-none"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Stage</label>
-                <select
-                  value={newActivity.stage}
-                  onChange={(e) => setNewActivity({ ...newActivity, stage: parseInt(e.target.value) })}
-                  className="w-full bg-navy border border-navy-card rounded-lg px-3 py-2 text-white focus:border-gold outline-none"
-                >
-                  {Object.entries(stageNames).map(([num, name]) => (
-                    <option key={num} value={num}>Stage {num}: {name}</option>
-                  ))}
-                </select>
-              </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+              <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '4px' }}>Notes</label><textarea value={newActivity.notes} onChange={(e) => setNewActivity({ ...newActivity, notes: e.target.value })} placeholder="Additional details..." rows={2} style={{ ...inputStyle, resize: 'none' }} /></div>
+              <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '4px' }}>Stage</label><select value={newActivity.stage} onChange={(e) => setNewActivity({ ...newActivity, stage: parseInt(e.target.value) })} style={inputStyle}>{Object.entries(stageNames).map(([num, name]) => <option key={num} value={num}>Stage {num}: {name}</option>)}</select></div>
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={addActivity}
-                disabled={saving || !newActivity.date || !newActivity.action}
-                className="px-4 py-2 bg-gold hover:bg-gold-dark text-navy font-medium rounded-lg disabled:opacity-50"
-              >
-                {saving ? 'Adding...' : 'Add Entry'}
-              </button>
-              <button
-                onClick={() => setShowForm(false)}
-                className="px-4 py-2 bg-navy hover:bg-navy-card text-white rounded-lg"
-              >
-                Cancel
-              </button>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button onClick={addActivity} disabled={saving || !newActivity.date || !newActivity.action} style={{ padding: '10px 16px', backgroundColor: '#2563EB', color: '#FFFFFF', fontWeight: 500, borderRadius: '8px', border: 'none', cursor: 'pointer', opacity: saving || !newActivity.date || !newActivity.action ? 0.5 : 1 }}>{saving ? 'Adding...' : 'Add Entry'}</button>
+              <button onClick={() => setShowForm(false)} style={{ padding: '10px 16px', backgroundColor: '#F3F4F6', color: '#374151', borderRadius: '8px', border: '1px solid #D1D5DB', cursor: 'pointer' }}>Cancel</button>
             </div>
           </div>
         )}
 
-        {/* Activity List */}
         {activities.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-4xl mb-4">📋</div>
-            <p className="text-white font-medium mb-2">No activities yet</p>
-            <p className="text-gray-400 text-sm">Start logging key events and milestones for this site.</p>
+          <div style={{ textAlign: 'center', padding: '48px' }}>
+            <div style={{ fontSize: '32px', marginBottom: '16px' }}>📋</div>
+            <p style={{ color: '#111827', fontWeight: 500, marginBottom: '8px' }}>No activities yet</p>
+            <p style={{ color: '#6B7280', fontSize: '14px' }}>Start logging key events and milestones for this site.</p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {activities.map((activity) => (
-              <div key={activity.id} className="flex items-start gap-4 p-4 bg-navy/30 rounded-lg group relative">
-                <div className="w-24 flex-shrink-0">
-                  <p className="text-gray-400 text-sm">{activity.date}</p>
-                  {activity.created_at && (
-                    <p className="text-gray-500 text-xs">{getRelativeTime(activity.created_at)}</p>
-                  )}
+              <div key={activity.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', padding: '16px', backgroundColor: '#F9FAFB', borderRadius: '8px', position: 'relative' }}>
+                <div style={{ width: '96px', flexShrink: 0 }}>
+                  <p style={{ color: '#6B7280', fontSize: '14px' }}>{activity.date}</p>
+                  {activity.created_at && <p style={{ color: '#9CA3AF', fontSize: '12px' }}>{getRelativeTime(activity.created_at)}</p>}
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <p className="text-white font-medium">{activity.action}</p>
-                    {activity.stage && (
-                      <span className="text-xs px-2 py-0.5 bg-navy-card rounded text-gray-400">
-                        Stage {activity.stage}
-                      </span>
-                    )}
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <p style={{ color: '#111827', fontWeight: 500 }}>{activity.action}</p>
+                    {activity.stage && <span style={{ fontSize: '12px', padding: '2px 8px', backgroundColor: '#E5E7EB', borderRadius: '4px', color: '#6B7280' }}>Stage {activity.stage}</span>}
                   </div>
-                  {activity.notes && <p className="text-gray-400 text-sm mt-1">{activity.notes}</p>}
+                  {activity.notes && <p style={{ color: '#6B7280', fontSize: '14px', marginTop: '4px' }}>{activity.notes}</p>}
                 </div>
-                {activity.cost > 0 && (
-                  <div className="text-gold font-medium">${activity.cost.toLocaleString()}</div>
-                )}
-                
-                {/* Delete button with confirmation */}
+                {activity.cost > 0 && <div style={{ color: '#2563EB', fontWeight: 500 }}>${activity.cost.toLocaleString()}</div>}
                 {deleteConfirm === activity.id ? (
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => deleteActivity(activity.id)}
-                      className="text-red-400 text-sm font-medium hover:text-red-300"
-                    >
-                      Confirm
-                    </button>
-                    <button
-                      onClick={() => setDeleteConfirm(null)}
-                      className="text-gray-400 text-sm hover:text-white"
-                    >
-                      Cancel
-                    </button>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <button onClick={() => deleteActivity(activity.id)} style={{ color: '#DC2626', fontSize: '14px', fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer' }}>Confirm</button>
+                    <button onClick={() => setDeleteConfirm(null)} style={{ color: '#6B7280', fontSize: '14px', background: 'none', border: 'none', cursor: 'pointer' }}>Cancel</button>
                   </div>
                 ) : (
-                  <button
-                    onClick={() => setDeleteConfirm(activity.id)}
-                    className="text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
-                    title="Delete"
-                  >
-                    ✕
-                  </button>
+                  <button onClick={() => setDeleteConfirm(activity.id)} style={{ color: '#9CA3AF', background: 'none', border: 'none', cursor: 'pointer' }} title="Delete">✕</button>
                 )}
               </div>
             ))}
