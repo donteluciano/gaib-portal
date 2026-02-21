@@ -293,23 +293,23 @@ export default function LeadsPage() {
   const inputStyle: React.CSSProperties = {
     width: '100%',
     padding: '10px 12px',
-    border: '1px solid #d1d5db',
+    border: '1px solid #1A3050',
     borderRadius: '6px',
     fontSize: '14px',
-    color: '#111827',
-    backgroundColor: 'white',
+    color: '#FFFFFF',
+    backgroundColor: '#0A1628',
   };
 
   const labelStyle: React.CSSProperties = {
     display: 'block',
     fontSize: '14px',
     fontWeight: 500,
-    color: '#374151',
+    color: '#9CA3AF',
     marginBottom: '6px',
   };
 
   if (loading) {
-    return <div style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>Loading leads...</div>;
+    return <div style={{ padding: '40px', textAlign: 'center', color: '#9CA3AF' }}>Loading leads...</div>;
   }
 
   return (
@@ -317,15 +317,15 @@ export default function LeadsPage() {
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#111827' }}>Leads</h1>
-          <p style={{ color: '#6b7280', fontSize: '14px' }}>Incoming site opportunities and listings.</p>
+          <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#FFFFFF' }}>Leads</h1>
+          <p style={{ color: '#9CA3AF', fontSize: '14px' }}>Incoming site opportunities and listings.</p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
           style={{
             padding: '10px 20px',
-            backgroundColor: '#2563eb',
-            color: 'white',
+            backgroundColor: '#B8965A',
+            color: '#0A1628',
             fontWeight: 500,
             fontSize: '14px',
             border: 'none',
@@ -339,35 +339,35 @@ export default function LeadsPage() {
 
       {/* Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '12px', marginBottom: '24px' }}>
-        <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
-          <p style={{ fontSize: '13px', color: '#6b7280' }}>New</p>
-          <p style={{ fontSize: '24px', fontWeight: 600, color: '#2563eb' }}>{stats.new}</p>
+        <div style={{ backgroundColor: '#1A3050', padding: '16px', borderRadius: '8px', border: '1px solid #2A4060' }}>
+          <p style={{ fontSize: '13px', color: '#9CA3AF' }}>New</p>
+          <p style={{ fontSize: '24px', fontWeight: 600, color: '#B8965A' }}>{stats.new}</p>
         </div>
-        <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
-          <p style={{ fontSize: '13px', color: '#6b7280' }}>Reviewing</p>
+        <div style={{ backgroundColor: '#1A3050', padding: '16px', borderRadius: '8px', border: '1px solid #2A4060' }}>
+          <p style={{ fontSize: '13px', color: '#9CA3AF' }}>Reviewing</p>
           <p style={{ fontSize: '24px', fontWeight: 600, color: '#b45309' }}>{stats.reviewing}</p>
         </div>
-        <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
-          <p style={{ fontSize: '13px', color: '#6b7280' }}>Qualified</p>
+        <div style={{ backgroundColor: '#1A3050', padding: '16px', borderRadius: '8px', border: '1px solid #2A4060' }}>
+          <p style={{ fontSize: '13px', color: '#9CA3AF' }}>Qualified</p>
           <p style={{ fontSize: '24px', fontWeight: 600, color: '#059669' }}>{stats.qualified}</p>
         </div>
-        <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
-          <p style={{ fontSize: '13px', color: '#6b7280' }}>Converted</p>
+        <div style={{ backgroundColor: '#1A3050', padding: '16px', borderRadius: '8px', border: '1px solid #2A4060' }}>
+          <p style={{ fontSize: '13px', color: '#9CA3AF' }}>Converted</p>
           <p style={{ fontSize: '24px', fontWeight: 600, color: '#16a34a' }}>{stats.converted}</p>
         </div>
-        <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
-          <p style={{ fontSize: '13px', color: '#6b7280' }}>Passed</p>
-          <p style={{ fontSize: '24px', fontWeight: 600, color: '#6b7280' }}>{stats.passed}</p>
+        <div style={{ backgroundColor: '#1A3050', padding: '16px', borderRadius: '8px', border: '1px solid #2A4060' }}>
+          <p style={{ fontSize: '13px', color: '#9CA3AF' }}>Passed</p>
+          <p style={{ fontSize: '24px', fontWeight: 600, color: '#9CA3AF' }}>{stats.passed}</p>
         </div>
       </div>
 
       {/* Add Form */}
       {showForm && (
-        <div style={{ backgroundColor: 'white', padding: '24px', borderRadius: '8px', border: '1px solid #e5e7eb', marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '16px' }}>Add New Lead</h2>
+        <div style={{ backgroundColor: '#1A3050', padding: '24px', borderRadius: '8px', border: '1px solid #2A4060', marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#FFFFFF', marginBottom: '16px' }}>Add New Lead</h2>
           
           {error && (
-            <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '6px', color: '#dc2626', fontSize: '14px' }}>
+            <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: '#7f1d1d', border: '1px solid #dc2626', borderRadius: '6px', color: '#fecaca', fontSize: '14px' }}>
               {error}
             </div>
           )}
@@ -407,7 +407,7 @@ export default function LeadsPage() {
             </div>
           </div>
 
-          <p style={{ fontSize: '14px', fontWeight: 500, color: '#374151', marginBottom: '12px' }}>Contact Information (Optional)</p>
+          <p style={{ fontSize: '14px', fontWeight: 500, color: '#FFFFFF', marginBottom: '12px' }}>Contact Information (Optional)</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '16px' }}>
             <div>
               <label style={labelStyle}>First Name</label>
@@ -444,8 +444,8 @@ export default function LeadsPage() {
 
           {/* Preview Score */}
           {(newLead.address || newLead.acreage) && (
-            <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '6px' }}>
-              <span style={{ fontSize: '14px', color: '#166534' }}>
+            <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: '#0A1628', border: '1px solid #16a34a', borderRadius: '6px' }}>
+              <span style={{ fontSize: '14px', color: '#22c55e' }}>
                 Estimated Lead Score: <strong style={{ color: getScoreColor(calculateLeadScore(newLead)) }}>{calculateLeadScore(newLead)}</strong>/100
               </span>
             </div>
@@ -457,8 +457,8 @@ export default function LeadsPage() {
               disabled={saving}
               style={{
                 padding: '10px 24px',
-                backgroundColor: '#2563eb',
-                color: 'white',
+                backgroundColor: '#B8965A',
+                color: '#0A1628',
                 fontWeight: 500,
                 fontSize: '14px',
                 border: 'none',
@@ -473,11 +473,11 @@ export default function LeadsPage() {
               onClick={() => setShowForm(false)}
               style={{
                 padding: '10px 24px',
-                backgroundColor: 'white',
-                color: '#374151',
+                backgroundColor: '#1A3050',
+                color: '#FFFFFF',
                 fontWeight: 500,
                 fontSize: '14px',
-                border: '1px solid #d1d5db',
+                border: '1px solid #2A4060',
                 borderRadius: '6px',
                 cursor: 'pointer',
               }}
@@ -497,10 +497,12 @@ export default function LeadsPage() {
           placeholder="Search by address, city, state..."
           style={{
             padding: '8px 12px',
-            border: '1px solid #d1d5db',
+            border: '1px solid #1A3050',
             borderRadius: '6px',
             fontSize: '14px',
             width: '250px',
+            backgroundColor: '#0A1628',
+            color: '#FFFFFF',
           }}
         />
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -512,9 +514,9 @@ export default function LeadsPage() {
               fontWeight: 500,
               borderRadius: '6px',
               border: '1px solid',
-              borderColor: filter === 'all' ? '#2563eb' : '#d1d5db',
-              backgroundColor: filter === 'all' ? '#dbeafe' : 'white',
-              color: filter === 'all' ? '#2563eb' : '#374151',
+              borderColor: filter === 'all' ? '#B8965A' : '#2A4060',
+              backgroundColor: filter === 'all' ? '#B8965A' : '#1A3050',
+              color: filter === 'all' ? '#0A1628' : '#FFFFFF',
               cursor: 'pointer',
             }}
           >
@@ -530,9 +532,9 @@ export default function LeadsPage() {
                 fontWeight: 500,
                 borderRadius: '6px',
                 border: '1px solid',
-                borderColor: filter === opt.value ? getStatusStyle(opt.value).border : '#d1d5db',
-                backgroundColor: filter === opt.value ? getStatusStyle(opt.value).bg : 'white',
-                color: filter === opt.value ? getStatusStyle(opt.value).text : '#374151',
+                borderColor: filter === opt.value ? getStatusStyle(opt.value).border : '#2A4060',
+                backgroundColor: filter === opt.value ? getStatusStyle(opt.value).bg : '#1A3050',
+                color: filter === opt.value ? getStatusStyle(opt.value).text : '#FFFFFF',
                 cursor: 'pointer',
               }}
             >
@@ -544,8 +546,8 @@ export default function LeadsPage() {
 
       {/* Leads Table */}
       {filteredLeads.length === 0 ? (
-        <div style={{ backgroundColor: 'white', padding: '40px', borderRadius: '8px', border: '1px solid #e5e7eb', textAlign: 'center' }}>
-          <p style={{ color: '#6b7280', marginBottom: '16px' }}>
+        <div style={{ backgroundColor: '#1A3050', padding: '40px', borderRadius: '8px', border: '1px solid #2A4060', textAlign: 'center' }}>
+          <p style={{ color: '#9CA3AF', marginBottom: '16px' }}>
             {leads.length === 0 ? 'No leads yet. Add your first lead to get started.' : 'No leads match the current filter.'}
           </p>
           {leads.length === 0 && (
@@ -553,8 +555,8 @@ export default function LeadsPage() {
               onClick={() => setShowForm(true)}
               style={{
                 padding: '10px 20px',
-                backgroundColor: '#2563eb',
-                color: 'white',
+                backgroundColor: '#B8965A',
+                color: '#0A1628',
                 fontWeight: 500,
                 fontSize: '14px',
                 border: 'none',
@@ -567,17 +569,17 @@ export default function LeadsPage() {
           )}
         </div>
       ) : (
-        <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e5e7eb', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: '#1A3050', borderRadius: '8px', border: '1px solid #2A4060', overflow: 'hidden' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead style={{ backgroundColor: '#f9fafb' }}>
+            <thead style={{ backgroundColor: '#0A1628' }}>
               <tr>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Property</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Source</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Acreage</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Asking</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Score</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Status</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Actions</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#9CA3AF', textTransform: 'uppercase' }}>Property</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#9CA3AF', textTransform: 'uppercase' }}>Source</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#9CA3AF', textTransform: 'uppercase' }}>Acreage</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#9CA3AF', textTransform: 'uppercase' }}>Asking</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '12px', fontWeight: 500, color: '#9CA3AF', textTransform: 'uppercase' }}>Score</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#9CA3AF', textTransform: 'uppercase' }}>Status</th>
+                <th style={{ padding: '12px 16px', textAlign: 'right', fontSize: '12px', fontWeight: 500, color: '#9CA3AF', textTransform: 'uppercase' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -585,14 +587,14 @@ export default function LeadsPage() {
                 const statusStyle = getStatusStyle(lead.lead_status);
                 const score = lead.lead_score || 0;
                 return (
-                  <tr key={lead.id} style={{ borderTop: i > 0 ? '1px solid #f3f4f6' : 'none' }}>
+                  <tr key={lead.id} style={{ borderTop: i > 0 ? '1px solid #2A4060' : 'none' }}>
                     <td style={{ padding: '12px 16px' }}>
-                      <p style={{ fontWeight: 500, color: '#111827' }}>{lead.address || 'Unknown Address'}</p>
-                      <p style={{ fontSize: '14px', color: '#6b7280' }}>{lead.city}, {lead.state}{lead.county ? ` (${lead.county})` : ''}</p>
+                      <p style={{ fontWeight: 500, color: '#FFFFFF' }}>{lead.address || 'Unknown Address'}</p>
+                      <p style={{ fontSize: '14px', color: '#9CA3AF' }}>{lead.city}, {lead.state}{lead.county ? ` (${lead.county})` : ''}</p>
                     </td>
-                    <td style={{ padding: '12px 16px', color: '#6b7280' }}>{lead.relationship || '—'}</td>
-                    <td style={{ padding: '12px 16px', color: '#111827' }}>{lead.acreage ? `${lead.acreage} acres` : '—'}</td>
-                    <td style={{ padding: '12px 16px', color: '#111827' }}>{lead.asking_price || '—'}</td>
+                    <td style={{ padding: '12px 16px', color: '#9CA3AF' }}>{lead.relationship || '—'}</td>
+                    <td style={{ padding: '12px 16px', color: '#FFFFFF' }}>{lead.acreage ? `${lead.acreage} acres` : '—'}</td>
+                    <td style={{ padding: '12px 16px', color: '#FFFFFF' }}>{lead.asking_price || '—'}</td>
                     <td style={{ padding: '12px 16px', textAlign: 'center' }}>
                       <span style={{ 
                         display: 'inline-flex',
@@ -671,7 +673,7 @@ export default function LeadsPage() {
                         <button
                           onClick={() => deleteLead(lead.id)}
                           style={{
-                            color: '#6b7280',
+                            color: '#9CA3AF',
                             fontSize: '13px',
                             background: 'none',
                             border: 'none',
@@ -679,7 +681,7 @@ export default function LeadsPage() {
                             padding: '4px',
                           }}
                           onMouseOver={(e) => (e.currentTarget.style.color = '#dc2626')}
-                          onMouseOut={(e) => (e.currentTarget.style.color = '#6b7280')}
+                          onMouseOut={(e) => (e.currentTarget.style.color = '#9CA3AF')}
                         >
                           ✕
                         </button>
@@ -695,14 +697,14 @@ export default function LeadsPage() {
 
       {/* Integration Note */}
       <div style={{ 
-        backgroundColor: '#fffbeb', 
-        border: '1px solid #fcd34d', 
+        backgroundColor: '#1A3050', 
+        border: '1px solid #B8965A', 
         borderRadius: '8px', 
         padding: '16px', 
         marginTop: '24px',
         textAlign: 'center' 
       }}>
-        <p style={{ color: '#92400e', fontSize: '14px' }}>
+        <p style={{ color: '#B8965A', fontSize: '14px' }}>
           💡 PowerSite Acquisitions integration coming soon — leads will flow in automatically.
         </p>
       </div>

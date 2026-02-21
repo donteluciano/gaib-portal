@@ -93,7 +93,7 @@ function CollapsibleSection({ title, defaultOpen = false, children }: Collapsibl
   const [isOpen, setIsOpen] = useState(defaultOpen);
   
   return (
-    <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e5e7eb', marginBottom: '16px', overflow: 'hidden' }}>
+    <div style={{ backgroundColor: '#1A3050', borderRadius: '8px', border: '1px solid #2A4060', marginBottom: '16px', overflow: 'hidden' }}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -103,14 +103,14 @@ function CollapsibleSection({ title, defaultOpen = false, children }: Collapsibl
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center',
-          backgroundColor: isOpen ? '#f9fafb' : 'white',
+          backgroundColor: isOpen ? '#0A1628' : '#1A3050',
           border: 'none',
           cursor: 'pointer',
-          borderBottom: isOpen ? '1px solid #e5e7eb' : 'none'
+          borderBottom: isOpen ? '1px solid #2A4060' : 'none'
         }}
       >
-        <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#111827', margin: 0 }}>{title}</h2>
-        <span style={{ fontSize: '20px', color: '#6b7280' }}>{isOpen ? '−' : '+'}</span>
+        <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#FFFFFF', margin: 0 }}>{title}</h2>
+        <span style={{ fontSize: '20px', color: '#9CA3AF' }}>{isOpen ? '−' : '+'}</span>
       </button>
       {isOpen && (
         <div style={{ padding: '24px' }}>
@@ -379,11 +379,11 @@ export default function NewSitePage() {
   const inputStyle = {
     width: '100%',
     padding: '10px 12px',
-    border: '1px solid #d1d5db',
+    border: '1px solid #1A3050',
     borderRadius: '6px',
     fontSize: '14px',
-    color: '#111827',
-    backgroundColor: 'white',
+    color: '#FFFFFF',
+    backgroundColor: '#0A1628',
     boxSizing: 'border-box' as const,
   };
 
@@ -399,7 +399,7 @@ export default function NewSitePage() {
     alignItems: 'center',
     fontSize: '14px',
     fontWeight: 500,
-    color: '#374151',
+    color: '#9CA3AF',
     marginBottom: '6px',
   };
 
@@ -412,10 +412,10 @@ export default function NewSitePage() {
   return (
     <div style={{ maxWidth: '900px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#111827' }}>New Site</h1>
+        <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#FFFFFF' }}>New Site</h1>
         {hasDraft && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: '12px', color: '#6b7280' }}>
+            <span style={{ fontSize: '12px', color: '#9CA3AF' }}>
               Draft saved {lastSaved ? lastSaved.toLocaleTimeString() : ''}
             </span>
             <button
@@ -436,12 +436,12 @@ export default function NewSitePage() {
           </div>
         )}
       </div>
-      <p style={{ color: '#6b7280', fontSize: '14px', marginBottom: '24px' }}>
+      <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '24px' }}>
         Enter all available information. Form auto-saves as you type.
       </p>
 
       {error && (
-        <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '6px', color: '#dc2626', fontSize: '14px' }}>
+        <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: '#7f1d1d', border: '1px solid #dc2626', borderRadius: '6px', color: '#fecaca', fontSize: '14px' }}>
           {error}
         </div>
       )}
@@ -747,8 +747,8 @@ export default function NewSitePage() {
             disabled={saving || Object.keys(validationErrors).length > 0}
             style={{
               padding: '10px 24px',
-              backgroundColor: Object.keys(validationErrors).length > 0 ? '#9ca3af' : '#2563eb',
-              color: 'white',
+              backgroundColor: Object.keys(validationErrors).length > 0 ? '#9ca3af' : '#B8965A',
+              color: '#0A1628',
               fontWeight: 500,
               fontSize: '14px',
               border: 'none',
@@ -764,11 +764,11 @@ export default function NewSitePage() {
             onClick={() => router.push('/portal/dashboard')}
             style={{
               padding: '10px 24px',
-              backgroundColor: 'white',
-              color: '#374151',
+              backgroundColor: '#1A3050',
+              color: '#FFFFFF',
               fontWeight: 500,
               fontSize: '14px',
-              border: '1px solid #d1d5db',
+              border: '1px solid #2A4060',
               borderRadius: '6px',
               cursor: 'pointer',
             }}
