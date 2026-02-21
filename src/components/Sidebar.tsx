@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 const navigation = [
   { name: 'Dashboard', href: '/portal/dashboard', icon: DashboardIcon },
@@ -69,17 +70,50 @@ function LogoutIcon({ className }: { className?: string }) {
   );
 }
 
+function SunIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+    </svg>
+  );
+}
+
+function MoonIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+    </svg>
+  );
+}
+
 export default function Sidebar() {
   const pathname = usePathname();
+  const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const stored = localStorage.getItem('gaib-theme');
+    const prefersDark = stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    setIsDark(prefersDark);
+    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    localStorage.setItem('gaib-theme', newTheme ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', newTheme ? 'dark' : 'light');
+  };
 
   return (
-    <aside className="w-64 flex flex-col h-screen fixed left-0 top-0 bg-white border-r border-gray-200">
+    <aside className="w-64 flex flex-col h-screen fixed left-0 top-0 bg-white border-r border-gray-200 dark:bg-gray-900 dark:border-gray-700">
       {/* Logo */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
         <Link href="/portal/dashboard" className="block">
           <div className="flex items-center gap-3">
             <img src="/logo.svg" alt="GAIB" width={24} height={24} />
-            <h1 className="font-serif text-lg tracking-[4px] leading-tight text-gray-900">
+            <h1 className="font-serif text-lg tracking-[4px] leading-tight text-gray-900 dark:text-white">
               GAIB CAPITAL<br />PARTNERS
             </h1>
           </div>
@@ -98,8 +132,8 @@ export default function Sidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 isActive
-                  ? 'bg-blue-50 text-blue-600 border border-blue-200'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  ? 'bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-900/30 dark:border-blue-800'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800'
               }`}
             >
               <item.icon className="w-5 h-5" />
@@ -109,12 +143,21 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Logout */}
-      <div className="p-4 border-t border-gray-200">
+      {/* Theme Toggle & Logout */}
+      <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
+        {mounted && (
+          <button
+            onClick={toggleTheme}
+            className="flex items-center gap-3 px-4 py-3 w-full rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800"
+          >
+            {isDark ? <SunIcon className="w-5 h-5" /> : <MoonIcon className="w-5 h-5" />}
+            <span className="font-medium">{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+          </button>
+        )}
         <form action="/api/logout" method="POST">
           <button
             type="submit"
-            className="flex items-center gap-3 px-4 py-3 w-full rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+            className="flex items-center gap-3 px-4 py-3 w-full rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800"
           >
             <LogoutIcon className="w-5 h-5" />
             <span className="font-medium">Logout</span>
