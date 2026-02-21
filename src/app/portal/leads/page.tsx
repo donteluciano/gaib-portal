@@ -106,10 +106,19 @@ export default function LeadsPage() {
 
   const loadLeads = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
-    if (!error && data) {
-      const leadsWithScores = data.map(lead => ({ ...lead, lead_score: lead.lead_score || calculateLeadScore(lead) }));
-      setLeads(leadsWithScores);
+    setError(null);
+    try {
+      const { data, error: dbError } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
+      if (dbError) {
+        console.error('Leads error:', dbError);
+        setError(`Failed to load leads: ${dbError.message}`);
+      } else if (data) {
+        const leadsWithScores = data.map(lead => ({ ...lead, lead_score: lead.lead_score || calculateLeadScore(lead) }));
+        setLeads(leadsWithScores);
+      }
+    } catch (err) {
+      console.error('Leads exception:', err);
+      setError('Failed to load leads. Check console for details.');
     }
     setLoading(false);
   };
@@ -188,6 +197,15 @@ export default function LeadsPage() {
   const labelStyle: React.CSSProperties = { display: 'block', fontSize: '14px', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '6px' };
 
   if (loading) return <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Loading leads...</div>;
+  
+  if (error && leads.length === 0) return (
+    <div style={{ padding: '40px', textAlign: 'center' }}>
+      <p style={{ color: 'var(--danger)', marginBottom: '16px' }}>{error}</p>
+      <button onClick={loadLeads} style={{ padding: '10px 20px', backgroundColor: 'var(--accent)', color: '#FFFFFF', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
+        Retry
+      </button>
+    </div>
+  );
 
   return (
     <div>
