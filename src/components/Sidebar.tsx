@@ -86,9 +86,26 @@ function MoonIcon({ className }: { className?: string }) {
   );
 }
 
+function ChevronLeftIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+    </svg>
+  );
+}
+
+function ChevronRightIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+    </svg>
+  );
+}
+
 export default function Sidebar() {
   const pathname = usePathname();
   const [isDark, setIsDark] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -97,6 +114,13 @@ export default function Sidebar() {
     const prefersDark = stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
     setIsDark(prefersDark);
     document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+    
+    // Load collapsed state
+    const collapsedState = localStorage.getItem('gaib-sidebar-collapsed');
+    if (collapsedState === 'true') {
+      setIsCollapsed(true);
+      document.documentElement.setAttribute('data-sidebar', 'collapsed');
+    }
   }, []);
 
   const toggleTheme = () => {
@@ -106,61 +130,87 @@ export default function Sidebar() {
     document.documentElement.setAttribute('data-theme', newTheme ? 'dark' : 'light');
   };
 
+  const toggleCollapse = () => {
+    const newState = !isCollapsed;
+    setIsCollapsed(newState);
+    localStorage.setItem('gaib-sidebar-collapsed', String(newState));
+    document.documentElement.setAttribute('data-sidebar', newState ? 'collapsed' : 'expanded');
+  };
+
   return (
-    <aside className="w-64 flex flex-col h-screen fixed left-0 top-0 bg-white border-r border-gray-200 dark:bg-gray-900 dark:border-gray-700">
+    <aside className={`${isCollapsed ? 'w-20' : 'w-64'} flex flex-col h-screen fixed left-0 top-0 bg-white border-r border-gray-200 dark:bg-gray-900 dark:border-gray-700 transition-all duration-300`}>
       {/* Logo */}
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
         <Link href="/portal/dashboard" className="block">
-          <div className="flex items-center gap-3">
-            <img src="/logo.svg" alt="GAIB" width={24} height={24} />
-            <h1 className="font-serif text-lg tracking-[4px] leading-tight text-gray-900 dark:text-white">
-              GAIB CAPITAL<br />PARTNERS
-            </h1>
+          <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'}`}>
+            <img src="/logo.svg" alt="GAIB" width={28} height={28} />
+            {!isCollapsed && (
+              <h1 className="font-serif text-sm tracking-[3px] leading-tight text-gray-900 dark:text-white">
+                GAIB CAPITAL<br />PARTNERS
+              </h1>
+            )}
           </div>
-          <div className="h-0.5 bg-blue-600 mt-3 w-16" />
-          <p className="text-xs mt-2 tracking-wider text-blue-600 font-medium">PORTAL</p>
+          {!isCollapsed && (
+            <>
+              <div className="h-0.5 bg-blue-600 mt-3 w-12" />
+              <p className="text-xs mt-2 tracking-wider text-blue-600 font-medium">PORTAL</p>
+            </>
+          )}
         </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-1">
+      <nav className="flex-1 p-2 space-y-1">
         {navigation.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
             <Link
               key={item.name}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+              title={isCollapsed ? item.name : undefined}
+              className={`flex items-center ${isCollapsed ? 'justify-center px-2' : 'gap-3 px-4'} py-3 rounded-lg transition-colors ${
                 isActive
                   ? 'bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-900/30 dark:border-blue-800'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800'
               }`}
             >
-              <item.icon className="w-5 h-5" />
-              <span className="font-medium">{item.name}</span>
+              <item.icon className="w-5 h-5 flex-shrink-0" />
+              {!isCollapsed && <span className="font-medium">{item.name}</span>}
             </Link>
           );
         })}
       </nav>
 
-      {/* Theme Toggle & Logout */}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
+      {/* Theme Toggle, Collapse Toggle & Logout */}
+      <div className="p-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
         {mounted && (
           <button
             onClick={toggleTheme}
-            className="flex items-center gap-3 px-4 py-3 w-full rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800"
+            title={isCollapsed ? (isDark ? 'Light Mode' : 'Dark Mode') : undefined}
+            className={`flex items-center ${isCollapsed ? 'justify-center px-2' : 'gap-3 px-4'} py-3 w-full rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800`}
           >
-            {isDark ? <SunIcon className="w-5 h-5" /> : <MoonIcon className="w-5 h-5" />}
-            <span className="font-medium">{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+            {isDark ? <SunIcon className="w-5 h-5 flex-shrink-0" /> : <MoonIcon className="w-5 h-5 flex-shrink-0" />}
+            {!isCollapsed && <span className="font-medium">{isDark ? 'Light Mode' : 'Dark Mode'}</span>}
           </button>
         )}
+        
+        <button
+          onClick={toggleCollapse}
+          title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+          className={`flex items-center ${isCollapsed ? 'justify-center px-2' : 'gap-3 px-4'} py-3 w-full rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800`}
+        >
+          {isCollapsed ? <ChevronRightIcon className="w-5 h-5 flex-shrink-0" /> : <ChevronLeftIcon className="w-5 h-5 flex-shrink-0" />}
+          {!isCollapsed && <span className="font-medium">Collapse</span>}
+        </button>
+        
         <form action="/api/logout" method="POST">
           <button
             type="submit"
-            className="flex items-center gap-3 px-4 py-3 w-full rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800"
+            title={isCollapsed ? 'Logout' : undefined}
+            className={`flex items-center ${isCollapsed ? 'justify-center px-2' : 'gap-3 px-4'} py-3 w-full rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800`}
           >
-            <LogoutIcon className="w-5 h-5" />
-            <span className="font-medium">Logout</span>
+            <LogoutIcon className="w-5 h-5 flex-shrink-0" />
+            {!isCollapsed && <span className="font-medium">Logout</span>}
           </button>
         </form>
       </div>
