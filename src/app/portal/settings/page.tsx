@@ -133,21 +133,21 @@ export default function SettingsPage() {
     if (fileInputRef.current) fileInputRef.current.value = '';
   }
 
-  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: '#6B7280' }}>Loading settings...</p></div>;
+  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: 'var(--text-muted)' }}>Loading settings...</p></div>;
 
-  const inputStyle = { width: '100%', padding: '12px 16px', backgroundColor: '#FFFFFF', border: '1px solid #D1D5DB', borderRadius: '8px', color: '#111827', fontSize: '14px' };
-  const labelStyle = { display: 'block', fontSize: '14px', fontWeight: 500, color: '#374151', marginBottom: '8px' };
+  const inputStyle = { width: '100%', padding: '12px 16px', backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '14px' };
+  const labelStyle = { display: 'block', fontSize: '14px', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '8px' };
 
   return (
     <div style={{ maxWidth: '900px' }}>
       <div style={{ marginBottom: '32px' }}>
-        <h1 style={{ fontSize: '28px', fontWeight: 600, color: '#111827', fontFamily: 'Georgia, serif' }}>Settings</h1>
-        <p style={{ color: '#6B7280', marginTop: '4px' }}>Configure portal and fund assumptions.</p>
+        <h1 style={{ fontSize: '28px', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'Georgia, serif' }}>Settings</h1>
+        <p style={{ color: 'var(--text-muted)', marginTop: '4px' }}>Configure portal and fund assumptions.</p>
       </div>
 
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Fund Assumptions</h2>
-        <p style={{ color: '#6B7280', fontSize: '14px', marginBottom: '24px' }}>These values are used in all site calculations and projections.</p>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Fund Assumptions</h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '24px' }}>These values are used in all site calculations and projections.</p>
         
         {saveMessage && (
           <div style={{ marginBottom: '24px', padding: '12px', borderRadius: '8px', backgroundColor: saveMessage.includes('Error') || saveMessage.includes('error') ? '#FEE2E2' : '#DCFCE7', color: saveMessage.includes('Error') || saveMessage.includes('error') ? '#991B1B' : '#166534' }}>{saveMessage}</div>
@@ -157,70 +157,70 @@ export default function SettingsPage() {
           <div>
             <label style={labelStyle}>Fund Size</label>
             <div style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#6B7280' }}>$</span>
+              <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>$</span>
               <input type="number" min="0" value={fundSettings.fundSize} onChange={(e) => setFundSettings({ ...fundSettings, fundSize: Math.max(0, parseInt(e.target.value) || 0) })} style={{ ...inputStyle, paddingLeft: '32px' }} />
             </div>
-            <p style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>Default: $10,000,000</p>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>Default: $10,000,000</p>
           </div>
           <div>
             <label style={labelStyle}>Preferred Return</label>
             <div style={{ position: 'relative' }}>
               <input type="number" min="0" max="100" step="0.1" value={fundSettings.prefReturn} onChange={(e) => setFundSettings({ ...fundSettings, prefReturn: Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)) })} style={{ ...inputStyle, paddingRight: '32px' }} />
-              <span style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: '#6B7280' }}>%</span>
+              <span style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>%</span>
             </div>
-            <p style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>Default: 16%</p>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>Default: 16%</p>
           </div>
           <div>
             <label style={labelStyle}>LP Split</label>
             <div style={{ position: 'relative' }}>
               <input type="number" min="0" max="100" step="0.1" value={fundSettings.lpSplit} onChange={(e) => setFundSettings({ ...fundSettings, lpSplit: Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)) })} style={{ ...inputStyle, paddingRight: '32px' }} />
-              <span style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: '#6B7280' }}>%</span>
+              <span style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>%</span>
             </div>
-            <p style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>Default: 60%</p>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>Default: 60%</p>
           </div>
           <div>
             <label style={labelStyle}>GP Split (Carry)</label>
             <div style={{ position: 'relative' }}>
               <input type="number" min="0" max="100" step="0.1" value={fundSettings.gpSplit} onChange={(e) => setFundSettings({ ...fundSettings, gpSplit: Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)) })} style={{ ...inputStyle, paddingRight: '32px' }} />
-              <span style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: '#6B7280' }}>%</span>
+              <span style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>%</span>
             </div>
-            <p style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>Default: 40%</p>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>Default: 40%</p>
           </div>
         </div>
         <div style={{ marginTop: '24px' }}>
-          <button onClick={saveFundSettings} disabled={saving} style={{ padding: '12px 24px', backgroundColor: '#2563EB', color: '#FFFFFF', fontWeight: 600, borderRadius: '8px', border: 'none', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.5 : 1 }}>{saving ? 'Saving...' : 'Save Fund Settings'}</button>
+          <button onClick={saveFundSettings} disabled={saving} style={{ padding: '12px 24px', backgroundColor: 'var(--accent)', color: '#FFFFFF', fontWeight: 600, borderRadius: '8px', border: 'none', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.5 : 1 }}>{saving ? 'Saving...' : 'Save Fund Settings'}</button>
         </div>
       </div>
 
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Stage Labels</h2>
-        <p style={{ color: '#6B7280', fontSize: '14px', marginBottom: '24px' }}>Standard pipeline stages for site progression.</p>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Stage Labels</h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '24px' }}>Standard pipeline stages for site progression.</p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {stageLabels.map((stage, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <span style={{ color: '#2563EB', width: '80px', fontWeight: 500 }}>Stage {i + 1}:</span>
-              <div style={{ flex: 1, padding: '8px 16px', backgroundColor: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '8px', color: '#111827' }}>{stage}</div>
+              <span style={{ color: 'var(--accent)', width: '80px', fontWeight: 500 }}>Stage {i + 1}:</span>
+              <div style={{ flex: 1, padding: '8px 16px', backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border-card)', borderRadius: '8px', color: 'var(--text-primary)' }}>{stage}</div>
             </div>
           ))}
         </div>
       </div>
 
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Data Management</h2>
-        <p style={{ color: '#6B7280', fontSize: '14px', marginBottom: '24px' }}>Export all portal data or import from a previous backup.</p>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Data Management</h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '24px' }}>Export all portal data or import from a previous backup.</p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
-          <button onClick={exportAllData} disabled={exporting} style={{ padding: '12px 24px', backgroundColor: '#F3F4F6', color: '#374151', fontWeight: 500, borderRadius: '8px', border: '1px solid #D1D5DB', cursor: exporting ? 'not-allowed' : 'pointer', opacity: exporting ? 0.5 : 1 }}>{exporting ? 'Exporting...' : '📥 Export All Data (JSON)'}</button>
-          <label style={{ padding: '12px 24px', backgroundColor: '#F3F4F6', color: '#374151', fontWeight: 500, borderRadius: '8px', border: '1px solid #D1D5DB', cursor: 'pointer' }}>
+          <button onClick={exportAllData} disabled={exporting} style={{ padding: '12px 24px', backgroundColor: 'var(--bg-primary)', color: 'var(--text-secondary)', fontWeight: 500, borderRadius: '8px', border: '1px solid var(--border)', cursor: exporting ? 'not-allowed' : 'pointer', opacity: exporting ? 0.5 : 1 }}>{exporting ? 'Exporting...' : '📥 Export All Data (JSON)'}</button>
+          <label style={{ padding: '12px 24px', backgroundColor: 'var(--bg-primary)', color: 'var(--text-secondary)', fontWeight: 500, borderRadius: '8px', border: '1px solid var(--border)', cursor: 'pointer' }}>
             {importing ? 'Importing...' : '📤 Import Data'}
             <input ref={fileInputRef} type="file" accept=".json" onChange={handleImport} disabled={importing} style={{ display: 'none' }} />
           </label>
         </div>
-        <p style={{ color: '#9CA3AF', fontSize: '12px', marginTop: '16px' }}>Export creates a complete backup. Import will add/update records based on IDs.</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '12px', marginTop: '16px' }}>Export creates a complete backup. Import will add/update records based on IDs.</p>
       </div>
 
       <div style={{ backgroundColor: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '12px', padding: '24px' }}>
         <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#DC2626', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Danger Zone</h2>
-        <p style={{ color: '#6B7280', fontSize: '14px', marginBottom: '16px' }}>Irreversible actions. Use with caution.</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '16px' }}>Irreversible actions. Use with caution.</p>
         <button onClick={() => alert('Contact administrator to clear data.')} style={{ padding: '12px 24px', backgroundColor: '#FEE2E2', color: '#DC2626', fontWeight: 500, borderRadius: '8px', border: '1px solid #FECACA', cursor: 'pointer' }}>Clear All Data</button>
       </div>
     </div>

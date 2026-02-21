@@ -184,47 +184,47 @@ export default function LeadsPage() {
     converted: leads.filter(l => l.lead_status === 'converted').length,
   };
 
-  const inputStyle: React.CSSProperties = { width: '100%', padding: '10px 12px', border: '1px solid #D1D5DB', borderRadius: '6px', fontSize: '14px', color: '#111827', backgroundColor: '#FFFFFF' };
-  const labelStyle: React.CSSProperties = { display: 'block', fontSize: '14px', fontWeight: 500, color: '#374151', marginBottom: '6px' };
+  const inputStyle: React.CSSProperties = { width: '100%', padding: '10px 12px', border: '1px solid var(--border)', borderRadius: '6px', fontSize: '14px', color: 'var(--text-primary)', backgroundColor: 'var(--bg-input)' };
+  const labelStyle: React.CSSProperties = { display: 'block', fontSize: '14px', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '6px' };
 
-  if (loading) return <div style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>Loading leads...</div>;
+  if (loading) return <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Loading leads...</div>;
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#111827' }}>Leads</h1>
-          <p style={{ color: '#6B7280', fontSize: '14px' }}>Incoming site opportunities and listings.</p>
+          <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--text-primary)' }}>Leads</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Incoming site opportunities and listings.</p>
         </div>
-        <button onClick={() => setShowForm(!showForm)} style={{ padding: '10px 20px', backgroundColor: '#2563EB', color: '#FFFFFF', fontWeight: 500, fontSize: '14px', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>+ Add Lead</button>
+        <button onClick={() => setShowForm(!showForm)} style={{ padding: '10px 20px', backgroundColor: 'var(--accent)', color: '#FFFFFF', fontWeight: 500, fontSize: '14px', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>+ Add Lead</button>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '12px', marginBottom: '24px' }}>
-        <div style={{ backgroundColor: '#FFFFFF', padding: '16px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
-          <p style={{ fontSize: '13px', color: '#6B7280' }}>New</p>
-          <p style={{ fontSize: '24px', fontWeight: 600, color: '#2563EB' }}>{stats.new}</p>
+        <div style={{ backgroundColor: 'var(--bg-card)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-card)' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>New</p>
+          <p style={{ fontSize: '24px', fontWeight: 600, color: 'var(--accent)' }}>{stats.new}</p>
         </div>
-        <div style={{ backgroundColor: '#FFFFFF', padding: '16px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
-          <p style={{ fontSize: '13px', color: '#6B7280' }}>Reviewing</p>
+        <div style={{ backgroundColor: 'var(--bg-card)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-card)' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Reviewing</p>
           <p style={{ fontSize: '24px', fontWeight: 600, color: '#B45309' }}>{stats.reviewing}</p>
         </div>
-        <div style={{ backgroundColor: '#FFFFFF', padding: '16px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
-          <p style={{ fontSize: '13px', color: '#6B7280' }}>Qualified</p>
+        <div style={{ backgroundColor: 'var(--bg-card)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-card)' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Qualified</p>
           <p style={{ fontSize: '24px', fontWeight: 600, color: '#059669' }}>{stats.qualified}</p>
         </div>
-        <div style={{ backgroundColor: '#FFFFFF', padding: '16px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
-          <p style={{ fontSize: '13px', color: '#6B7280' }}>Converted</p>
+        <div style={{ backgroundColor: 'var(--bg-card)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-card)' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Converted</p>
           <p style={{ fontSize: '24px', fontWeight: 600, color: '#16A34A' }}>{stats.converted}</p>
         </div>
-        <div style={{ backgroundColor: '#FFFFFF', padding: '16px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
-          <p style={{ fontSize: '13px', color: '#6B7280' }}>Passed</p>
-          <p style={{ fontSize: '24px', fontWeight: 600, color: '#6B7280' }}>{stats.passed}</p>
+        <div style={{ backgroundColor: 'var(--bg-card)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-card)' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Passed</p>
+          <p style={{ fontSize: '24px', fontWeight: 600, color: 'var(--text-muted)' }}>{stats.passed}</p>
         </div>
       </div>
 
       {showForm && (
-        <div style={{ backgroundColor: '#FFFFFF', padding: '24px', borderRadius: '8px', border: '1px solid #E5E7EB', marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '16px' }}>Add New Lead</h2>
+        <div style={{ backgroundColor: 'var(--bg-card)', padding: '24px', borderRadius: '8px', border: '1px solid var(--border-card)', marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px' }}>Add New Lead</h2>
           {error && <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: '#FEE2E2', border: '1px solid #FECACA', borderRadius: '6px', color: '#991B1B', fontSize: '14px' }}>{error}</div>}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '16px' }}>
             <div><label style={labelStyle}>Address *</label><input type="text" value={newLead.address} onChange={(e) => setNewLead({ ...newLead, address: e.target.value })} style={inputStyle} placeholder="123 Industrial Blvd" /></div>
@@ -236,39 +236,39 @@ export default function LeadsPage() {
             <div><label style={labelStyle}>Source</label><input type="text" value={newLead.relationship} onChange={(e) => setNewLead({ ...newLead, relationship: e.target.value })} style={inputStyle} placeholder="CoStar, Broker, Direct" /></div>
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>
-            <button onClick={addLead} disabled={saving} style={{ padding: '10px 24px', backgroundColor: '#2563EB', color: '#FFFFFF', fontWeight: 500, fontSize: '14px', border: 'none', borderRadius: '6px', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.5 : 1 }}>{saving ? 'Adding...' : 'Add Lead'}</button>
-            <button onClick={() => setShowForm(false)} style={{ padding: '10px 24px', backgroundColor: '#F3F4F6', color: '#374151', fontWeight: 500, fontSize: '14px', border: '1px solid #D1D5DB', borderRadius: '6px', cursor: 'pointer' }}>Cancel</button>
+            <button onClick={addLead} disabled={saving} style={{ padding: '10px 24px', backgroundColor: 'var(--accent)', color: '#FFFFFF', fontWeight: 500, fontSize: '14px', border: 'none', borderRadius: '6px', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.5 : 1 }}>{saving ? 'Adding...' : 'Add Lead'}</button>
+            <button onClick={() => setShowForm(false)} style={{ padding: '10px 24px', backgroundColor: 'var(--bg-primary)', color: 'var(--text-secondary)', fontWeight: 500, fontSize: '14px', border: '1px solid var(--border)', borderRadius: '6px', cursor: 'pointer' }}>Cancel</button>
           </div>
         </div>
       )}
 
       <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
-        <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by address, city, state..." style={{ padding: '8px 12px', border: '1px solid #D1D5DB', borderRadius: '6px', fontSize: '14px', width: '250px', backgroundColor: '#FFFFFF', color: '#111827' }} />
+        <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by address, city, state..." style={{ padding: '8px 12px', border: '1px solid var(--border)', borderRadius: '6px', fontSize: '14px', width: '250px', backgroundColor: 'var(--bg-input)', color: 'var(--text-primary)' }} />
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          <button onClick={() => setFilter('all')} style={{ padding: '6px 14px', fontSize: '13px', fontWeight: 500, borderRadius: '6px', border: '1px solid', borderColor: filter === 'all' ? '#2563EB' : '#D1D5DB', backgroundColor: filter === 'all' ? '#2563EB' : '#FFFFFF', color: filter === 'all' ? '#FFFFFF' : '#374151', cursor: 'pointer' }}>All ({leads.length})</button>
+          <button onClick={() => setFilter('all')} style={{ padding: '6px 14px', fontSize: '13px', fontWeight: 500, borderRadius: '6px', border: '1px solid', borderColor: filter === 'all' ? 'var(--accent)' : 'var(--border)', backgroundColor: filter === 'all' ? 'var(--accent)' : 'var(--bg-card)', color: filter === 'all' ? '#FFFFFF' : 'var(--text-secondary)', cursor: 'pointer' }}>All ({leads.length})</button>
           {statusOptions.map(opt => (
-            <button key={opt.value} onClick={() => setFilter(opt.value)} style={{ padding: '6px 14px', fontSize: '13px', fontWeight: 500, borderRadius: '6px', border: '1px solid', borderColor: filter === opt.value ? getStatusStyle(opt.value).border : '#D1D5DB', backgroundColor: filter === opt.value ? getStatusStyle(opt.value).bg : '#FFFFFF', color: filter === opt.value ? getStatusStyle(opt.value).text : '#374151', cursor: 'pointer' }}>{opt.label}</button>
+            <button key={opt.value} onClick={() => setFilter(opt.value)} style={{ padding: '6px 14px', fontSize: '13px', fontWeight: 500, borderRadius: '6px', border: '1px solid', borderColor: filter === opt.value ? getStatusStyle(opt.value).border : 'var(--border)', backgroundColor: filter === opt.value ? getStatusStyle(opt.value).bg : 'var(--bg-card)', color: filter === opt.value ? getStatusStyle(opt.value).text : 'var(--text-secondary)', cursor: 'pointer' }}>{opt.label}</button>
           ))}
         </div>
       </div>
 
       {filteredLeads.length === 0 ? (
-        <div style={{ backgroundColor: '#FFFFFF', padding: '40px', borderRadius: '8px', border: '1px solid #E5E7EB', textAlign: 'center' }}>
-          <p style={{ color: '#6B7280', marginBottom: '16px' }}>{leads.length === 0 ? 'No leads yet. Add your first lead to get started.' : 'No leads match the current filter.'}</p>
-          {leads.length === 0 && <button onClick={() => setShowForm(true)} style={{ padding: '10px 20px', backgroundColor: '#2563EB', color: '#FFFFFF', fontWeight: 500, fontSize: '14px', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>+ Add Lead</button>}
+        <div style={{ backgroundColor: 'var(--bg-card)', padding: '40px', borderRadius: '8px', border: '1px solid var(--border-card)', textAlign: 'center' }}>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '16px' }}>{leads.length === 0 ? 'No leads yet. Add your first lead to get started.' : 'No leads match the current filter.'}</p>
+          {leads.length === 0 && <button onClick={() => setShowForm(true)} style={{ padding: '10px 20px', backgroundColor: 'var(--accent)', color: '#FFFFFF', fontWeight: 500, fontSize: '14px', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>+ Add Lead</button>}
         </div>
       ) : (
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', border: '1px solid #E5E7EB', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-card)', overflow: 'hidden' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead style={{ backgroundColor: '#F9FAFB' }}>
+            <thead style={{ backgroundColor: 'var(--bg-primary)' }}>
               <tr>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase' }}>Property</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase' }}>Source</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase' }}>Acreage</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase' }}>Asking</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase' }}>Score</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase' }}>Status</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right', fontSize: '12px', fontWeight: 500, color: '#6B7280', textTransform: 'uppercase' }}>Actions</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Property</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Source</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Acreage</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Asking</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Score</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Status</th>
+                <th style={{ padding: '12px 16px', textAlign: 'right', fontSize: '12px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -276,14 +276,14 @@ export default function LeadsPage() {
                 const statusStyle = getStatusStyle(lead.lead_status);
                 const score = lead.lead_score || 0;
                 return (
-                  <tr key={lead.id} style={{ borderTop: i > 0 ? '1px solid #E5E7EB' : 'none' }}>
+                  <tr key={lead.id} style={{ borderTop: i > 0 ? '1px solid var(--border-card)' : 'none' }}>
                     <td style={{ padding: '12px 16px' }}>
-                      <p style={{ fontWeight: 500, color: '#111827' }}>{lead.address || 'Unknown Address'}</p>
-                      <p style={{ fontSize: '14px', color: '#6B7280' }}>{lead.city}, {lead.state}{lead.county ? ` (${lead.county})` : ''}</p>
+                      <p style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{lead.address || 'Unknown Address'}</p>
+                      <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>{lead.city}, {lead.state}{lead.county ? ` (${lead.county})` : ''}</p>
                     </td>
-                    <td style={{ padding: '12px 16px', color: '#6B7280' }}>{lead.relationship || '—'}</td>
-                    <td style={{ padding: '12px 16px', color: '#111827' }}>{lead.acreage ? `${lead.acreage} acres` : '—'}</td>
-                    <td style={{ padding: '12px 16px', color: '#111827' }}>{lead.asking_price || '—'}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--text-muted)' }}>{lead.relationship || '—'}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--text-primary)' }}>{lead.acreage ? `${lead.acreage} acres` : '—'}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--text-primary)' }}>{lead.asking_price || '—'}</td>
                     <td style={{ padding: '12px 16px', textAlign: 'center' }}>
                       <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: `${getScoreColor(score)}20`, color: getScoreColor(score), fontWeight: 600, fontSize: '12px' }}>{score}</span>
                     </td>
@@ -298,9 +298,9 @@ export default function LeadsPage() {
                           <button onClick={() => convertToSite(lead)} disabled={converting === lead.id} style={{ padding: '4px 10px', fontSize: '12px', fontWeight: 500, borderRadius: '4px', border: '1px solid #16A34A', backgroundColor: '#DCFCE7', color: '#16A34A', cursor: converting === lead.id ? 'not-allowed' : 'pointer', opacity: converting === lead.id ? 0.5 : 1 }}>{converting === lead.id ? 'Converting...' : '→ Site'}</button>
                         )}
                         {lead.converted_site_id && (
-                          <button onClick={() => router.push(`/portal/sites/${lead.converted_site_id}`)} style={{ padding: '4px 10px', fontSize: '12px', fontWeight: 500, borderRadius: '4px', border: '1px solid #2563EB', backgroundColor: '#DBEAFE', color: '#2563EB', cursor: 'pointer' }}>View Site</button>
+                          <button onClick={() => router.push(`/portal/sites/${lead.converted_site_id}`)} style={{ padding: '4px 10px', fontSize: '12px', fontWeight: 500, borderRadius: '4px', border: '1px solid var(--accent)', backgroundColor: '#DBEAFE', color: 'var(--accent)', cursor: 'pointer' }}>View Site</button>
                         )}
-                        <button onClick={() => deleteLead(lead.id)} style={{ color: '#9CA3AF', fontSize: '13px', background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>✕</button>
+                        <button onClick={() => deleteLead(lead.id)} style={{ color: 'var(--text-muted)', fontSize: '13px', background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>✕</button>
                       </div>
                     </td>
                   </tr>

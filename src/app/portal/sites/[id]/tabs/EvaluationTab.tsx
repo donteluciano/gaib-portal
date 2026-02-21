@@ -154,48 +154,48 @@ export default function EvaluationTab({ site }: { site: Site }) {
   }
 
   const formatCurrency = (val: number) => { if (val >= 1000000) return `$${(val / 1000000).toFixed(2)}M`; if (val >= 1000) return `$${(val / 1000).toFixed(0)}K`; return `$${val.toLocaleString()}`; };
-  const inputStyle = { width: '100%', padding: '12px 16px', backgroundColor: '#FFFFFF', border: '1px solid #D1D5DB', borderRadius: '8px', color: '#111827', fontSize: '14px' };
-  const cardStyle = { padding: '16px', backgroundColor: '#F9FAFB', borderRadius: '8px' };
+  const inputStyle = { width: '100%', padding: '12px 16px', backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '14px' };
+  const cardStyle = { padding: '16px', backgroundColor: 'var(--bg-primary)', borderRadius: '8px' };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Summary Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px' }}>
-        <div style={{ ...cardStyle, backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB' }}><p style={{ color: '#6B7280', fontSize: '14px' }}>Est. MW</p><p style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>{calculatedMW || '—'}</p></div>
-        <div style={{ ...cardStyle, backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB' }}><p style={{ color: '#6B7280', fontSize: '14px' }}>Gas Cost</p><p style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>{formatCurrency(totalGasCost)}</p></div>
-        <div style={{ ...cardStyle, backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB' }}><p style={{ color: '#6B7280', fontSize: '14px' }}>De-risking</p><p style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>{formatCurrency(deRiskingCosts.total)}</p></div>
-        <div style={{ ...cardStyle, backgroundColor: riskLevel.bg, border: '1px solid #E5E7EB' }}><p style={{ color: '#6B7280', fontSize: '14px' }}>Risk Score</p><p style={{ fontSize: '24px', fontWeight: 700, color: riskLevel.color }}>{riskScore} ({riskLevel.label})</p></div>
-        <div style={{ ...cardStyle, backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB' }}><p style={{ color: '#6B7280', fontSize: '14px' }}>Timeline</p><p style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>{timeline.low}-{timeline.high}mo</p></div>
+        <div style={{ ...cardStyle, backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)' }}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Est. MW</p><p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{calculatedMW || '—'}</p></div>
+        <div style={{ ...cardStyle, backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)' }}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Gas Cost</p><p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{formatCurrency(totalGasCost)}</p></div>
+        <div style={{ ...cardStyle, backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)' }}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>De-risking</p><p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{formatCurrency(deRiskingCosts.total)}</p></div>
+        <div style={{ ...cardStyle, backgroundColor: riskLevel.bg, border: '1px solid var(--border-card)' }}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Risk Score</p><p style={{ fontSize: '24px', fontWeight: 700, color: riskLevel.color }}>{riskScore} ({riskLevel.label})</p></div>
+        <div style={{ ...cardStyle, backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)' }}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Timeline</p><p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{timeline.low}-{timeline.high}mo</p></div>
       </div>
 
       {/* Gas & MW Calculation */}
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', marginBottom: '24px', fontFamily: 'Georgia, serif' }}>Gas & MW Calculation</h2>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '24px', fontFamily: 'Georgia, serif' }}>Gas & MW Calculation</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
-          <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>Gas Volume (MCFD)</label><input type="number" value={inputs.gasVolume || ''} onChange={(e) => setInputs({ ...inputs, gasVolume: parseFloat(e.target.value) || 0 })} style={inputStyle} placeholder="14400" /></div>
-          <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>Gas Pressure (PSI)</label><input type="number" value={inputs.gasPressure || ''} onChange={(e) => setInputs({ ...inputs, gasPressure: parseFloat(e.target.value) || 0 })} style={inputStyle} placeholder="600" /></div>
-          <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>Pipeline Diameter (in)</label><input type="number" value={inputs.pipelineDiameter || ''} onChange={(e) => setInputs({ ...inputs, pipelineDiameter: parseFloat(e.target.value) || 0 })} style={inputStyle} placeholder="24" /></div>
-          <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>Pipeline Distance (mi)</label><input type="number" step="0.1" value={inputs.pipelineDistance || ''} onChange={(e) => setInputs({ ...inputs, pipelineDistance: parseFloat(e.target.value) || 0 })} style={inputStyle} placeholder="2" /></div>
+          <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Gas Volume (MCFD)</label><input type="number" value={inputs.gasVolume || ''} onChange={(e) => setInputs({ ...inputs, gasVolume: parseFloat(e.target.value) || 0 })} style={inputStyle} placeholder="14400" /></div>
+          <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Gas Pressure (PSI)</label><input type="number" value={inputs.gasPressure || ''} onChange={(e) => setInputs({ ...inputs, gasPressure: parseFloat(e.target.value) || 0 })} style={inputStyle} placeholder="600" /></div>
+          <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Pipeline Diameter (in)</label><input type="number" value={inputs.pipelineDiameter || ''} onChange={(e) => setInputs({ ...inputs, pipelineDiameter: parseFloat(e.target.value) || 0 })} style={inputStyle} placeholder="24" /></div>
+          <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Pipeline Distance (mi)</label><input type="number" step="0.1" value={inputs.pipelineDistance || ''} onChange={(e) => setInputs({ ...inputs, pipelineDistance: parseFloat(e.target.value) || 0 })} style={inputStyle} placeholder="2" /></div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginTop: '16px' }}>
-          <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>Terrain</label><select value={inputs.terrain || 'easy'} onChange={(e) => setInputs({ ...inputs, terrain: e.target.value })} style={inputStyle}><option value="easy">Easy ($1.5M/mi)</option><option value="moderate">Moderate ($2.5M/mi)</option><option value="difficult">Difficult ($4M/mi)</option></select></div>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '14px' }}>Tap Cost</p><p style={{ fontSize: '18px', fontWeight: 700, color: '#111827' }}>{formatCurrency(tapCost)}</p></div>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '14px' }}>Lateral Cost</p><p style={{ fontSize: '18px', fontWeight: 700, color: '#111827' }}>{formatCurrency(lateralCost)}</p></div>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '14px' }}>Meter Station</p><p style={{ fontSize: '18px', fontWeight: 700, color: '#111827' }}>{formatCurrency(meterCost)}</p></div>
+          <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Terrain</label><select value={inputs.terrain || 'easy'} onChange={(e) => setInputs({ ...inputs, terrain: e.target.value })} style={inputStyle}><option value="easy">Easy ($1.5M/mi)</option><option value="moderate">Moderate ($2.5M/mi)</option><option value="difficult">Difficult ($4M/mi)</option></select></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Tap Cost</p><p style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>{formatCurrency(tapCost)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Lateral Cost</p><p style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>{formatCurrency(lateralCost)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Meter Station</p><p style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>{formatCurrency(meterCost)}</p></div>
         </div>
       </div>
 
       {/* De-risking Cost Breakdown */}
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', marginBottom: '24px', fontFamily: 'Georgia, serif' }}>De-risking Cost Breakdown</h2>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '24px', fontFamily: 'Georgia, serif' }}>De-risking Cost Breakdown</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px' }}>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '12px' }}>Site Control</p><p style={{ color: '#111827', fontWeight: 500 }}>{formatCurrency(deRiskingCosts.siteControl)}</p></div>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '12px' }}>Gas Studies</p><p style={{ color: '#111827', fontWeight: 500 }}>{formatCurrency(deRiskingCosts.gasStudies)}</p></div>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '12px' }}>Environmental</p><p style={{ color: '#111827', fontWeight: 500 }}>{formatCurrency(deRiskingCosts.enviro)}</p></div>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '12px' }}>Air Permit</p><p style={{ color: '#111827', fontWeight: 500 }}>{formatCurrency(deRiskingCosts.airPermit)}</p></div>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '12px' }}>Engineering</p><p style={{ color: '#111827', fontWeight: 500 }}>{formatCurrency(deRiskingCosts.engineering)}</p></div>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '12px' }}>Political</p><p style={{ color: '#111827', fontWeight: 500 }}>{formatCurrency(deRiskingCosts.political)}</p></div>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '12px' }}>Exit Costs</p><p style={{ color: '#111827', fontWeight: 500 }}>{formatCurrency(deRiskingCosts.exitCosts)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Site Control</p><p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{formatCurrency(deRiskingCosts.siteControl)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Gas Studies</p><p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{formatCurrency(deRiskingCosts.gasStudies)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Environmental</p><p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{formatCurrency(deRiskingCosts.enviro)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Air Permit</p><p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{formatCurrency(deRiskingCosts.airPermit)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Engineering</p><p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{formatCurrency(deRiskingCosts.engineering)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Political</p><p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{formatCurrency(deRiskingCosts.political)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Exit Costs</p><p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{formatCurrency(deRiskingCosts.exitCosts)}</p></div>
           <div></div>
           <div></div>
           <div style={{ ...cardStyle, backgroundColor: '#EFF6FF', border: '1px solid #BFDBFE' }}><p style={{ color: '#1D4ED8', fontSize: '12px' }}>Total</p><p style={{ color: '#1D4ED8', fontWeight: 700 }}>{formatCurrency(deRiskingCosts.total)}</p></div>
@@ -203,23 +203,23 @@ export default function EvaluationTab({ site }: { site: Site }) {
       </div>
 
       {/* Fund Returns Waterfall */}
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #BFDBFE', borderRadius: '12px', padding: '24px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#2563EB', marginBottom: '24px', fontFamily: 'Georgia, serif' }}>Fund Returns Waterfall</h2>
-        <div style={{ marginBottom: '16px' }}><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>Exit Price per MW ($M)</label><input type="number" step="0.01" value={inputs.exitPricePerMW || ''} onChange={(e) => setInputs({ ...inputs, exitPricePerMW: parseFloat(e.target.value) || 0 })} style={{ ...inputStyle, width: '200px' }} placeholder="0.3" /></div>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid #BFDBFE', borderRadius: '12px', padding: '24px' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--accent)', marginBottom: '24px', fontFamily: 'Georgia, serif' }}>Fund Returns Waterfall</h2>
+        <div style={{ marginBottom: '16px' }}><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Exit Price per MW ($M)</label><input type="number" step="0.01" value={inputs.exitPricePerMW || ''} onChange={(e) => setInputs({ ...inputs, exitPricePerMW: parseFloat(e.target.value) || 0 })} style={{ ...inputStyle, width: '200px' }} placeholder="0.3" /></div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '14px' }}>Gross Exit</p><p style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>{formatCurrency(fundReturns.grossExit)}</p></div>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '14px' }}>LP Preferred ({(fundSettings.pref_return * 100).toFixed(0)}%)</p><p style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>{formatCurrency(fundReturns.lpPreferred)}</p></div>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '14px' }}>LP First (Return of Capital)</p><p style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>{formatCurrency(fundReturns.lpFirst)}</p></div>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '14px' }}>Remaining</p><p style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>{formatCurrency(fundReturns.remaining)}</p></div>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '14px' }}>LP Share ({(fundSettings.lp_split * 100).toFixed(0)}%)</p><p style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>{formatCurrency(fundReturns.lpShare)}</p></div>
-          <div style={cardStyle}><p style={{ color: '#6B7280', fontSize: '14px' }}>GP Share ({(fundSettings.gp_split * 100).toFixed(0)}%)</p><p style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>{formatCurrency(fundReturns.gpShare)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Gross Exit</p><p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{formatCurrency(fundReturns.grossExit)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>LP Preferred ({(fundSettings.pref_return * 100).toFixed(0)}%)</p><p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{formatCurrency(fundReturns.lpPreferred)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>LP First (Return of Capital)</p><p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{formatCurrency(fundReturns.lpFirst)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Remaining</p><p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{formatCurrency(fundReturns.remaining)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>LP Share ({(fundSettings.lp_split * 100).toFixed(0)}%)</p><p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{formatCurrency(fundReturns.lpShare)}</p></div>
+          <div style={cardStyle}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>GP Share ({(fundSettings.gp_split * 100).toFixed(0)}%)</p><p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{formatCurrency(fundReturns.gpShare)}</p></div>
           <div style={{ ...cardStyle, backgroundColor: '#EFF6FF', border: '1px solid #BFDBFE' }}><p style={{ color: '#1D4ED8', fontSize: '14px' }}>Total LP Return</p><p style={{ fontSize: '24px', fontWeight: 700, color: '#1D4ED8' }}>{formatCurrency(fundReturns.totalLP)}</p></div>
           <div style={{ ...cardStyle, backgroundColor: '#DCFCE7', border: '1px solid #86EFAC' }}><p style={{ color: '#16A34A', fontSize: '14px' }}>LP Multiple</p><p style={{ fontSize: '24px', fontWeight: 700, color: '#16A34A' }}>{fundReturns.lpMultiple.toFixed(2)}x</p></div>
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={saveInputs} disabled={saving} style={{ padding: '12px 32px', backgroundColor: '#2563EB', color: '#FFFFFF', fontWeight: 600, borderRadius: '8px', border: 'none', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.5 : 1 }}>{saving ? 'Saving...' : 'Save Changes'}</button>
+        <button onClick={saveInputs} disabled={saving} style={{ padding: '12px 32px', backgroundColor: 'var(--accent)', color: '#FFFFFF', fontWeight: 600, borderRadius: '8px', border: 'none', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.5 : 1 }}>{saving ? 'Saving...' : 'Save Changes'}</button>
       </div>
     </div>
   );

@@ -95,8 +95,8 @@ export default function SiteDetailPage() {
     }
   };
 
-  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: '#6B7280' }}>Loading site...</p></div>;
-  if (!site) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: '#6B7280' }}>Site not found.</p></div>;
+  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: 'var(--text-muted)' }}>Loading site...</p></div>;
+  if (!site) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: 'var(--text-muted)' }}>Site not found.</p></div>;
 
   const gasVolume = (site.inputs?.gasVolume as number) || 0;
   const gasPressure = (site.inputs?.gasPressure as number) || 0;
@@ -108,7 +108,7 @@ export default function SiteDetailPage() {
     estimatedMW = Math.round(gasVolume / divisor / 192);
   }
 
-  const inputStyle = { width: '100%', padding: '8px 12px', backgroundColor: '#FFFFFF', border: '1px solid #D1D5DB', borderRadius: '8px', color: '#111827', fontSize: '14px' };
+  const inputStyle = { width: '100%', padding: '8px 12px', backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '14px' };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -116,15 +116,15 @@ export default function SiteDetailPage() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <Link href="/portal/pipeline" style={{ color: '#6B7280', textDecoration: 'none' }}>← Pipeline</Link>
+            <Link href="/portal/pipeline" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>← Pipeline</Link>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <h1 style={{ fontSize: '28px', fontWeight: 600, color: '#111827', fontFamily: 'Georgia, serif' }}>{site.name}</h1>
-            <button onClick={() => setShowEditModal(true)} style={{ padding: '6px', color: '#6B7280', background: 'none', border: 'none', cursor: 'pointer', borderRadius: '4px' }} title="Edit site info">
+            <h1 style={{ fontSize: '28px', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'Georgia, serif' }}>{site.name}</h1>
+            <button onClick={() => setShowEditModal(true)} style={{ padding: '6px', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', borderRadius: '4px' }} title="Edit site info">
               <svg style={{ width: '20px', height: '20px' }} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z" /></svg>
             </button>
           </div>
-          <p style={{ color: '#6B7280', marginTop: '4px' }}>
+          <p style={{ color: 'var(--text-muted)', marginTop: '4px' }}>
             {site.city}, {site.state}
             {site.inputs?.acreage && ` • ${site.inputs.acreage} acres`}
             {estimatedMW > 0 && ` • ${estimatedMW} MW`}
@@ -143,13 +143,13 @@ export default function SiteDetailPage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ borderBottom: '1px solid #E5E7EB', overflowX: 'auto' }}>
+      <div style={{ borderBottom: '1px solid var(--border-card)', overflowX: 'auto' }}>
         <div style={{ display: 'flex', gap: '4px', minWidth: 'max-content' }}>
           {tabs.map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{
               padding: '12px 16px', fontSize: '14px', fontWeight: 500, whiteSpace: 'nowrap', background: 'none', border: 'none', cursor: 'pointer',
-              color: activeTab === tab.id ? '#2563EB' : '#6B7280',
-              borderBottom: activeTab === tab.id ? '2px solid #2563EB' : '2px solid transparent',
+              color: activeTab === tab.id ? 'var(--accent)' : 'var(--text-muted)',
+              borderBottom: activeTab === tab.id ? '2px solid var(--accent)' : '2px solid transparent',
             }}>{tab.name}</button>
           ))}
         </div>
@@ -161,20 +161,20 @@ export default function SiteDetailPage() {
       {/* Edit Modal */}
       {showEditModal && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: '16px' }}>
-          <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', width: '100%', maxWidth: '400px' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Edit Site Info</h2>
+          <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px', width: '100%', maxWidth: '400px' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Edit Site Info</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>Site Name *</label><input type="text" value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} style={inputStyle} /></div>
+              <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Site Name *</label><input type="text" value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} style={inputStyle} /></div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>City</label><input type="text" value={editForm.city} onChange={(e) => setEditForm({ ...editForm, city: e.target.value })} style={inputStyle} /></div>
-                <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>State</label><input type="text" value={editForm.state} onChange={(e) => setEditForm({ ...editForm, state: e.target.value })} style={inputStyle} /></div>
+                <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>City</label><input type="text" value={editForm.city} onChange={(e) => setEditForm({ ...editForm, city: e.target.value })} style={inputStyle} /></div>
+                <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>State</label><input type="text" value={editForm.state} onChange={(e) => setEditForm({ ...editForm, state: e.target.value })} style={inputStyle} /></div>
               </div>
-              <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>County</label><input type="text" value={editForm.county} onChange={(e) => setEditForm({ ...editForm, county: e.target.value })} style={inputStyle} /></div>
-              <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>Status</label><select value={editForm.status} onChange={(e) => setEditForm({ ...editForm, status: e.target.value })} style={inputStyle}><option value="active">Active</option><option value="paused">Paused</option><option value="killed">Killed</option></select></div>
+              <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>County</label><input type="text" value={editForm.county} onChange={(e) => setEditForm({ ...editForm, county: e.target.value })} style={inputStyle} /></div>
+              <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Status</label><select value={editForm.status} onChange={(e) => setEditForm({ ...editForm, status: e.target.value })} style={inputStyle}><option value="active">Active</option><option value="paused">Paused</option><option value="killed">Killed</option></select></div>
             </div>
             <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
-              <button onClick={handleSaveEdit} disabled={saving || !editForm.name.trim()} style={{ flex: 1, padding: '10px 16px', backgroundColor: '#2563EB', color: '#FFFFFF', fontWeight: 500, borderRadius: '8px', border: 'none', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving || !editForm.name.trim() ? 0.5 : 1 }}>{saving ? 'Saving...' : 'Save Changes'}</button>
-              <button onClick={() => setShowEditModal(false)} style={{ padding: '10px 16px', backgroundColor: '#F3F4F6', color: '#374151', borderRadius: '8px', border: '1px solid #D1D5DB', cursor: 'pointer' }}>Cancel</button>
+              <button onClick={handleSaveEdit} disabled={saving || !editForm.name.trim()} style={{ flex: 1, padding: '10px 16px', backgroundColor: 'var(--accent)', color: '#FFFFFF', fontWeight: 500, borderRadius: '8px', border: 'none', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving || !editForm.name.trim() ? 0.5 : 1 }}>{saving ? 'Saving...' : 'Save Changes'}</button>
+              <button onClick={() => setShowEditModal(false)} style={{ padding: '10px 16px', backgroundColor: 'var(--bg-primary)', color: 'var(--text-secondary)', borderRadius: '8px', border: '1px solid var(--border)', cursor: 'pointer' }}>Cancel</button>
             </div>
           </div>
         </div>

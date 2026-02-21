@@ -90,34 +90,34 @@ export default function DDQuestionsTab({ siteId }: Props) {
   const groupedQuestions = filteredQuestions.reduce((acc, q) => { if (!acc[q.category]) acc[q.category] = []; acc[q.category].push(q); return acc; }, {} as Record<Category, QuestionDef[]>);
   const answeredCount = Object.values(questionStates).filter(q => q.status === 'answered').length;
 
-  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: '#6B7280' }}>Loading DD questions...</p></div>;
+  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: 'var(--text-muted)' }}>Loading DD questions...</p></div>;
 
-  const inputStyle = { width: '100%', padding: '8px 12px', backgroundColor: '#FFFFFF', border: '1px solid #D1D5DB', borderRadius: '8px', color: '#111827', fontSize: '14px', resize: 'none' as const };
+  const inputStyle = { width: '100%', padding: '8px 12px', backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '14px', resize: 'none' as const };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', fontFamily: 'Georgia, serif' }}>Due Diligence Questions</h2>
-          <p style={{ color: '#6B7280', fontSize: '14px', marginTop: '4px' }}>{answeredCount} of {ddQuestions.length} questions answered {saving && <span style={{ marginLeft: '8px', color: '#2563EB' }}>• Saving...</span>}</p>
+          <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'Georgia, serif' }}>Due Diligence Questions</h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px' }}>{answeredCount} of {ddQuestions.length} questions answered {saving && <span style={{ marginLeft: '8px', color: 'var(--accent)' }}>• Saving...</span>}</p>
         </div>
-        <div style={{ width: '128px', backgroundColor: '#E5E7EB', borderRadius: '9999px', height: '8px' }}>
-          <div style={{ height: '8px', borderRadius: '9999px', backgroundColor: '#2563EB', width: `${(answeredCount / ddQuestions.length) * 100}%`, transition: 'width 0.3s' }} />
+        <div style={{ width: '128px', backgroundColor: 'var(--border)', borderRadius: '9999px', height: '8px' }}>
+          <div style={{ height: '8px', borderRadius: '9999px', backgroundColor: 'var(--accent)', width: `${(answeredCount / ddQuestions.length) * 100}%`, transition: 'width 0.3s' }} />
         </div>
       </div>
 
       {/* Filters */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', padding: '16px', backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', padding: '16px', backgroundColor: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-card)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ color: '#6B7280', fontSize: '14px' }}>Category:</span>
-          <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value as Category | 'all')} style={{ backgroundColor: '#FFFFFF', border: '1px solid #D1D5DB', color: '#111827', padding: '8px 12px', borderRadius: '8px', fontSize: '14px' }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Category:</span>
+          <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value as Category | 'all')} style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', color: 'var(--text-primary)', padding: '8px 12px', borderRadius: '8px', fontSize: '14px' }}>
             <option value="all">All Categories</option>
             {Object.entries(categoryLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
           </select>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ color: '#6B7280', fontSize: '14px' }}>Status:</span>
-          <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value as Status | 'all')} style={{ backgroundColor: '#FFFFFF', border: '1px solid #D1D5DB', color: '#111827', padding: '8px 12px', borderRadius: '8px', fontSize: '14px' }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Status:</span>
+          <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value as Status | 'all')} style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', color: 'var(--text-primary)', padding: '8px 12px', borderRadius: '8px', fontSize: '14px' }}>
             <option value="all">All</option>
             <option value="pending">Pending</option>
             <option value="asked">Asked</option>
@@ -129,14 +129,14 @@ export default function DDQuestionsTab({ siteId }: Props) {
       {/* Questions by Category */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         {Object.entries(groupedQuestions).map(([category, categoryQuestions]) => (
-          <div key={category} style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', overflow: 'hidden' }}>
-            <div style={{ padding: '16px 24px', borderBottom: '1px solid #E5E7EB', backgroundColor: '#F9FAFB' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', fontFamily: 'Georgia, serif' }}>{categoryLabels[category as Category]}</h3>
-              <p style={{ color: '#6B7280', fontSize: '14px' }}>{categoryQuestions.filter(q => questionStates[q.id]?.status === 'answered').length} of {categoryQuestions.length} answered</p>
+          <div key={category} style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', overflow: 'hidden' }}>
+            <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--border-card)', backgroundColor: 'var(--bg-primary)' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'Georgia, serif' }}>{categoryLabels[category as Category]}</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>{categoryQuestions.filter(q => questionStates[q.id]?.status === 'answered').length} of {categoryQuestions.length} answered</p>
             </div>
             <div>
               {categoryQuestions.map((q) => (
-                <div key={q.id} style={{ padding: '16px 24px', borderTop: '1px solid #E5E7EB' }}>
+                <div key={q.id} style={{ padding: '16px 24px', borderTop: '1px solid var(--border-card)' }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
                     <select value={questionStates[q.id]?.status || 'pending'} onChange={(e) => updateQuestion(q.id, 'status', e.target.value)} style={{ padding: '4px 8px', fontSize: '12px', fontWeight: 500, borderRadius: '4px', border: '1px solid', backgroundColor: statusStyles[questionStates[q.id]?.status || 'pending'].bg, color: statusStyles[questionStates[q.id]?.status || 'pending'].text, borderColor: statusStyles[questionStates[q.id]?.status || 'pending'].bg, flexShrink: 0 }}>
                       <option value="pending">Pending</option>
@@ -145,12 +145,12 @@ export default function DDQuestionsTab({ siteId }: Props) {
                     </select>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px' }}>
-                        <p style={{ color: '#111827', textDecoration: questionStates[q.id]?.status === 'answered' ? 'line-through' : 'none', opacity: questionStates[q.id]?.status === 'answered' ? 0.6 : 1 }}>{q.question}</p>
+                        <p style={{ color: 'var(--text-primary)', textDecoration: questionStates[q.id]?.status === 'answered' ? 'line-through' : 'none', opacity: questionStates[q.id]?.status === 'answered' ? 0.6 : 1 }}>{q.question}</p>
                         <span style={{ padding: '4px 8px', fontSize: '12px', fontWeight: 500, borderRadius: '4px', border: '1px solid', backgroundColor: priorityStyles[q.priority].bg, color: priorityStyles[q.priority].text, borderColor: priorityStyles[q.priority].border, flexShrink: 0 }}>{q.priority}</span>
                       </div>
-                      <p style={{ color: '#6B7280', fontSize: '14px' }}>Ask: {q.whoAnswers}</p>
+                      <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Ask: {q.whoAnswers}</p>
                       <textarea value={questionStates[q.id]?.answer || ''} onChange={(e) => updateQuestion(q.id, 'answer', e.target.value)} placeholder="Enter answer..." rows={2} style={inputStyle} />
-                      {questionStates[q.id]?.dateAsked && <p style={{ color: '#9CA3AF', fontSize: '12px' }}>Last updated: {questionStates[q.id].dateAsked}</p>}
+                      {questionStates[q.id]?.dateAsked && <p style={{ color: 'var(--text-muted)', fontSize: '12px', opacity: 0.7 }}>Last updated: {questionStates[q.id].dateAsked}</p>}
                     </div>
                   </div>
                 </div>

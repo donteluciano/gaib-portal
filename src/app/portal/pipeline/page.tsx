@@ -51,10 +51,10 @@ function ProgressBar({ completed, total }: { completed: number; total: number })
   
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-      <div style={{ width: '80px', backgroundColor: '#E5E7EB', borderRadius: '4px', height: '8px' }}>
+      <div style={{ width: '80px', backgroundColor: 'var(--border)', borderRadius: '4px', height: '8px' }}>
         <div style={{ width: `${percent}%`, backgroundColor: barColor, borderRadius: '4px', height: '8px' }} />
       </div>
-      <span style={{ fontSize: '13px', color: '#6B7280', minWidth: '40px' }}>{percent}%</span>
+      <span style={{ fontSize: '13px', color: 'var(--text-muted)', minWidth: '40px' }}>{percent}%</span>
     </div>
   );
 }
@@ -149,18 +149,18 @@ export default function PipelinePage() {
   });
 
   if (loading) {
-    return <div style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>Loading...</div>;
+    return <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Loading...</div>;
   }
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '28px', fontWeight: 600, color: '#111827', fontFamily: 'Georgia, serif' }}>Pipeline</h1>
+        <h1 style={{ fontSize: '28px', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'Georgia, serif' }}>Pipeline</h1>
         <Link
           href="/portal/new-site"
           style={{ 
             padding: '10px 20px', 
-            backgroundColor: '#2563EB', 
+            backgroundColor: 'var(--accent)', 
             color: '#FFFFFF', 
             fontSize: '14px',
             fontWeight: 600,
@@ -181,26 +181,26 @@ export default function PipelinePage() {
           placeholder="Search by name, city, or state..."
           style={{
             padding: '10px 14px',
-            border: '1px solid #D1D5DB',
+            border: '1px solid var(--border)',
             borderRadius: '6px',
             fontSize: '14px',
             width: '280px',
-            backgroundColor: '#FFFFFF',
-            color: '#111827',
+            backgroundColor: 'var(--bg-input)',
+            color: 'var(--text-primary)',
           }}
         />
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <label style={{ fontSize: '14px', color: '#6B7280' }}>Stage:</label>
+          <label style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Stage:</label>
           <select
             value={stageFilter}
             onChange={(e) => setStageFilter(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
             style={{ 
-              border: '1px solid #D1D5DB', 
+              border: '1px solid var(--border)', 
               borderRadius: '6px', 
               padding: '10px 14px', 
               fontSize: '14px', 
-              color: '#111827', 
-              backgroundColor: '#FFFFFF' 
+              color: 'var(--text-primary)', 
+              backgroundColor: 'var(--bg-input)' 
             }}
           >
             <option value="all">All Stages</option>
@@ -210,17 +210,17 @@ export default function PipelinePage() {
           </select>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <label style={{ fontSize: '14px', color: '#6B7280' }}>Status:</label>
+          <label style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Status:</label>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             style={{ 
-              border: '1px solid #D1D5DB', 
+              border: '1px solid var(--border)', 
               borderRadius: '6px', 
               padding: '10px 14px', 
               fontSize: '14px', 
-              color: '#111827', 
-              backgroundColor: '#FFFFFF' 
+              color: 'var(--text-primary)', 
+              backgroundColor: 'var(--bg-input)' 
             }}
           >
             <option value="all">All</option>
@@ -229,12 +229,12 @@ export default function PipelinePage() {
             <option value="killed">Killed</option>
           </select>
         </div>
-        <span style={{ fontSize: '14px', color: '#2563EB', fontWeight: 500 }}>{filteredSites.length} sites</span>
+        <span style={{ fontSize: '14px', color: 'var(--accent)', fontWeight: 500 }}>{filteredSites.length} sites</span>
       </div>
 
       {filteredSites.length === 0 ? (
-        <div style={{ backgroundColor: '#FFFFFF', padding: '48px', borderRadius: '12px', border: '1px solid #E5E7EB', textAlign: 'center' }}>
-          <p style={{ color: '#6B7280', marginBottom: '20px', fontSize: '16px' }}>
+        <div style={{ backgroundColor: 'var(--bg-card)', padding: '48px', borderRadius: '12px', border: '1px solid var(--border-card)', textAlign: 'center' }}>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '20px', fontSize: '16px' }}>
             {sites.length === 0 ? 'No sites found. Add your first site to get started.' : 'No sites match the current filters.'}
           </p>
           {sites.length === 0 && (
@@ -242,7 +242,7 @@ export default function PipelinePage() {
               href="/portal/new-site"
               style={{ 
                 padding: '12px 24px', 
-                backgroundColor: '#2563EB', 
+                backgroundColor: 'var(--accent)', 
                 color: '#FFFFFF', 
                 fontSize: '14px',
                 fontWeight: 600,
@@ -256,36 +256,36 @@ export default function PipelinePage() {
           )}
         </div>
       ) : (
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-card)', overflow: 'hidden' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid #E5E7EB', backgroundColor: '#F9FAFB' }}>
-                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Site</th>
-                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Stage</th>
-                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Progress</th>
-                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>MW</th>
-                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Risk</th>
-                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Status</th>
+              <tr style={{ borderBottom: '1px solid var(--border-card)', backgroundColor: 'var(--bg-primary)' }}>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Site</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Stage</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Progress</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>MW</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Risk</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Status</th>
               </tr>
             </thead>
             <tbody>
               {filteredSites.map((site, i) => (
-                <tr key={site.id} style={{ borderTop: i > 0 ? '1px solid #E5E7EB' : 'none' }}>
+                <tr key={site.id} style={{ borderTop: i > 0 ? '1px solid var(--border-card)' : 'none' }}>
                   <td style={{ padding: '16px 20px' }}>
                     <Link href={`/portal/sites/${site.id}`} style={{ textDecoration: 'none' }}>
-                      <p style={{ fontWeight: 600, color: '#111827', fontSize: '15px', marginBottom: '4px' }}>{site.name}</p>
-                      <p style={{ fontSize: '13px', color: '#6B7280' }}>{site.city}, {site.state}</p>
+                      <p style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '15px', marginBottom: '4px' }}>{site.name}</p>
+                      <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{site.city}, {site.state}</p>
                     </Link>
                   </td>
                   <td style={{ padding: '16px 20px' }}>
-                    <span style={{ padding: '6px 12px', fontSize: '12px', fontWeight: 500, backgroundColor: '#F3F4F6', color: '#374151', borderRadius: '6px', border: '1px solid #E5E7EB' }}>
+                    <span style={{ padding: '6px 12px', fontSize: '12px', fontWeight: 500, backgroundColor: 'var(--bg-primary)', color: 'var(--text-secondary)', borderRadius: '6px', border: '1px solid var(--border-card)' }}>
                       {site.stage}. {stageNames[site.stage] || 'Unknown'}
                     </span>
                   </td>
                   <td style={{ padding: '16px 20px' }}>
                     <ProgressBar completed={site.progress.completed} total={site.progress.total} />
                   </td>
-                  <td style={{ padding: '16px 20px', color: '#111827', fontWeight: 500, fontSize: '15px' }}>{site.estimatedMW || '—'} MW</td>
+                  <td style={{ padding: '16px 20px', color: 'var(--text-primary)', fontWeight: 500, fontSize: '15px' }}>{site.estimatedMW || '—'} MW</td>
                   <td style={{ padding: '16px 20px' }}>
                     <RiskDot level={site.riskLevel} />
                   </td>

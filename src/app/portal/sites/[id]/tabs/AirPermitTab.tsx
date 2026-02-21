@@ -90,38 +90,38 @@ export default function AirPermitTab({ siteId }: Props) {
   const completedSteps = Object.values(data.checklist).filter(i => i.status === 'complete').length;
   const selectedStateInfo = stateNotes.find(s => s.state === data.state);
 
-  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: '#6B7280' }}>Loading air permit data...</p></div>;
+  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: 'var(--text-muted)' }}>Loading air permit data...</p></div>;
 
-  const inputStyle = { width: '100%', padding: '10px 12px', backgroundColor: '#FFFFFF', border: '1px solid #D1D5DB', borderRadius: '8px', color: '#111827', fontSize: '14px' };
+  const inputStyle = { width: '100%', padding: '10px 12px', backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '14px' };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-      {saving && <div style={{ textAlign: 'right', fontSize: '14px', color: '#2563EB' }}>Saving...</div>}
+      {saving && <div style={{ textAlign: 'right', fontSize: '14px', color: 'var(--accent)' }}>Saving...</div>}
 
       {/* Permit Configuration */}
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Permit Configuration</h2>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Permit Configuration</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '24px' }}>
-          <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>Permit Type</label><select value={data.permit_type} onChange={(e) => updateData('permit_type', e.target.value)} style={inputStyle}>{permitTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}</select></div>
-          <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>State</label><select value={data.state} onChange={(e) => updateData('state', e.target.value)} style={inputStyle}>{stateNotes.map(s => <option key={s.state} value={s.state}>{s.state} - {s.agency}</option>)}</select></div>
-          <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>Consultant</label><input type="text" value={data.consultant} onChange={(e) => updateData('consultant', e.target.value)} placeholder="Firm name" style={inputStyle} /></div>
+          <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Permit Type</label><select value={data.permit_type} onChange={(e) => updateData('permit_type', e.target.value)} style={inputStyle}>{permitTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}</select></div>
+          <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>State</label><select value={data.state} onChange={(e) => updateData('state', e.target.value)} style={inputStyle}>{stateNotes.map(s => <option key={s.state} value={s.state}>{s.state} - {s.agency}</option>)}</select></div>
+          <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Consultant</label><input type="text" value={data.consultant} onChange={(e) => updateData('consultant', e.target.value)} placeholder="Firm name" style={inputStyle} /></div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-          <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>Consultant Contact</label><input type="text" value={data.consultant_contact} onChange={(e) => updateData('consultant_contact', e.target.value)} placeholder="Name, email, phone" style={inputStyle} /></div>
-          <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>Application Date</label><input type="date" value={data.application_date} onChange={(e) => updateData('application_date', e.target.value)} style={inputStyle} /></div>
-          <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '8px' }}>Expected Approval</label><input type="date" value={data.expected_approval} onChange={(e) => updateData('expected_approval', e.target.value)} style={inputStyle} /></div>
+          <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Consultant Contact</label><input type="text" value={data.consultant_contact} onChange={(e) => updateData('consultant_contact', e.target.value)} placeholder="Name, email, phone" style={inputStyle} /></div>
+          <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Application Date</label><input type="date" value={data.application_date} onChange={(e) => updateData('application_date', e.target.value)} style={inputStyle} /></div>
+          <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Expected Approval</label><input type="date" value={data.expected_approval} onChange={(e) => updateData('expected_approval', e.target.value)} style={inputStyle} /></div>
         </div>
       </div>
 
       {/* Permit Type Comparison */}
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Permit Type Comparison</h2>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Permit Type Comparison</h2>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead><tr style={{ borderBottom: '1px solid #E5E7EB' }}><th style={{ padding: '12px 16px', textAlign: 'left', color: '#6B7280', fontWeight: 500, fontSize: '14px' }}>Attribute</th>{permitTypes.map((type) => <th key={type.id} style={{ padding: '12px 16px', textAlign: 'left', fontSize: '14px', fontWeight: 500, color: data.permit_type === type.id ? '#2563EB' : '#6B7280', backgroundColor: data.permit_type === type.id ? '#EFF6FF' : 'transparent' }}>{type.name}</th>)}</tr></thead>
+            <thead><tr style={{ borderBottom: '1px solid var(--border-card)' }}><th style={{ padding: '12px 16px', textAlign: 'left', color: 'var(--text-muted)', fontWeight: 500, fontSize: '14px' }}>Attribute</th>{permitTypes.map((type) => <th key={type.id} style={{ padding: '12px 16px', textAlign: 'left', fontSize: '14px', fontWeight: 500, color: data.permit_type === type.id ? 'var(--accent)' : 'var(--text-muted)', backgroundColor: data.permit_type === type.id ? '#EFF6FF' : 'transparent' }}>{type.name}</th>)}</tr></thead>
             <tbody>
-              <tr style={{ borderBottom: '1px solid #E5E7EB' }}><td style={{ padding: '12px 16px', color: '#6B7280' }}>Timeline</td>{permitTypes.map((type) => <td key={type.id} style={{ padding: '12px 16px', color: '#111827', backgroundColor: data.permit_type === type.id ? '#EFF6FF' : 'transparent' }}>{type.timeline}</td>)}</tr>
-              <tr style={{ borderBottom: '1px solid #E5E7EB' }}><td style={{ padding: '12px 16px', color: '#6B7280' }}>Cost</td>{permitTypes.map((type) => <td key={type.id} style={{ padding: '12px 16px', color: '#111827', backgroundColor: data.permit_type === type.id ? '#EFF6FF' : 'transparent' }}>{type.cost}</td>)}</tr>
+              <tr style={{ borderBottom: '1px solid var(--border-card)' }}><td style={{ padding: '12px 16px', color: 'var(--text-muted)' }}>Timeline</td>{permitTypes.map((type) => <td key={type.id} style={{ padding: '12px 16px', color: 'var(--text-primary)', backgroundColor: data.permit_type === type.id ? '#EFF6FF' : 'transparent' }}>{type.timeline}</td>)}</tr>
+              <tr style={{ borderBottom: '1px solid var(--border-card)' }}><td style={{ padding: '12px 16px', color: 'var(--text-muted)' }}>Cost</td>{permitTypes.map((type) => <td key={type.id} style={{ padding: '12px 16px', color: 'var(--text-primary)', backgroundColor: data.permit_type === type.id ? '#EFF6FF' : 'transparent' }}>{type.cost}</td>)}</tr>
             </tbody>
           </table>
         </div>
@@ -129,30 +129,30 @@ export default function AirPermitTab({ siteId }: Props) {
 
       {/* State Notes */}
       {selectedStateInfo && (
-        <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>State Information: {selectedStateInfo.state}</h2>
+        <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>State Information: {selectedStateInfo.state}</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-            <div style={{ padding: '16px', backgroundColor: '#F9FAFB', borderRadius: '8px' }}><p style={{ color: '#6B7280', fontSize: '14px' }}>Agency</p><p style={{ color: '#111827', fontWeight: 500 }}>{selectedStateInfo.agency}</p></div>
-            <div style={{ padding: '16px', backgroundColor: '#F9FAFB', borderRadius: '8px' }}><p style={{ color: '#6B7280', fontSize: '14px' }}>Typical Timeline</p><p style={{ color: '#111827', fontWeight: 500 }}>{selectedStateInfo.timeline}</p></div>
-            <div style={{ padding: '16px', backgroundColor: '#F9FAFB', borderRadius: '8px' }}><p style={{ color: '#6B7280', fontSize: '14px' }}>Difficulty</p><p style={{ fontWeight: 500, color: selectedStateInfo.difficulty === 'Easy' ? '#22C55E' : selectedStateInfo.difficulty === 'Moderate' ? '#EAB308' : '#EF4444' }}>{selectedStateInfo.difficulty}</p></div>
+            <div style={{ padding: '16px', backgroundColor: 'var(--bg-primary)', borderRadius: '8px' }}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Agency</p><p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{selectedStateInfo.agency}</p></div>
+            <div style={{ padding: '16px', backgroundColor: 'var(--bg-primary)', borderRadius: '8px' }}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Typical Timeline</p><p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{selectedStateInfo.timeline}</p></div>
+            <div style={{ padding: '16px', backgroundColor: 'var(--bg-primary)', borderRadius: '8px' }}><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Difficulty</p><p style={{ fontWeight: 500, color: selectedStateInfo.difficulty === 'Easy' ? '#22C55E' : selectedStateInfo.difficulty === 'Moderate' ? '#EAB308' : '#EF4444' }}>{selectedStateInfo.difficulty}</p></div>
           </div>
         </div>
       )}
 
       {/* Permit Pathway Checklist */}
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-          <div><h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', fontFamily: 'Georgia, serif' }}>Permit Pathway Checklist</h2><p style={{ color: '#6B7280', fontSize: '14px' }}>{completedSteps} of {permitChecklist.length} steps complete</p></div>
-          <div style={{ width: '128px', backgroundColor: '#E5E7EB', borderRadius: '9999px', height: '8px' }}><div style={{ backgroundColor: '#2563EB', height: '8px', borderRadius: '9999px', width: `${(completedSteps / permitChecklist.length) * 100}%`, transition: 'width 0.3s' }} /></div>
+          <div><h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'Georgia, serif' }}>Permit Pathway Checklist</h2><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>{completedSteps} of {permitChecklist.length} steps complete</p></div>
+          <div style={{ width: '128px', backgroundColor: 'var(--border)', borderRadius: '9999px', height: '8px' }}><div style={{ backgroundColor: 'var(--accent)', height: '8px', borderRadius: '9999px', width: `${(completedSteps / permitChecklist.length) * 100}%`, transition: 'width 0.3s' }} /></div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {permitChecklist.map((item) => (
-            <div key={item.step} style={{ padding: '16px', backgroundColor: '#F9FAFB', borderRadius: '8px' }}>
+            <div key={item.step} style={{ padding: '16px', backgroundColor: 'var(--bg-primary)', borderRadius: '8px' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                <span style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563EB', fontWeight: 500, flexShrink: 0 }}>{item.step}</span>
+                <span style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)', fontWeight: 500, flexShrink: 0 }}>{item.step}</span>
                 <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '16px' }}>
-                  <div><p style={{ color: '#111827', fontWeight: 500 }}>{item.name}</p><p style={{ color: '#6B7280', fontSize: '14px' }}>{item.description}</p></div>
-                  <select value={data.checklist[item.step]?.status || 'not_started'} onChange={(e) => updateChecklist(item.step, 'status', e.target.value)} style={{ ...inputStyle, borderColor: data.checklist[item.step]?.status === 'complete' ? '#22C55E' : data.checklist[item.step]?.status === 'in_progress' ? '#EAB308' : data.checklist[item.step]?.status === 'blocked' ? '#EF4444' : '#D1D5DB', color: data.checklist[item.step]?.status === 'complete' ? '#22C55E' : data.checklist[item.step]?.status === 'in_progress' ? '#CA8A04' : data.checklist[item.step]?.status === 'blocked' ? '#DC2626' : '#6B7280' }}>
+                  <div><p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{item.name}</p><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>{item.description}</p></div>
+                  <select value={data.checklist[item.step]?.status || 'not_started'} onChange={(e) => updateChecklist(item.step, 'status', e.target.value)} style={{ ...inputStyle, borderColor: data.checklist[item.step]?.status === 'complete' ? '#22C55E' : data.checklist[item.step]?.status === 'in_progress' ? '#EAB308' : data.checklist[item.step]?.status === 'blocked' ? '#EF4444' : 'var(--border)', color: data.checklist[item.step]?.status === 'complete' ? '#22C55E' : data.checklist[item.step]?.status === 'in_progress' ? '#CA8A04' : data.checklist[item.step]?.status === 'blocked' ? '#DC2626' : 'var(--text-muted)' }}>
                     <option value="not_started">Not Started</option>
                     <option value="in_progress">In Progress</option>
                     <option value="complete">Complete</option>
@@ -167,8 +167,8 @@ export default function AirPermitTab({ siteId }: Props) {
       </div>
 
       {/* Notes */}
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Additional Notes</h2>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Additional Notes</h2>
         <textarea value={data.notes} onChange={(e) => updateData('notes', e.target.value)} rows={4} placeholder="Key concerns, communications, timeline updates..." style={{ ...inputStyle, resize: 'vertical' }} />
       </div>
     </div>

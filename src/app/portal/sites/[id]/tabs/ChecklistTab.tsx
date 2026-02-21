@@ -127,20 +127,20 @@ export default function ChecklistTab({ siteId, currentStage, onStageAdvance }: P
   const getItemStatus = (itemKey: string): ChecklistItem | undefined => items.find(i => i.item_key === itemKey);
   const toggleStage = (stageNum: number) => setExpandedStages(prev => ({ ...prev, [stageNum]: !prev[stageNum] }));
 
-  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: '#6B7280' }}>Loading checklist...</p></div>;
+  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: 'var(--text-muted)' }}>Loading checklist...</p></div>;
 
   const percent = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
-  const inputStyle = { backgroundColor: '#FFFFFF', border: '1px solid #D1D5DB', borderRadius: '8px', padding: '8px 12px', color: '#111827', fontSize: '14px' };
+  const inputStyle = { backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: '8px', padding: '8px 12px', color: 'var(--text-primary)', fontSize: '14px' };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Overall Progress */}
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-          <span style={{ color: '#111827', fontWeight: 500 }}>{completedItems}/{totalItems} Complete</span>
-          <span style={{ color: '#6B7280' }}>{percent}%</span>
+          <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{completedItems}/{totalItems} Complete</span>
+          <span style={{ color: 'var(--text-muted)' }}>{percent}%</span>
         </div>
-        <div style={{ width: '100%', backgroundColor: '#E5E7EB', borderRadius: '9999px', height: '12px' }}>
+        <div style={{ width: '100%', backgroundColor: 'var(--border)', borderRadius: '9999px', height: '12px' }}>
           <div style={{ height: '12px', borderRadius: '9999px', backgroundColor: percent >= 75 ? '#22C55E' : percent >= 50 ? '#EAB308' : '#EF4444', width: `${percent}%`, transition: 'width 0.3s' }} />
         </div>
       </div>
@@ -148,10 +148,10 @@ export default function ChecklistTab({ siteId, currentStage, onStageAdvance }: P
       {/* Stage Advance Prompt */}
       {showAdvancePrompt && (
         <div style={{ backgroundColor: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div><p style={{ color: '#1D4ED8', fontWeight: 500 }}>🎉 All Stage {showAdvancePrompt - 1} items complete!</p><p style={{ color: '#6B7280', fontSize: '14px' }}>Ready to advance to {stageDefinitions[showAdvancePrompt]?.name}?</p></div>
+          <div><p style={{ color: '#1D4ED8', fontWeight: 500 }}>🎉 All Stage {showAdvancePrompt - 1} items complete!</p><p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Ready to advance to {stageDefinitions[showAdvancePrompt]?.name}?</p></div>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button onClick={() => advanceStage(showAdvancePrompt)} style={{ padding: '8px 16px', backgroundColor: '#2563EB', color: '#FFFFFF', fontWeight: 500, borderRadius: '8px', border: 'none', cursor: 'pointer' }}>Advance Stage</button>
-            <button onClick={() => setShowAdvancePrompt(null)} style={{ padding: '8px 16px', backgroundColor: '#F3F4F6', color: '#374151', borderRadius: '8px', border: '1px solid #D1D5DB', cursor: 'pointer' }}>Later</button>
+            <button onClick={() => advanceStage(showAdvancePrompt)} style={{ padding: '8px 16px', backgroundColor: 'var(--accent)', color: '#FFFFFF', fontWeight: 500, borderRadius: '8px', border: 'none', cursor: 'pointer' }}>Advance Stage</button>
+            <button onClick={() => setShowAdvancePrompt(null)} style={{ padding: '8px 16px', backgroundColor: 'var(--bg-primary)', color: 'var(--text-secondary)', borderRadius: '8px', border: '1px solid var(--border)', cursor: 'pointer' }}>Later</button>
           </div>
         </div>
       )}
@@ -165,22 +165,22 @@ export default function ChecklistTab({ siteId, currentStage, onStageAdvance }: P
         const isCurrent = stageNum === currentStage;
         const pct = total > 0 ? (complete / total) * 100 : 0;
         return (
-          <div key={stageNum} style={{ backgroundColor: '#FFFFFF', border: isCurrent ? '2px solid #BFDBFE' : '1px solid #E5E7EB', borderRadius: '12px', overflow: 'hidden' }}>
-            <button onClick={() => toggleStage(stageNum)} style={{ width: '100%', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: isExpanded ? '#F9FAFB' : '#FFFFFF', border: 'none', cursor: 'pointer', borderBottom: isExpanded ? '1px solid #E5E7EB' : 'none' }}>
+          <div key={stageNum} style={{ backgroundColor: 'var(--bg-card)', border: isCurrent ? '2px solid #BFDBFE' : '1px solid var(--border-card)', borderRadius: '12px', overflow: 'hidden' }}>
+            <button onClick={() => toggleStage(stageNum)} style={{ width: '100%', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: isExpanded ? 'var(--bg-primary)' : 'var(--bg-card)', border: 'none', cursor: 'pointer', borderBottom: isExpanded ? '1px solid var(--border-card)' : 'none' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontSize: '18px' }}>{isExpanded ? '▼' : '▶'}</span>
+                <span style={{ fontSize: '18px', color: 'var(--text-muted)' }}>{isExpanded ? '▼' : '▶'}</span>
                 <div style={{ textAlign: 'left' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', fontFamily: 'Georgia, serif' }}>{stage.name}</h3>
+                    <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'Georgia, serif' }}>{stage.name}</h3>
                     {isComplete && <span style={{ color: '#22C55E' }}>✓</span>}
                     {isCurrent && <span style={{ padding: '2px 8px', fontSize: '12px', backgroundColor: '#DBEAFE', color: '#1D4ED8', borderRadius: '4px' }}>Current</span>}
                   </div>
-                  <p style={{ color: '#6B7280', fontSize: '14px' }}>{complete}/{total} complete</p>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>{complete}/{total} complete</p>
                 </div>
               </div>
               <div style={{ width: '96px' }}>
-                <div style={{ width: '100%', backgroundColor: '#E5E7EB', borderRadius: '9999px', height: '8px' }}>
-                  <div style={{ height: '8px', borderRadius: '9999px', backgroundColor: isComplete ? '#22C55E' : '#2563EB', width: `${pct}%`, transition: 'width 0.3s' }} />
+                <div style={{ width: '100%', backgroundColor: 'var(--border)', borderRadius: '9999px', height: '8px' }}>
+                  <div style={{ height: '8px', borderRadius: '9999px', backgroundColor: isComplete ? '#22C55E' : 'var(--accent)', width: `${pct}%`, transition: 'width 0.3s' }} />
                 </div>
               </div>
             </button>
@@ -191,19 +191,19 @@ export default function ChecklistTab({ siteId, currentStage, onStageAdvance }: P
                   const status = item?.status || 'not_started';
                   const isGate = def.isGate;
                   return (
-                    <div key={def.key} style={{ padding: '16px', borderTop: '1px solid #E5E7EB', backgroundColor: isGate ? '#F9FAFB' : '#FFFFFF' }}>
+                    <div key={def.key} style={{ padding: '16px', borderTop: '1px solid var(--border-card)', backgroundColor: isGate ? 'var(--bg-primary)' : 'var(--bg-card)' }}>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                        <button onClick={() => updateItemStatus(def.key, status === 'complete' ? 'not_started' : 'complete')} style={{ width: '24px', height: '24px', borderRadius: '4px', border: `2px solid ${status === 'complete' ? '#22C55E' : status === 'in_progress' ? '#EAB308' : status === 'blocked' ? '#EF4444' : '#D1D5DB'}`, backgroundColor: status === 'complete' ? '#DCFCE7' : status === 'in_progress' ? '#FEF3C7' : status === 'blocked' ? '#FEE2E2' : '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, marginTop: '4px' }}>
+                        <button onClick={() => updateItemStatus(def.key, status === 'complete' ? 'not_started' : 'complete')} style={{ width: '24px', height: '24px', borderRadius: '4px', border: `2px solid ${status === 'complete' ? '#22C55E' : status === 'in_progress' ? '#EAB308' : status === 'blocked' ? '#EF4444' : 'var(--border)'}`, backgroundColor: status === 'complete' ? '#DCFCE7' : status === 'in_progress' ? '#FEF3C7' : status === 'blocked' ? '#FEE2E2' : 'var(--bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, marginTop: '4px' }}>
                           {status === 'complete' && <svg style={{ width: '16px', height: '16px', color: '#22C55E' }} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>}
                           {status === 'in_progress' && <span style={{ color: '#EAB308', fontSize: '12px' }}>⟳</span>}
                           {status === 'blocked' && <svg style={{ width: '16px', height: '16px', color: '#EF4444' }} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>}
                         </button>
                         <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', alignItems: 'center' }}>
                           <div>
-                            <p style={{ fontWeight: 500, color: status === 'complete' ? '#9CA3AF' : isGate ? '#2563EB' : '#111827', textDecoration: status === 'complete' ? 'line-through' : 'none' }}>{isGate && '🚪 '}{def.name}</p>
+                            <p style={{ fontWeight: 500, color: status === 'complete' ? 'var(--text-muted)' : isGate ? 'var(--accent)' : 'var(--text-primary)', textDecoration: status === 'complete' ? 'line-through' : 'none' }}>{isGate && '🚪 '}{def.name}</p>
                             {item?.completed_date && <p style={{ color: '#22C55E', fontSize: '14px', marginTop: '4px' }}>Completed: {item.completed_date}</p>}
                           </div>
-                          <select value={status} onChange={(e) => updateItemStatus(def.key, e.target.value as ItemStatus)} style={{ ...inputStyle, borderColor: status === 'complete' ? '#22C55E' : status === 'in_progress' ? '#EAB308' : status === 'blocked' ? '#EF4444' : '#D1D5DB', color: status === 'complete' ? '#22C55E' : status === 'in_progress' ? '#CA8A04' : status === 'blocked' ? '#DC2626' : '#6B7280' }}>
+                          <select value={status} onChange={(e) => updateItemStatus(def.key, e.target.value as ItemStatus)} style={{ ...inputStyle, borderColor: status === 'complete' ? '#22C55E' : status === 'in_progress' ? '#EAB308' : status === 'blocked' ? '#EF4444' : 'var(--border)', color: status === 'complete' ? '#22C55E' : status === 'in_progress' ? '#CA8A04' : status === 'blocked' ? '#DC2626' : 'var(--text-muted)' }}>
                             <option value="not_started">☐ Not Started</option>
                             <option value="in_progress">🔄 In Progress</option>
                             <option value="complete">✅ Complete</option>
@@ -222,14 +222,14 @@ export default function ChecklistTab({ siteId, currentStage, onStageAdvance }: P
       })}
 
       {/* Legend */}
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '16px' }}>
-        <p style={{ color: '#6B7280', fontSize: '14px', marginBottom: '8px' }}>Status Legend:</p>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '16px' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '8px' }}>Status Legend:</p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', fontSize: '14px' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><span>☐</span> Not Started</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-primary)' }}><span>☐</span> Not Started</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#CA8A04' }}><span>🔄</span> In Progress</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#22C55E' }}><span>✅</span> Complete</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#DC2626' }}><span>🚫</span> Blocked</span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#2563EB' }}><span>🚪</span> Gate Decision</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--accent)' }}><span>🚪</span> Gate Decision</span>
         </div>
       </div>
     </div>

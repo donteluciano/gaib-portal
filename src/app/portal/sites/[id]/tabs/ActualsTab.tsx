@@ -72,50 +72,50 @@ export default function ActualsTab({ siteId }: Props) {
   const totalActual = Object.values(actuals).reduce((sum, a) => sum + (a.actual || 0), 0);
   const totalVariance = totalActual - totalEstimated;
 
-  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: '#6B7280' }}>Loading budget data...</p></div>;
+  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: 'var(--text-muted)' }}>Loading budget data...</p></div>;
 
-  const inputStyle = { width: '96px', backgroundColor: '#FFFFFF', border: '1px solid #D1D5DB', borderRadius: '4px', padding: '4px 8px', color: '#111827', textAlign: 'right' as const, fontSize: '14px' };
+  const inputStyle = { width: '96px', backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: '4px', padding: '4px 8px', color: 'var(--text-primary)', textAlign: 'right' as const, fontSize: '14px' };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      {lastSaved && <div style={{ textAlign: 'right', fontSize: '14px', color: '#6B7280' }}>{saving ? 'Saving...' : `Last saved: ${lastSaved.toLocaleTimeString()}`}</div>}
+      {lastSaved && <div style={{ textAlign: 'right', fontSize: '14px', color: 'var(--text-muted)' }}>{saving ? 'Saving...' : `Last saved: ${lastSaved.toLocaleTimeString()}`}</div>}
 
       {/* Summary Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-        <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
-          <p style={{ color: '#6B7280', fontSize: '14px' }}>Total Estimated</p>
-          <p style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>${(totalEstimated / 1000).toFixed(0)}K</p>
+        <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Total Estimated</p>
+          <p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>${(totalEstimated / 1000).toFixed(0)}K</p>
         </div>
-        <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
-          <p style={{ color: '#6B7280', fontSize: '14px' }}>Total Actual</p>
-          <p style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>${(totalActual / 1000).toFixed(0)}K</p>
+        <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Total Actual</p>
+          <p style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>${(totalActual / 1000).toFixed(0)}K</p>
         </div>
-        <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
-          <p style={{ color: '#6B7280', fontSize: '14px' }}>Variance</p>
+        <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Variance</p>
           <p style={{ fontSize: '24px', fontWeight: 700, color: totalVariance > 0 ? '#DC2626' : '#16A34A' }}>{totalVariance > 0 ? '+' : ''}${(totalVariance / 1000).toFixed(0)}K</p>
         </div>
       </div>
 
       {/* Cost Table */}
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', overflow: 'hidden' }}>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
-            <tr style={{ borderBottom: '1px solid #E5E7EB', backgroundColor: '#F9FAFB' }}>
-              <th style={{ padding: '16px 24px', textAlign: 'left', color: '#374151', fontWeight: 500 }}>Category</th>
-              <th style={{ padding: '16px 24px', textAlign: 'right', color: '#374151', fontWeight: 500 }}>Estimated</th>
-              <th style={{ padding: '16px 24px', textAlign: 'right', color: '#374151', fontWeight: 500 }}>Actual</th>
-              <th style={{ padding: '16px 24px', textAlign: 'right', color: '#374151', fontWeight: 500 }}>Variance</th>
-              <th style={{ padding: '16px 24px', textAlign: 'left', color: '#374151', fontWeight: 500 }}>Notes</th>
+            <tr style={{ borderBottom: '1px solid var(--border-card)', backgroundColor: 'var(--bg-primary)' }}>
+              <th style={{ padding: '16px 24px', textAlign: 'left', color: 'var(--text-secondary)', fontWeight: 500 }}>Category</th>
+              <th style={{ padding: '16px 24px', textAlign: 'right', color: 'var(--text-secondary)', fontWeight: 500 }}>Estimated</th>
+              <th style={{ padding: '16px 24px', textAlign: 'right', color: 'var(--text-secondary)', fontWeight: 500 }}>Actual</th>
+              <th style={{ padding: '16px 24px', textAlign: 'right', color: 'var(--text-secondary)', fontWeight: 500 }}>Variance</th>
+              <th style={{ padding: '16px 24px', textAlign: 'left', color: 'var(--text-secondary)', fontWeight: 500 }}>Notes</th>
             </tr>
           </thead>
           <tbody>
             {costCategories.map((category) => {
               const variance = (actuals[category.key]?.actual || 0) - (actuals[category.key]?.estimated || 0);
               return (
-                <tr key={category.key} style={{ borderBottom: '1px solid #E5E7EB' }}>
+                <tr key={category.key} style={{ borderBottom: '1px solid var(--border-card)' }}>
                   <td style={{ padding: '16px 24px' }}>
-                    <p style={{ color: '#111827', fontWeight: 500 }}>{category.name}</p>
-                    <p style={{ color: '#6B7280', fontSize: '14px' }}>{category.description}</p>
+                    <p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{category.name}</p>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>{category.description}</p>
                   </td>
                   <td style={{ padding: '16px 24px' }}><input type="number" min="0" value={actuals[category.key]?.estimated || 0} onChange={(e) => updateActual(category.key, 'estimated', Math.max(0, parseInt(e.target.value) || 0))} style={inputStyle} /></td>
                   <td style={{ padding: '16px 24px' }}><input type="number" min="0" value={actuals[category.key]?.actual || 0} onChange={(e) => updateActual(category.key, 'actual', Math.max(0, parseInt(e.target.value) || 0))} style={inputStyle} /></td>
@@ -126,10 +126,10 @@ export default function ActualsTab({ siteId }: Props) {
             })}
           </tbody>
           <tfoot>
-            <tr style={{ backgroundColor: '#F9FAFB' }}>
-              <td style={{ padding: '16px 24px', color: '#111827', fontWeight: 600 }}>Total</td>
-              <td style={{ padding: '16px 24px', color: '#111827', fontWeight: 600, textAlign: 'right' }}>${(totalEstimated / 1000).toFixed(0)}K</td>
-              <td style={{ padding: '16px 24px', color: '#111827', fontWeight: 600, textAlign: 'right' }}>${(totalActual / 1000).toFixed(0)}K</td>
+            <tr style={{ backgroundColor: 'var(--bg-primary)' }}>
+              <td style={{ padding: '16px 24px', color: 'var(--text-primary)', fontWeight: 600 }}>Total</td>
+              <td style={{ padding: '16px 24px', color: 'var(--text-primary)', fontWeight: 600, textAlign: 'right' }}>${(totalEstimated / 1000).toFixed(0)}K</td>
+              <td style={{ padding: '16px 24px', color: 'var(--text-primary)', fontWeight: 600, textAlign: 'right' }}>${(totalActual / 1000).toFixed(0)}K</td>
               <td style={{ padding: '16px 24px', fontWeight: 600, textAlign: 'right', color: totalVariance > 0 ? '#DC2626' : '#16A34A' }}>{totalVariance > 0 ? '+' : ''}${(totalVariance / 1000).toFixed(0)}K</td>
               <td></td>
             </tr>
@@ -138,18 +138,18 @@ export default function ActualsTab({ siteId }: Props) {
       </div>
 
       {/* Budget Burn Chart */}
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Budget Burn by Category</h3>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Budget Burn by Category</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {costCategories.filter(c => (actuals[c.key]?.estimated || 0) > 0).map((category) => {
             const pct = actuals[category.key]?.estimated ? (actuals[category.key].actual / actuals[category.key].estimated) * 100 : 0;
             return (
               <div key={category.key}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', marginBottom: '4px' }}>
-                  <span style={{ color: '#6B7280' }}>{category.name}</span>
-                  <span style={{ color: pct > 100 ? '#DC2626' : '#111827' }}>{pct.toFixed(0)}%</span>
+                  <span style={{ color: 'var(--text-muted)' }}>{category.name}</span>
+                  <span style={{ color: pct > 100 ? '#DC2626' : 'var(--text-primary)' }}>{pct.toFixed(0)}%</span>
                 </div>
-                <div style={{ width: '100%', backgroundColor: '#E5E7EB', borderRadius: '9999px', height: '12px' }}>
+                <div style={{ width: '100%', backgroundColor: 'var(--border)', borderRadius: '9999px', height: '12px' }}>
                   <div style={{ height: '12px', borderRadius: '9999px', backgroundColor: pct > 100 ? '#DC2626' : pct > 80 ? '#F59E0B' : '#22C55E', width: `${Math.min(pct, 100)}%` }} />
                 </div>
               </div>

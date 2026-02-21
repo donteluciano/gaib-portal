@@ -72,79 +72,79 @@ export default function ReportsPage() {
   const avgStage = sites.length > 0 ? (sites.reduce((sum, s) => sum + s.stage, 0) / sites.length).toFixed(1) : '0';
   const stageDistribution = Object.fromEntries([1, 2, 3, 4, 5, 6, 7].map(stage => [stage, sites.filter(s => s.stage === stage).length]));
 
-  if (loading) return <div style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>Loading...</div>;
+  if (loading) return <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>Loading...</div>;
 
   return (
     <div ref={printRef}>
       <div style={{ marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#111827' }}>Reports</h1>
-        <p style={{ color: '#6B7280', fontSize: '14px' }}>Generate portfolio summaries and export data.</p>
+        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--text-primary)' }}>Reports</h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Generate portfolio summaries and export data.</p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-        <div style={{ backgroundColor: '#FFFFFF', padding: '20px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
-          <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '4px' }}>Total Sites</p>
-          <p style={{ fontSize: '28px', fontWeight: 600, color: '#111827' }}>{sites.length}</p>
+        <div style={{ backgroundColor: 'var(--bg-card)', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-card)' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '4px' }}>Total Sites</p>
+          <p style={{ fontSize: '28px', fontWeight: 600, color: 'var(--text-primary)' }}>{sites.length}</p>
         </div>
-        <div style={{ backgroundColor: '#FFFFFF', padding: '20px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
-          <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '4px' }}>Active Sites</p>
+        <div style={{ backgroundColor: 'var(--bg-card)', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-card)' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '4px' }}>Active Sites</p>
           <p style={{ fontSize: '28px', fontWeight: 600, color: '#22C55E' }}>{activeSites}</p>
         </div>
-        <div style={{ backgroundColor: '#FFFFFF', padding: '20px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
-          <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '4px' }}>Total MW</p>
-          <p style={{ fontSize: '28px', fontWeight: 600, color: '#2563EB' }}>{totalMW}</p>
+        <div style={{ backgroundColor: 'var(--bg-card)', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-card)' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '4px' }}>Total MW</p>
+          <p style={{ fontSize: '28px', fontWeight: 600, color: 'var(--accent)' }}>{totalMW}</p>
         </div>
-        <div style={{ backgroundColor: '#FFFFFF', padding: '20px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
-          <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '4px' }}>Avg Stage</p>
+        <div style={{ backgroundColor: 'var(--bg-card)', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-card)' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '4px' }}>Avg Stage</p>
           <p style={{ fontSize: '28px', fontWeight: 600, color: '#F59E0B' }}>{avgStage}</p>
         </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-        <div onClick={() => setSelectedReport(selectedReport === 'summary' ? null : 'summary')} style={{ backgroundColor: '#FFFFFF', padding: '20px', borderRadius: '8px', border: selectedReport === 'summary' ? '2px solid #2563EB' : '1px solid #E5E7EB', cursor: 'pointer' }}>
+        <div onClick={() => setSelectedReport(selectedReport === 'summary' ? null : 'summary')} style={{ backgroundColor: 'var(--bg-card)', padding: '20px', borderRadius: '8px', border: selectedReport === 'summary' ? '2px solid var(--accent)' : '1px solid var(--border-card)', cursor: 'pointer' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-            <div style={{ width: '40px', height: '40px', backgroundColor: '#F3F4F6', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>📊</div>
-            <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#111827' }}>Portfolio Summary</h3>
+            <div style={{ width: '40px', height: '40px', backgroundColor: 'var(--bg-primary)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>📊</div>
+            <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>Portfolio Summary</h3>
           </div>
-          <p style={{ fontSize: '14px', color: '#6B7280' }}>Overview of all sites with key metrics, stages, and pipeline status.</p>
+          <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Overview of all sites with key metrics, stages, and pipeline status.</p>
         </div>
-        <div onClick={() => setSelectedReport(selectedReport === 'stages' ? null : 'stages')} style={{ backgroundColor: '#FFFFFF', padding: '20px', borderRadius: '8px', border: selectedReport === 'stages' ? '2px solid #2563EB' : '1px solid #E5E7EB', cursor: 'pointer' }}>
+        <div onClick={() => setSelectedReport(selectedReport === 'stages' ? null : 'stages')} style={{ backgroundColor: 'var(--bg-card)', padding: '20px', borderRadius: '8px', border: selectedReport === 'stages' ? '2px solid var(--accent)' : '1px solid var(--border-card)', cursor: 'pointer' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-            <div style={{ width: '40px', height: '40px', backgroundColor: '#F3F4F6', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>📈</div>
-            <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#111827' }}>Stage Distribution</h3>
+            <div style={{ width: '40px', height: '40px', backgroundColor: 'var(--bg-primary)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>📈</div>
+            <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>Stage Distribution</h3>
           </div>
-          <p style={{ fontSize: '14px', color: '#6B7280' }}>Breakdown of sites across all 7 pipeline stages.</p>
+          <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Breakdown of sites across all 7 pipeline stages.</p>
         </div>
-        <div onClick={() => setSelectedReport(selectedReport === 'capacity' ? null : 'capacity')} style={{ backgroundColor: '#FFFFFF', padding: '20px', borderRadius: '8px', border: selectedReport === 'capacity' ? '2px solid #2563EB' : '1px solid #E5E7EB', cursor: 'pointer' }}>
+        <div onClick={() => setSelectedReport(selectedReport === 'capacity' ? null : 'capacity')} style={{ backgroundColor: 'var(--bg-card)', padding: '20px', borderRadius: '8px', border: selectedReport === 'capacity' ? '2px solid var(--accent)' : '1px solid var(--border-card)', cursor: 'pointer' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-            <div style={{ width: '40px', height: '40px', backgroundColor: '#F3F4F6', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>⚡</div>
-            <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#111827' }}>MW Capacity Report</h3>
+            <div style={{ width: '40px', height: '40px', backgroundColor: 'var(--bg-primary)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>⚡</div>
+            <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>MW Capacity Report</h3>
           </div>
-          <p style={{ fontSize: '14px', color: '#6B7280' }}>Estimated megawatt capacity per site and portfolio total.</p>
+          <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Estimated megawatt capacity per site and portfolio total.</p>
         </div>
       </div>
 
       {selectedReport === 'summary' && (
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', border: '1px solid #E5E7EB', padding: '24px', marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '16px' }}>Portfolio Summary</h2>
-          {sites.length === 0 ? <p style={{ color: '#6B7280' }}>No sites in portfolio yet.</p> : (
+        <div style={{ backgroundColor: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-card)', padding: '24px', marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px' }}>Portfolio Summary</h2>
+          {sites.length === 0 ? <p style={{ color: 'var(--text-muted)' }}>No sites in portfolio yet.</p> : (
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
-                <tr style={{ borderBottom: '2px solid #E5E7EB' }}>
-                  <th style={{ padding: '12px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase' }}>Site</th>
-                  <th style={{ padding: '12px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase' }}>Location</th>
-                  <th style={{ padding: '12px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase' }}>Stage</th>
-                  <th style={{ padding: '12px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase' }}>MW</th>
-                  <th style={{ padding: '12px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase' }}>Status</th>
+                <tr style={{ borderBottom: '2px solid var(--border-card)' }}>
+                  <th style={{ padding: '12px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Site</th>
+                  <th style={{ padding: '12px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Location</th>
+                  <th style={{ padding: '12px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Stage</th>
+                  <th style={{ padding: '12px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>MW</th>
+                  <th style={{ padding: '12px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Status</th>
                 </tr>
               </thead>
               <tbody>
                 {sites.map((site) => (
-                  <tr key={site.id} style={{ borderBottom: '1px solid #E5E7EB' }}>
-                    <td style={{ padding: '12px', fontWeight: 500, color: '#111827' }}>{site.name}</td>
-                    <td style={{ padding: '12px', color: '#6B7280' }}>{site.city}, {site.state}</td>
-                    <td style={{ padding: '12px' }}><span style={{ padding: '4px 8px', fontSize: '12px', fontWeight: 500, backgroundColor: '#F3F4F6', color: '#374151', borderRadius: '4px' }}>{site.stage}. {stageNames[site.stage]}</span></td>
-                    <td style={{ padding: '12px', color: '#111827' }}>{calculateMW(site)} MW</td>
+                  <tr key={site.id} style={{ borderBottom: '1px solid var(--border-card)' }}>
+                    <td style={{ padding: '12px', fontWeight: 500, color: 'var(--text-primary)' }}>{site.name}</td>
+                    <td style={{ padding: '12px', color: 'var(--text-muted)' }}>{site.city}, {site.state}</td>
+                    <td style={{ padding: '12px' }}><span style={{ padding: '4px 8px', fontSize: '12px', fontWeight: 500, backgroundColor: 'var(--bg-primary)', color: 'var(--text-secondary)', borderRadius: '4px' }}>{site.stage}. {stageNames[site.stage]}</span></td>
+                    <td style={{ padding: '12px', color: 'var(--text-primary)' }}>{calculateMW(site)} MW</td>
                     <td style={{ padding: '12px' }}><span style={{ padding: '4px 8px', fontSize: '12px', fontWeight: 500, backgroundColor: site.status === 'active' ? '#DCFCE7' : '#FEE2E2', color: site.status === 'active' ? '#166534' : '#991B1B', borderRadius: '4px', textTransform: 'capitalize' }}>{site.status}</span></td>
                   </tr>
                 ))}
@@ -155,21 +155,21 @@ export default function ReportsPage() {
       )}
 
       {selectedReport === 'stages' && (
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', border: '1px solid #E5E7EB', padding: '24px', marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '16px' }}>Stage Distribution</h2>
+        <div style={{ backgroundColor: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-card)', padding: '24px', marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px' }}>Stage Distribution</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
             {[1, 2, 3, 4, 5, 6, 7].map(stage => {
               const count = stageDistribution[stage];
               const percent = sites.length > 0 ? Math.round((count / sites.length) * 100) : 0;
               return (
-                <div key={stage} style={{ padding: '16px', backgroundColor: '#F9FAFB', borderRadius: '8px' }}>
+                <div key={stage} style={{ padding: '16px', backgroundColor: 'var(--bg-primary)', borderRadius: '8px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                    <span style={{ fontWeight: 500, color: '#111827' }}>Stage {stage}</span>
-                    <span style={{ fontWeight: 600, color: '#2563EB' }}>{count}</span>
+                    <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>Stage {stage}</span>
+                    <span style={{ fontWeight: 600, color: 'var(--accent)' }}>{count}</span>
                   </div>
-                  <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '8px' }}>{stageNames[stage]}</p>
-                  <div style={{ height: '6px', backgroundColor: '#E5E7EB', borderRadius: '3px' }}>
-                    <div style={{ height: '100%', width: `${percent}%`, backgroundColor: '#2563EB', borderRadius: '3px' }} />
+                  <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>{stageNames[stage]}</p>
+                  <div style={{ height: '6px', backgroundColor: 'var(--border)', borderRadius: '3px' }}>
+                    <div style={{ height: '100%', width: `${percent}%`, backgroundColor: 'var(--accent)', borderRadius: '3px' }} />
                   </div>
                 </div>
               );
@@ -179,9 +179,9 @@ export default function ReportsPage() {
       )}
 
       {selectedReport === 'capacity' && (
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', border: '1px solid #E5E7EB', padding: '24px', marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '16px' }}>MW Capacity Report</h2>
-          {sites.length === 0 ? <p style={{ color: '#6B7280' }}>No sites with capacity data.</p> : (
+        <div style={{ backgroundColor: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-card)', padding: '24px', marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px' }}>MW Capacity Report</h2>
+          {sites.length === 0 ? <p style={{ color: 'var(--text-muted)' }}>No sites with capacity data.</p> : (
             <>
               <div style={{ padding: '16px', backgroundColor: '#EFF6FF', borderRadius: '8px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid #BFDBFE' }}>
                 <span style={{ fontWeight: 500, color: '#1D4ED8' }}>Total Portfolio Capacity</span>
@@ -192,16 +192,16 @@ export default function ReportsPage() {
                   const mw = calculateMW(site);
                   const percent = totalMW > 0 ? Math.round((mw / totalMW) * 100) : 0;
                   return (
-                    <div key={site.id} style={{ padding: '16px', backgroundColor: '#F9FAFB', borderRadius: '8px' }}>
+                    <div key={site.id} style={{ padding: '16px', backgroundColor: 'var(--bg-primary)', borderRadius: '8px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                        <span style={{ fontWeight: 500, color: '#111827' }}>{site.name}</span>
+                        <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{site.name}</span>
                         <span style={{ fontWeight: 600, color: '#22C55E' }}>{mw} MW</span>
                       </div>
-                      <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '8px' }}>{site.city}, {site.state}</p>
-                      <div style={{ height: '6px', backgroundColor: '#E5E7EB', borderRadius: '3px' }}>
+                      <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>{site.city}, {site.state}</p>
+                      <div style={{ height: '6px', backgroundColor: 'var(--border)', borderRadius: '3px' }}>
                         <div style={{ height: '100%', width: `${percent}%`, backgroundColor: '#22C55E', borderRadius: '3px' }} />
                       </div>
-                      <p style={{ fontSize: '11px', color: '#6B7280', marginTop: '4px' }}>{percent}% of portfolio</p>
+                      <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>{percent}% of portfolio</p>
                     </div>
                   );
                 })}
@@ -211,11 +211,11 @@ export default function ReportsPage() {
         </div>
       )}
 
-      <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', border: '1px solid #E5E7EB', padding: '24px' }}>
-        <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '16px' }}>Export Data</h2>
+      <div style={{ backgroundColor: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-card)', padding: '24px' }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px' }}>Export Data</h2>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <button onClick={exportCSV} style={{ padding: '10px 20px', backgroundColor: '#F3F4F6', color: '#374151', fontWeight: 500, fontSize: '14px', border: '1px solid #D1D5DB', borderRadius: '6px', cursor: 'pointer' }}>📄 Export CSV</button>
-          <button onClick={exportJSON} style={{ padding: '10px 20px', backgroundColor: '#F3F4F6', color: '#374151', fontWeight: 500, fontSize: '14px', border: '1px solid #D1D5DB', borderRadius: '6px', cursor: 'pointer' }}>📋 Export JSON</button>
+          <button onClick={exportCSV} style={{ padding: '10px 20px', backgroundColor: 'var(--bg-primary)', color: 'var(--text-secondary)', fontWeight: 500, fontSize: '14px', border: '1px solid var(--border)', borderRadius: '6px', cursor: 'pointer' }}>📄 Export CSV</button>
+          <button onClick={exportJSON} style={{ padding: '10px 20px', backgroundColor: 'var(--bg-primary)', color: 'var(--text-secondary)', fontWeight: 500, fontSize: '14px', border: '1px solid var(--border)', borderRadius: '6px', cursor: 'pointer' }}>📋 Export JSON</button>
         </div>
       </div>
     </div>

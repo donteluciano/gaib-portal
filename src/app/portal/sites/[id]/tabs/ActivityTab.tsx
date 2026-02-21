@@ -57,27 +57,27 @@ export default function ActivityTab({ siteId }: Props) {
   const totalCosts = activities.reduce((sum, a) => sum + (a.cost || 0), 0);
   const stageHistory = Array.from(new Map(activities.filter(a => a.stage).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(a => [a.stage, a.date]))).map(([stage, date]) => ({ stage, date }));
 
-  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: '#6B7280' }}>Loading activities...</p></div>;
+  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}><p style={{ color: 'var(--text-muted)' }}>Loading activities...</p></div>;
 
-  const inputStyle = { width: '100%', padding: '8px 12px', backgroundColor: '#FFFFFF', border: '1px solid #D1D5DB', borderRadius: '8px', color: '#111827', fontSize: '14px' };
+  const inputStyle = { width: '100%', padding: '8px 12px', backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '14px' };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Stage Timeline */}
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Stage Progression</h2>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px', fontFamily: 'Georgia, serif' }}>Stage Progression</h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           {[1, 2, 3, 4, 5, 6, 7].map((stage, i) => {
             const stageEntry = stageHistory.find(s => s.stage === stage);
             const isReached = !!stageEntry;
             return (
               <div key={stage} style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: isReached ? '#2563EB' : '#9CA3AF' }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 500, backgroundColor: isReached ? '#2563EB' : '#F3F4F6', color: isReached ? '#FFFFFF' : '#9CA3AF', border: isReached ? 'none' : '1px solid #E5E7EB' }}>{stage}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: isReached ? 'var(--accent)' : 'var(--text-muted)' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 500, backgroundColor: isReached ? 'var(--accent)' : 'var(--bg-primary)', color: isReached ? '#FFFFFF' : 'var(--text-muted)', border: isReached ? 'none' : '1px solid var(--border-card)' }}>{stage}</div>
                   <p style={{ fontSize: '12px', marginTop: '8px', textAlign: 'center', width: '80px' }}>{stageNames[stage]?.split(' ')[0]}</p>
-                  {stageEntry && <p style={{ fontSize: '12px', color: '#6B7280' }}>{stageEntry.date}</p>}
+                  {stageEntry && <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{stageEntry.date}</p>}
                 </div>
-                {i < 6 && <div style={{ width: '32px', height: '2px', margin: '0 4px', backgroundColor: isReached ? '#2563EB' : '#E5E7EB' }} />}
+                {i < 6 && <div style={{ width: '32px', height: '2px', margin: '0 4px', backgroundColor: isReached ? 'var(--accent)' : 'var(--border-card)' }} />}
               </div>
             );
           })}
@@ -85,29 +85,29 @@ export default function ActivityTab({ siteId }: Props) {
       </div>
 
       {/* Activity Log */}
-      <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px' }}>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
           <div>
-            <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', fontFamily: 'Georgia, serif' }}>Activity Log</h2>
-            <p style={{ color: '#6B7280', fontSize: '14px' }}>{activities.length} entries • ${totalCosts.toLocaleString()} total costs</p>
+            <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'Georgia, serif' }}>Activity Log</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>{activities.length} entries • ${totalCosts.toLocaleString()} total costs</p>
           </div>
-          <button onClick={() => setShowForm(!showForm)} style={{ padding: '10px 16px', backgroundColor: '#2563EB', color: '#FFFFFF', fontWeight: 500, borderRadius: '8px', border: 'none', cursor: 'pointer' }}>+ Add Entry</button>
+          <button onClick={() => setShowForm(!showForm)} style={{ padding: '10px 16px', backgroundColor: 'var(--accent)', color: '#FFFFFF', fontWeight: 500, borderRadius: '8px', border: 'none', cursor: 'pointer' }}>+ Add Entry</button>
         </div>
 
         {showForm && (
-          <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: '#F9FAFB', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
+          <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: 'var(--bg-primary)', borderRadius: '8px', border: '1px solid var(--border-card)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '16px' }}>
-              <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '4px' }}>Date *</label><input type="date" value={newActivity.date} onChange={(e) => setNewActivity({ ...newActivity, date: e.target.value })} style={inputStyle} /></div>
-              <div style={{ gridColumn: 'span 2' }}><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '4px' }}>Action *</label><input type="text" value={newActivity.action} onChange={(e) => setNewActivity({ ...newActivity, action: e.target.value })} placeholder="What happened?" style={inputStyle} /></div>
-              <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '4px' }}>Cost ($)</label><input type="number" min="0" value={newActivity.cost || ''} onChange={(e) => setNewActivity({ ...newActivity, cost: Math.max(0, parseInt(e.target.value) || 0) })} style={inputStyle} /></div>
+              <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '4px' }}>Date *</label><input type="date" value={newActivity.date} onChange={(e) => setNewActivity({ ...newActivity, date: e.target.value })} style={inputStyle} /></div>
+              <div style={{ gridColumn: 'span 2' }}><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '4px' }}>Action *</label><input type="text" value={newActivity.action} onChange={(e) => setNewActivity({ ...newActivity, action: e.target.value })} placeholder="What happened?" style={inputStyle} /></div>
+              <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '4px' }}>Cost ($)</label><input type="number" min="0" value={newActivity.cost || ''} onChange={(e) => setNewActivity({ ...newActivity, cost: Math.max(0, parseInt(e.target.value) || 0) })} style={inputStyle} /></div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-              <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '4px' }}>Notes</label><textarea value={newActivity.notes} onChange={(e) => setNewActivity({ ...newActivity, notes: e.target.value })} placeholder="Additional details..." rows={2} style={{ ...inputStyle, resize: 'none' }} /></div>
-              <div><label style={{ display: 'block', fontSize: '14px', color: '#374151', marginBottom: '4px' }}>Stage</label><select value={newActivity.stage} onChange={(e) => setNewActivity({ ...newActivity, stage: parseInt(e.target.value) })} style={inputStyle}>{Object.entries(stageNames).map(([num, name]) => <option key={num} value={num}>Stage {num}: {name}</option>)}</select></div>
+              <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '4px' }}>Notes</label><textarea value={newActivity.notes} onChange={(e) => setNewActivity({ ...newActivity, notes: e.target.value })} placeholder="Additional details..." rows={2} style={{ ...inputStyle, resize: 'none' }} /></div>
+              <div><label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '4px' }}>Stage</label><select value={newActivity.stage} onChange={(e) => setNewActivity({ ...newActivity, stage: parseInt(e.target.value) })} style={inputStyle}>{Object.entries(stageNames).map(([num, name]) => <option key={num} value={num}>Stage {num}: {name}</option>)}</select></div>
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={addActivity} disabled={saving || !newActivity.date || !newActivity.action} style={{ padding: '10px 16px', backgroundColor: '#2563EB', color: '#FFFFFF', fontWeight: 500, borderRadius: '8px', border: 'none', cursor: 'pointer', opacity: saving || !newActivity.date || !newActivity.action ? 0.5 : 1 }}>{saving ? 'Adding...' : 'Add Entry'}</button>
-              <button onClick={() => setShowForm(false)} style={{ padding: '10px 16px', backgroundColor: '#F3F4F6', color: '#374151', borderRadius: '8px', border: '1px solid #D1D5DB', cursor: 'pointer' }}>Cancel</button>
+              <button onClick={addActivity} disabled={saving || !newActivity.date || !newActivity.action} style={{ padding: '10px 16px', backgroundColor: 'var(--accent)', color: '#FFFFFF', fontWeight: 500, borderRadius: '8px', border: 'none', cursor: 'pointer', opacity: saving || !newActivity.date || !newActivity.action ? 0.5 : 1 }}>{saving ? 'Adding...' : 'Add Entry'}</button>
+              <button onClick={() => setShowForm(false)} style={{ padding: '10px 16px', backgroundColor: 'var(--bg-primary)', color: 'var(--text-secondary)', borderRadius: '8px', border: '1px solid var(--border)', cursor: 'pointer' }}>Cancel</button>
             </div>
           </div>
         )}
@@ -115,32 +115,32 @@ export default function ActivityTab({ siteId }: Props) {
         {activities.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '48px' }}>
             <div style={{ fontSize: '32px', marginBottom: '16px' }}>📋</div>
-            <p style={{ color: '#111827', fontWeight: 500, marginBottom: '8px' }}>No activities yet</p>
-            <p style={{ color: '#6B7280', fontSize: '14px' }}>Start logging key events and milestones for this site.</p>
+            <p style={{ color: 'var(--text-primary)', fontWeight: 500, marginBottom: '8px' }}>No activities yet</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Start logging key events and milestones for this site.</p>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {activities.map((activity) => (
-              <div key={activity.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', padding: '16px', backgroundColor: '#F9FAFB', borderRadius: '8px', position: 'relative' }}>
+              <div key={activity.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', padding: '16px', backgroundColor: 'var(--bg-primary)', borderRadius: '8px', position: 'relative' }}>
                 <div style={{ width: '96px', flexShrink: 0 }}>
-                  <p style={{ color: '#6B7280', fontSize: '14px' }}>{activity.date}</p>
-                  {activity.created_at && <p style={{ color: '#9CA3AF', fontSize: '12px' }}>{getRelativeTime(activity.created_at)}</p>}
+                  <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>{activity.date}</p>
+                  {activity.created_at && <p style={{ color: 'var(--text-muted)', fontSize: '12px', opacity: 0.7 }}>{getRelativeTime(activity.created_at)}</p>}
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <p style={{ color: '#111827', fontWeight: 500 }}>{activity.action}</p>
-                    {activity.stage && <span style={{ fontSize: '12px', padding: '2px 8px', backgroundColor: '#E5E7EB', borderRadius: '4px', color: '#6B7280' }}>Stage {activity.stage}</span>}
+                    <p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{activity.action}</p>
+                    {activity.stage && <span style={{ fontSize: '12px', padding: '2px 8px', backgroundColor: 'var(--border)', borderRadius: '4px', color: 'var(--text-muted)' }}>Stage {activity.stage}</span>}
                   </div>
-                  {activity.notes && <p style={{ color: '#6B7280', fontSize: '14px', marginTop: '4px' }}>{activity.notes}</p>}
+                  {activity.notes && <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px' }}>{activity.notes}</p>}
                 </div>
-                {activity.cost > 0 && <div style={{ color: '#2563EB', fontWeight: 500 }}>${activity.cost.toLocaleString()}</div>}
+                {activity.cost > 0 && <div style={{ color: 'var(--accent)', fontWeight: 500 }}>${activity.cost.toLocaleString()}</div>}
                 {deleteConfirm === activity.id ? (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <button onClick={() => deleteActivity(activity.id)} style={{ color: '#DC2626', fontSize: '14px', fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer' }}>Confirm</button>
-                    <button onClick={() => setDeleteConfirm(null)} style={{ color: '#6B7280', fontSize: '14px', background: 'none', border: 'none', cursor: 'pointer' }}>Cancel</button>
+                    <button onClick={() => setDeleteConfirm(null)} style={{ color: 'var(--text-muted)', fontSize: '14px', background: 'none', border: 'none', cursor: 'pointer' }}>Cancel</button>
                   </div>
                 ) : (
-                  <button onClick={() => setDeleteConfirm(activity.id)} style={{ color: '#9CA3AF', background: 'none', border: 'none', cursor: 'pointer' }} title="Delete">✕</button>
+                  <button onClick={() => setDeleteConfirm(activity.id)} style={{ color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer' }} title="Delete">✕</button>
                 )}
               </div>
             ))}
