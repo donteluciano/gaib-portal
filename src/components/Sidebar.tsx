@@ -139,24 +139,36 @@ export default function Sidebar() {
 
   return (
     <aside className={`${isCollapsed ? 'w-20' : 'w-64'} flex flex-col h-screen fixed left-0 top-0 bg-white border-r border-gray-200 dark:bg-gray-900 dark:border-gray-700 transition-all duration-300`}>
-      {/* Logo */}
+      {/* Collapse Toggle & Logo */}
       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-        <Link href="/portal/dashboard" className="block">
-          <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'}`}>
-            <img src="/logo.svg" alt="GAIB" width={28} height={28} />
-            {!isCollapsed && (
+        <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} mb-3`}>
+          {!isCollapsed && (
+            <Link href="/portal/dashboard" className="flex items-center gap-3">
+              <img src="/logo.svg" alt="GAIB" width={28} height={28} />
               <h1 className="font-serif text-sm tracking-[3px] leading-tight text-gray-900 dark:text-white">
                 GAIB CAPITAL<br />PARTNERS
               </h1>
-            )}
-          </div>
-          {!isCollapsed && (
-            <>
-              <div className="h-0.5 bg-blue-600 mt-3 w-12" />
-              <p className="text-xs mt-2 tracking-wider text-blue-600 font-medium">PORTAL</p>
-            </>
+            </Link>
           )}
-        </Link>
+          {isCollapsed && (
+            <Link href="/portal/dashboard">
+              <img src="/logo.svg" alt="GAIB" width={28} height={28} />
+            </Link>
+          )}
+          <button
+            onClick={toggleCollapse}
+            title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+            className="p-1.5 rounded-lg transition-colors text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800"
+          >
+            {isCollapsed ? <ChevronRightIcon className="w-4 h-4" /> : <ChevronLeftIcon className="w-4 h-4" />}
+          </button>
+        </div>
+        {!isCollapsed && (
+          <>
+            <div className="h-0.5 bg-blue-600 w-12" />
+            <p className="text-xs mt-2 tracking-wider text-blue-600 font-medium">PORTAL</p>
+          </>
+        )}
       </div>
 
       {/* Navigation */}
@@ -181,7 +193,7 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Theme Toggle, Collapse Toggle & Logout */}
+      {/* Theme Toggle & Logout */}
       <div className="p-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
         {mounted && (
           <button
@@ -193,15 +205,6 @@ export default function Sidebar() {
             {!isCollapsed && <span className="font-medium">{isDark ? 'Light Mode' : 'Dark Mode'}</span>}
           </button>
         )}
-        
-        <button
-          onClick={toggleCollapse}
-          title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-          className={`flex items-center ${isCollapsed ? 'justify-center px-2' : 'gap-3 px-4'} py-3 w-full rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800`}
-        >
-          {isCollapsed ? <ChevronRightIcon className="w-5 h-5 flex-shrink-0" /> : <ChevronLeftIcon className="w-5 h-5 flex-shrink-0" />}
-          {!isCollapsed && <span className="font-medium">Collapse</span>}
-        </button>
         
         <form action="/api/logout" method="POST">
           <button
