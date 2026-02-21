@@ -51,10 +51,10 @@ function ProgressBar({ completed, total }: { completed: number; total: number })
   
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-      <div style={{ width: '60px', backgroundColor: '#1e293b', borderRadius: '4px', height: '6px' }}>
-        <div style={{ width: `${percent}%`, backgroundColor: barColor, borderRadius: '4px', height: '6px' }} />
+      <div style={{ width: '80px', backgroundColor: '#0A1628', borderRadius: '4px', height: '8px' }}>
+        <div style={{ width: `${percent}%`, backgroundColor: barColor, borderRadius: '4px', height: '8px' }} />
       </div>
-      <span style={{ fontSize: '12px', color: '#6b7280', minWidth: '36px' }}>{percent}%</span>
+      <span style={{ fontSize: '13px', color: '#9CA3AF', minWidth: '40px' }}>{percent}%</span>
     </div>
   );
 }
@@ -69,8 +69,8 @@ function RiskDot({ level }: { level: 'low' | 'medium' | 'high' }) {
   return (
     <span style={{
       display: 'inline-block',
-      width: '10px',
-      height: '10px',
+      width: '12px',
+      height: '12px',
       borderRadius: '50%',
       backgroundColor: colors[level],
     }} title={`${level} risk`} />
@@ -85,62 +85,47 @@ export default function PipelinePage() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const loadSites = async () => {
-    // Fetch sites
     const { data: sitesData } = await supabase
       .from('sites')
       .select('*')
       .order('stage', { ascending: true })
       .order('updated_at', { ascending: false });
     
-    // Fetch all checklist items to calculate progress
     const { data: checklistData } = await supabase
       .from('checklist_items')
       .select('site_id, status');
 
     const checklistBySite: Record<string, ChecklistItem[]> = {};
-    (checklistData || []).forEach(item => {
-      if (!checklistBySite[item.site_id]) {
-        checklistBySite[item.site_id] = [];
-      }
+    (checklistData || []).forEach((item: ChecklistItem) => {
+      if (!checklistBySite[item.site_id]) checklistBySite[item.site_id] = [];
       checklistBySite[item.site_id].push(item);
     });
 
-    const sitesWithProgress: SiteWithProgress[] = (sitesData || []).map(site => {
-      const siteChecklist = checklistBySite[site.id] || [];
-      const completed = siteChecklist.filter(i => i.status === 'complete').length;
-      const total = siteChecklist.length || 47; // Default to 47 if no checklist items
-
-      // Calculate MW
+    const sitesWithProgress: SiteWithProgress[] = (sitesData || []).map((site: Site) => {
+      const items = checklistBySite[site.id] || [];
+      const completed = items.filter(i => i.status === 'complete').length;
+      const total = items.length || 47;
+      
       const gasVolume = site.inputs?.gasVolume || 0;
       const gasPressure = site.inputs?.gasPressure || 0;
-      let estimatedMW = 0;
+      let mw = 0;
       if (gasVolume > 0) {
-        let divisor = 10;
-        if (gasPressure > 500) divisor = 7;
-        else if (gasPressure > 300) divisor = 8.5;
-        estimatedMW = Math.round(gasVolume / divisor / 192);
+        const divisor = gasPressure > 500 ? 7 : gasPressure > 300 ? 8.5 : 10;
+        mw = Math.round(gasVolume / divisor / 192);
       }
 
-      // Calculate simple risk level based on inputs
-      const inputs = site.inputs || {};
       let riskScore = 0;
-      if (inputs.phaseIStatus === 'flagged') riskScore += 3;
-      if (inputs.waterSource === 'contested' || inputs.waterSource === 'none') riskScore += 2;
-      if (inputs.politicalClimate === 'hostile') riskScore += 4;
-      if (inputs.airPermitPathway !== 'identified') riskScore += 2;
+      if (!site.inputs?.gasVolume) riskScore += 2;
+      if (!site.inputs?.gasPressure) riskScore += 1;
       
-      let riskLevel: 'low' | 'medium' | 'high' = 'low';
-      if (riskScore >= 6) riskLevel = 'high';
-      else if (riskScore >= 3) riskLevel = 'medium';
-
       return {
         ...site,
         progress: { completed, total },
-        estimatedMW,
-        riskLevel,
+        estimatedMW: mw,
+        riskLevel: riskScore >= 6 ? 'high' : riskScore >= 3 ? 'medium' : 'low',
       };
     });
-    
+
     setSites(sitesWithProgress);
     setLoading(false);
   };
@@ -149,37 +134,36 @@ export default function PipelinePage() {
     loadSites();
   }, []);
 
-  // Filter sites
-  const filteredSites = sites.filter(s => {
-    if (stageFilter !== 'all' && s.stage !== stageFilter) return false;
-    if (statusFilter !== 'all' && s.status !== statusFilter) return false;
+  const filteredSites = sites.filter(site => {
+    if (stageFilter !== 'all' && site.stage !== stageFilter) return false;
+    if (statusFilter !== 'all' && site.status !== statusFilter) return false;
     if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      return (
-        s.name?.toLowerCase().includes(term) ||
-        s.city?.toLowerCase().includes(term) ||
-        s.state?.toLowerCase().includes(term)
-      );
+      const search = searchTerm.toLowerCase();
+      if (!site.name.toLowerCase().includes(search) && 
+          !site.city?.toLowerCase().includes(search) && 
+          !site.state?.toLowerCase().includes(search)) {
+        return false;
+      }
     }
     return true;
   });
 
   if (loading) {
-    return <div style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>Loading...</div>;
+    return <div style={{ padding: '40px', textAlign: 'center', color: '#9CA3AF' }}>Loading...</div>;
   }
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#111827' }}>Pipeline</h1>
+        <h1 style={{ fontSize: '28px', fontWeight: 600, color: '#FFFFFF', fontFamily: 'Georgia, serif' }}>Pipeline</h1>
         <Link
           href="/portal/new-site"
           style={{ 
-            padding: '8px 16px', 
-            backgroundColor: '#2563eb', 
-            color: 'white', 
+            padding: '10px 20px', 
+            backgroundColor: '#B8965A', 
+            color: '#0A1628', 
             fontSize: '14px',
-            fontWeight: 500,
+            fontWeight: 600,
             borderRadius: '6px',
             textDecoration: 'none'
           }}
@@ -196,19 +180,28 @@ export default function PipelinePage() {
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search by name, city, or state..."
           style={{
-            padding: '8px 12px',
-            border: '1px solid #d1d5db',
+            padding: '10px 14px',
+            border: '1px solid #1A3050',
             borderRadius: '6px',
             fontSize: '14px',
-            width: '250px',
+            width: '280px',
+            backgroundColor: '#0A1628',
+            color: '#FFFFFF',
           }}
         />
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <label style={{ fontSize: '14px', color: '#6b7280' }}>Stage:</label>
+          <label style={{ fontSize: '14px', color: '#9CA3AF' }}>Stage:</label>
           <select
             value={stageFilter}
             onChange={(e) => setStageFilter(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
-            style={{ border: '1px solid #d1d5db', borderRadius: '6px', padding: '8px 12px', fontSize: '14px', color: '#111827', backgroundColor: 'white' }}
+            style={{ 
+              border: '1px solid #1A3050', 
+              borderRadius: '6px', 
+              padding: '10px 14px', 
+              fontSize: '14px', 
+              color: '#FFFFFF', 
+              backgroundColor: '#0A1628' 
+            }}
           >
             <option value="all">All Stages</option>
             {Object.entries(stageNames).map(([num, name]) => (
@@ -217,11 +210,18 @@ export default function PipelinePage() {
           </select>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <label style={{ fontSize: '14px', color: '#6b7280' }}>Status:</label>
+          <label style={{ fontSize: '14px', color: '#9CA3AF' }}>Status:</label>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            style={{ border: '1px solid #d1d5db', borderRadius: '6px', padding: '8px 12px', fontSize: '14px', color: '#111827', backgroundColor: 'white' }}
+            style={{ 
+              border: '1px solid #1A3050', 
+              borderRadius: '6px', 
+              padding: '10px 14px', 
+              fontSize: '14px', 
+              color: '#FFFFFF', 
+              backgroundColor: '#0A1628' 
+            }}
           >
             <option value="all">All</option>
             <option value="active">Active</option>
@@ -229,25 +229,26 @@ export default function PipelinePage() {
             <option value="killed">Killed</option>
           </select>
         </div>
-        <span style={{ fontSize: '14px', color: '#6b7280' }}>{filteredSites.length} sites</span>
+        <span style={{ fontSize: '14px', color: '#B8965A', fontWeight: 500 }}>{filteredSites.length} sites</span>
       </div>
 
       {filteredSites.length === 0 ? (
-        <div style={{ backgroundColor: 'white', padding: '40px', borderRadius: '8px', border: '1px solid #e5e7eb', textAlign: 'center' }}>
-          <p style={{ color: '#6b7280', marginBottom: '16px' }}>
-            {sites.length === 0 ? 'No sites found.' : 'No sites match the current filters.'}
+        <div style={{ backgroundColor: '#1A3050', padding: '48px', borderRadius: '12px', border: '1px solid #2A4060', textAlign: 'center' }}>
+          <p style={{ color: '#9CA3AF', marginBottom: '20px', fontSize: '16px' }}>
+            {sites.length === 0 ? 'No sites found. Add your first site to get started.' : 'No sites match the current filters.'}
           </p>
           {sites.length === 0 && (
             <Link
               href="/portal/new-site"
               style={{ 
-                padding: '10px 20px', 
-                backgroundColor: '#2563eb', 
-                color: 'white', 
+                padding: '12px 24px', 
+                backgroundColor: '#B8965A', 
+                color: '#0A1628', 
                 fontSize: '14px',
-                fontWeight: 500,
+                fontWeight: 600,
                 borderRadius: '6px',
-                textDecoration: 'none'
+                textDecoration: 'none',
+                display: 'inline-block'
               }}
             >
               + Add Site
@@ -255,47 +256,47 @@ export default function PipelinePage() {
           )}
         </div>
       ) : (
-        <div style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e5e7eb', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: '#1A3050', borderRadius: '12px', border: '1px solid #2A4060', overflow: 'hidden' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead style={{ backgroundColor: '#f9fafb' }}>
-              <tr>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Site</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Stage</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Progress</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>MW</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Risk</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase' }}>Status</th>
+            <thead>
+              <tr style={{ borderBottom: '1px solid #2A4060' }}>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#B8965A', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Site</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#B8965A', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Stage</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#B8965A', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Progress</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#B8965A', textTransform: 'uppercase', letterSpacing: '0.5px' }}>MW</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#B8965A', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Risk</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#B8965A', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Status</th>
               </tr>
             </thead>
             <tbody>
               {filteredSites.map((site, i) => (
-                <tr key={site.id} style={{ borderTop: i > 0 ? '1px solid #f3f4f6' : 'none' }}>
-                  <td style={{ padding: '12px 16px' }}>
+                <tr key={site.id} style={{ borderTop: i > 0 ? '1px solid #2A4060' : 'none' }}>
+                  <td style={{ padding: '16px 20px' }}>
                     <Link href={`/portal/sites/${site.id}`} style={{ textDecoration: 'none' }}>
-                      <p style={{ fontWeight: 500, color: '#2563eb' }}>{site.name}</p>
-                      <p style={{ fontSize: '14px', color: '#6b7280' }}>{site.city}, {site.state}</p>
+                      <p style={{ fontWeight: 600, color: '#FFFFFF', fontSize: '15px', marginBottom: '4px' }}>{site.name}</p>
+                      <p style={{ fontSize: '13px', color: '#9CA3AF' }}>{site.city}, {site.state}</p>
                     </Link>
                   </td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <span style={{ padding: '4px 8px', fontSize: '12px', fontWeight: 500, backgroundColor: '#f3f4f6', color: '#374151', borderRadius: '4px' }}>
+                  <td style={{ padding: '16px 20px' }}>
+                    <span style={{ padding: '6px 12px', fontSize: '12px', fontWeight: 500, backgroundColor: '#0A1628', color: '#FFFFFF', borderRadius: '6px', border: '1px solid #2A4060' }}>
                       {site.stage}. {stageNames[site.stage] || 'Unknown'}
                     </span>
                   </td>
-                  <td style={{ padding: '12px 16px' }}>
+                  <td style={{ padding: '16px 20px' }}>
                     <ProgressBar completed={site.progress.completed} total={site.progress.total} />
                   </td>
-                  <td style={{ padding: '12px 16px', color: '#111827' }}>{site.estimatedMW || '-'} MW</td>
-                  <td style={{ padding: '12px 16px' }}>
+                  <td style={{ padding: '16px 20px', color: '#FFFFFF', fontWeight: 500, fontSize: '15px' }}>{site.estimatedMW || '—'} MW</td>
+                  <td style={{ padding: '16px 20px' }}>
                     <RiskDot level={site.riskLevel} />
                   </td>
-                  <td style={{ padding: '12px 16px' }}>
+                  <td style={{ padding: '16px 20px' }}>
                     <span style={{ 
-                      padding: '4px 8px', 
+                      padding: '6px 12px', 
                       fontSize: '12px', 
-                      fontWeight: 500, 
-                      backgroundColor: site.status === 'active' ? '#dcfce7' : site.status === 'killed' ? '#fee2e2' : '#fef3c7',
-                      color: site.status === 'active' ? '#16a34a' : site.status === 'killed' ? '#dc2626' : '#ca8a04',
-                      borderRadius: '4px',
+                      fontWeight: 600, 
+                      backgroundColor: site.status === 'active' ? 'rgba(34, 197, 94, 0.15)' : site.status === 'killed' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(234, 179, 8, 0.15)',
+                      color: site.status === 'active' ? '#22c55e' : site.status === 'killed' ? '#ef4444' : '#eab308',
+                      borderRadius: '6px',
                       textTransform: 'capitalize'
                     }}>
                       {site.status}
