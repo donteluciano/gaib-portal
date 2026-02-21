@@ -73,18 +73,18 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-navy border-r border-navy-card flex flex-col h-screen fixed left-0 top-0">
+    <aside className="w-64 flex flex-col h-screen fixed left-0 top-0 bg-white border-r border-gray-200">
       {/* Logo */}
-      <div className="p-6 border-b border-navy-card">
+      <div className="p-6 border-b border-gray-200">
         <Link href="/portal/dashboard" className="block">
           <div className="flex items-center gap-3">
             <img src="/logo.svg" alt="GAIB" width={24} height={24} />
-            <h1 className="text-white font-serif text-lg tracking-[4px] leading-tight">
+            <h1 className="font-serif text-lg tracking-[4px] leading-tight text-gray-900">
               GAIB CAPITAL<br />PARTNERS
             </h1>
           </div>
-          <div className="gold-line mt-3 w-16" />
-          <p className="text-gold text-xs mt-2 tracking-wider">PORTAL</p>
+          <div className="h-0.5 bg-blue-600 mt-3 w-16" />
+          <p className="text-xs mt-2 tracking-wider text-blue-600 font-medium">PORTAL</p>
         </Link>
       </div>
 
@@ -98,8 +98,8 @@ export default function Sidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 isActive
-                  ? 'bg-gold/10 text-gold border border-gold/20'
-                  : 'text-gray-400 hover:text-white hover:bg-navy-card/50'
+                  ? 'bg-blue-50 text-blue-600 border border-blue-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
             >
               <item.icon className="w-5 h-5" />
@@ -110,11 +110,11 @@ export default function Sidebar() {
       </nav>
 
       {/* Logout */}
-      <div className="p-4 border-t border-navy-card">
+      <div className="p-4 border-t border-gray-200">
         <form action="/api/logout" method="POST">
           <button
             type="submit"
-            className="flex items-center gap-3 px-4 py-3 w-full text-gray-400 hover:text-white hover:bg-navy-card/50 rounded-lg transition-colors"
+            className="flex items-center gap-3 px-4 py-3 w-full rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50"
           >
             <LogoutIcon className="w-5 h-5" />
             <span className="font-medium">Logout</span>

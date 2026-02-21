@@ -1,13 +1,8 @@
-import Link from 'next/link';
+'use client';
 
-const navigation = [
-  { name: 'Dashboard', href: '/portal/dashboard' },
-  { name: 'New Site', href: '/portal/new-site' },
-  { name: 'Pipeline', href: '/portal/pipeline' },
-  { name: 'Leads', href: '/portal/leads' },
-  { name: 'Reports', href: '/portal/reports' },
-  { name: 'Settings', href: '/portal/settings' },
-];
+import Link from 'next/link';
+import { ThemeProvider } from '@/components/ThemeProvider';
+import Sidebar from '@/components/Sidebar';
 
 export default function PortalLayout({
   children,
@@ -15,75 +10,27 @@ export default function PortalLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      backgroundColor: '#f9fafb',
-      fontFamily: 'Arial, sans-serif'
-    }}>
-      {/* Top Nav */}
-      <nav style={{ 
-        backgroundColor: '#ffffff', 
-        borderBottom: '1px solid #e5e7eb',
-        padding: '12px 16px',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50
+    <ThemeProvider>
+      <div style={{ 
+        minHeight: '100vh', 
+        backgroundColor: 'var(--bg-primary)',
+        fontFamily: 'Arial, sans-serif',
+        display: 'flex',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-          <Link href="/portal/dashboard" style={{ 
-            fontWeight: 600, 
-            color: '#111827',
-            textDecoration: 'none',
-            fontSize: '16px'
-          }}>
-            GAIB Portal
-          </Link>
-          <div style={{ 
-            display: 'flex', 
-            gap: '16px', 
-            flexWrap: 'wrap',
-            overflowX: 'auto'
-          }}>
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                style={{ 
-                  fontSize: '14px', 
-                  color: '#4b5563',
-                  textDecoration: 'none',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                {item.name}
-              </Link>
-            ))}
-            <form action="/api/logout" method="POST" style={{ display: 'inline' }}>
-              <button 
-                type="submit" 
-                style={{ 
-                  fontSize: '14px', 
-                  color: '#6b7280',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                Logout
-              </button>
-            </form>
-          </div>
-        </div>
-      </nav>
+        {/* Sidebar */}
+        <Sidebar />
 
-      {/* Main Content */}
-      <main style={{ 
-        padding: '16px',
-        overflowX: 'auto'
-      }}>
-        {children}
-      </main>
-    </div>
+        {/* Main Content */}
+        <main style={{ 
+          marginLeft: '256px', /* 64 * 4 = 256px (w-64) */
+          flex: 1,
+          padding: '24px',
+          minHeight: '100vh',
+          backgroundColor: 'var(--bg-primary)',
+        }}>
+          {children}
+        </main>
+      </div>
+    </ThemeProvider>
   );
 }

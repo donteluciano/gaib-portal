@@ -234,49 +234,66 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-gray-400">Loading settings...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}>
+        <p style={{ color: 'var(--text-muted)' }}>Loading settings...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 max-w-4xl">
+    <div style={{ maxWidth: '896px' }}>
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-serif text-white">Settings</h1>
-        <p className="text-gray-400 mt-1">Configure portal and fund assumptions.</p>
+      <div style={{ marginBottom: '32px' }}>
+        <h1 style={{ fontSize: '30px', fontFamily: 'Georgia, serif', color: 'var(--text-primary)' }}>Settings</h1>
+        <p style={{ color: 'var(--text-muted)', marginTop: '4px' }}>Configure portal and fund assumptions.</p>
       </div>
 
       {/* Fund Assumptions */}
-      <div className="bg-navy-card border border-navy rounded-xl p-6">
-        <h2 className="text-xl font-serif text-white mb-6">Fund Assumptions</h2>
-        <p className="text-gray-400 text-sm mb-6">These values are used in all site calculations and projections.</p>
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px', marginBottom: '32px' }}>
+        <h2 style={{ fontSize: '20px', fontFamily: 'Georgia, serif', color: 'var(--text-primary)', marginBottom: '24px' }}>Fund Assumptions</h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '24px' }}>These values are used in all site calculations and projections.</p>
         
         {saveMessage && (
-          <div className={`mb-6 p-3 rounded-lg ${saveMessage.includes('Error') || saveMessage.includes('error') ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
+          <div style={{ 
+            marginBottom: '24px', 
+            padding: '12px', 
+            borderRadius: '8px',
+            backgroundColor: saveMessage.includes('Error') || saveMessage.includes('error') ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)',
+            color: saveMessage.includes('Error') || saveMessage.includes('error') ? '#f87171' : '#4ade80'
+          }}>
             {saveMessage}
           </div>
         )}
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px' }}>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">Fund Size</label>
-            <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '8px' }}>Fund Size</label>
+            <div style={{ position: 'relative' }}>
+              <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>$</span>
               <input
                 type="number"
                 min="0"
                 value={fundSettings.fundSize}
                 onChange={(e) => setFundSettings({ ...fundSettings, fundSize: Math.max(0, parseInt(e.target.value) || 0) })}
-                className="w-full pl-8 pr-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
+                style={{
+                  width: '100%',
+                  paddingLeft: '32px',
+                  paddingRight: '16px',
+                  paddingTop: '12px',
+                  paddingBottom: '12px',
+                  backgroundColor: 'var(--bg-input)',
+                  border: '1px solid var(--border-card)',
+                  borderRadius: '8px',
+                  color: 'var(--text-primary)',
+                  fontSize: '14px',
+                }}
               />
             </div>
-            <p className="text-xs text-gray-400 mt-1">Default: $10,000,000</p>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>Default: $10,000,000</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">Preferred Return</label>
-            <div className="relative">
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '8px' }}>Preferred Return</label>
+            <div style={{ position: 'relative' }}>
               <input
                 type="number"
                 min="0"
@@ -284,15 +301,26 @@ export default function SettingsPage() {
                 step="0.1"
                 value={fundSettings.prefReturn}
                 onChange={(e) => setFundSettings({ ...fundSettings, prefReturn: Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)) })}
-                className="w-full pr-8 px-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
+                style={{
+                  width: '100%',
+                  paddingRight: '32px',
+                  paddingLeft: '16px',
+                  paddingTop: '12px',
+                  paddingBottom: '12px',
+                  backgroundColor: 'var(--bg-input)',
+                  border: '1px solid var(--border-card)',
+                  borderRadius: '8px',
+                  color: 'var(--text-primary)',
+                  fontSize: '14px',
+                }}
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
+              <span style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>%</span>
             </div>
-            <p className="text-xs text-gray-400 mt-1">Default: 16%</p>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>Default: 16%</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">LP Split</label>
-            <div className="relative">
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '8px' }}>LP Split</label>
+            <div style={{ position: 'relative' }}>
               <input
                 type="number"
                 min="0"
@@ -300,15 +328,26 @@ export default function SettingsPage() {
                 step="0.1"
                 value={fundSettings.lpSplit}
                 onChange={(e) => setFundSettings({ ...fundSettings, lpSplit: Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)) })}
-                className="w-full pr-8 px-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
+                style={{
+                  width: '100%',
+                  paddingRight: '32px',
+                  paddingLeft: '16px',
+                  paddingTop: '12px',
+                  paddingBottom: '12px',
+                  backgroundColor: 'var(--bg-input)',
+                  border: '1px solid var(--border-card)',
+                  borderRadius: '8px',
+                  color: 'var(--text-primary)',
+                  fontSize: '14px',
+                }}
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
+              <span style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>%</span>
             </div>
-            <p className="text-xs text-gray-400 mt-1">Default: 60%</p>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>Default: 60%</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">GP Split (Carry)</label>
-            <div className="relative">
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '8px' }}>GP Split (Carry)</label>
+            <div style={{ position: 'relative' }}>
               <input
                 type="number"
                 min="0"
@@ -316,15 +355,26 @@ export default function SettingsPage() {
                 step="0.1"
                 value={fundSettings.gpSplit}
                 onChange={(e) => setFundSettings({ ...fundSettings, gpSplit: Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)) })}
-                className="w-full pr-8 px-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
+                style={{
+                  width: '100%',
+                  paddingRight: '32px',
+                  paddingLeft: '16px',
+                  paddingTop: '12px',
+                  paddingBottom: '12px',
+                  backgroundColor: 'var(--bg-input)',
+                  border: '1px solid var(--border-card)',
+                  borderRadius: '8px',
+                  color: 'var(--text-primary)',
+                  fontSize: '14px',
+                }}
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
+              <span style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>%</span>
             </div>
-            <p className="text-xs text-gray-400 mt-1">Default: 40%</p>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>Default: 40%</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">Management Fee</label>
-            <div className="relative">
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '8px' }}>Management Fee</label>
+            <div style={{ position: 'relative' }}>
               <input
                 type="number"
                 min="0"
@@ -332,32 +382,63 @@ export default function SettingsPage() {
                 step="0.1"
                 value={fundSettings.managementFee}
                 onChange={(e) => setFundSettings({ ...fundSettings, managementFee: Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)) })}
-                className="w-full pr-8 px-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
+                style={{
+                  width: '100%',
+                  paddingRight: '32px',
+                  paddingLeft: '16px',
+                  paddingTop: '12px',
+                  paddingBottom: '12px',
+                  backgroundColor: 'var(--bg-input)',
+                  border: '1px solid var(--border-card)',
+                  borderRadius: '8px',
+                  color: 'var(--text-primary)',
+                  fontSize: '14px',
+                }}
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
+              <span style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>%</span>
             </div>
-            <p className="text-xs text-gray-400 mt-1">Default: 0%</p>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>Default: 0%</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">Commitment Fee (per $1M)</label>
-            <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '8px' }}>Commitment Fee (per $1M)</label>
+            <div style={{ position: 'relative' }}>
+              <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>$</span>
               <input
                 type="number"
                 min="0"
                 value={fundSettings.commitmentFeePerM}
                 onChange={(e) => setFundSettings({ ...fundSettings, commitmentFeePerM: Math.max(0, parseInt(e.target.value) || 0) })}
-                className="w-full pl-8 pr-4 py-3 bg-navy border border-navy-card rounded-lg text-white focus:border-gold focus:ring-1 focus:ring-gold outline-none"
+                style={{
+                  width: '100%',
+                  paddingLeft: '32px',
+                  paddingRight: '16px',
+                  paddingTop: '12px',
+                  paddingBottom: '12px',
+                  backgroundColor: 'var(--bg-input)',
+                  border: '1px solid var(--border-card)',
+                  borderRadius: '8px',
+                  color: 'var(--text-primary)',
+                  fontSize: '14px',
+                }}
               />
             </div>
-            <p className="text-xs text-gray-400 mt-1">Default: $50,000</p>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>Default: $50,000</p>
           </div>
         </div>
-        <div className="mt-6">
+        <div style={{ marginTop: '24px' }}>
           <button 
             onClick={saveFundSettings}
             disabled={saving}
-            className="px-6 py-3 bg-gold hover:bg-gold-dark text-navy font-semibold rounded-lg transition-colors disabled:opacity-50"
+            style={{
+              padding: '12px 24px',
+              backgroundColor: 'var(--accent)',
+              color: 'var(--bg-secondary)',
+              fontWeight: 600,
+              borderRadius: '8px',
+              border: 'none',
+              cursor: saving ? 'not-allowed' : 'pointer',
+              opacity: saving ? 0.5 : 1,
+            }}
           >
             {saving ? 'Saving...' : 'Save Fund Settings'}
           </button>
@@ -365,14 +446,21 @@ export default function SettingsPage() {
       </div>
 
       {/* Stage Labels (Read-only per spec) */}
-      <div className="bg-navy-card border border-navy rounded-xl p-6">
-        <h2 className="text-xl font-serif text-white mb-6">Stage Labels</h2>
-        <p className="text-gray-400 text-sm mb-6">Standard pipeline stages for site progression.</p>
-        <div className="space-y-3">
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px', marginBottom: '32px' }}>
+        <h2 style={{ fontSize: '20px', fontFamily: 'Georgia, serif', color: 'var(--text-primary)', marginBottom: '24px' }}>Stage Labels</h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '24px' }}>Standard pipeline stages for site progression.</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {stageLabels.map((stage, i) => (
-            <div key={i} className="flex items-center gap-4">
-              <span className="text-gold w-20">Stage {i + 1}:</span>
-              <div className="flex-1 px-4 py-2 bg-navy border border-navy-card rounded-lg text-white">
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <span style={{ color: 'var(--accent)', width: '80px' }}>Stage {i + 1}:</span>
+              <div style={{ 
+                flex: 1, 
+                padding: '8px 16px', 
+                backgroundColor: 'var(--bg-input)', 
+                border: '1px solid var(--border-card)', 
+                borderRadius: '8px', 
+                color: 'var(--text-primary)' 
+              }}>
                 {stage}
               </div>
             </div>
@@ -381,18 +469,35 @@ export default function SettingsPage() {
       </div>
 
       {/* Data Management */}
-      <div className="bg-navy-card border border-navy rounded-xl p-6">
-        <h2 className="text-xl font-serif text-white mb-6">Data Management</h2>
-        <p className="text-gray-400 text-sm mb-6">Export all portal data or import from a previous backup.</p>
-        <div className="flex flex-wrap gap-4">
+      <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px', marginBottom: '32px' }}>
+        <h2 style={{ fontSize: '20px', fontFamily: 'Georgia, serif', color: 'var(--text-primary)', marginBottom: '24px' }}>Data Management</h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '24px' }}>Export all portal data or import from a previous backup.</p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
           <button 
             onClick={exportAllData}
             disabled={exporting}
-            className="px-6 py-3 bg-navy hover:bg-navy-dark text-white font-medium rounded-lg transition-colors border border-navy-card disabled:opacity-50"
+            style={{
+              padding: '12px 24px',
+              backgroundColor: 'var(--bg-input)',
+              color: 'var(--text-primary)',
+              fontWeight: 500,
+              borderRadius: '8px',
+              border: '1px solid var(--border-card)',
+              cursor: exporting ? 'not-allowed' : 'pointer',
+              opacity: exporting ? 0.5 : 1,
+            }}
           >
             {exporting ? 'Exporting...' : '📥 Export All Data (JSON)'}
           </button>
-          <label className="px-6 py-3 bg-navy hover:bg-navy-dark text-white font-medium rounded-lg transition-colors border border-navy-card cursor-pointer">
+          <label style={{
+            padding: '12px 24px',
+            backgroundColor: 'var(--bg-input)',
+            color: 'var(--text-primary)',
+            fontWeight: 500,
+            borderRadius: '8px',
+            border: '1px solid var(--border-card)',
+            cursor: importing ? 'not-allowed' : 'pointer',
+          }}>
             {importing ? 'Importing...' : '📤 Import Data'}
             <input
               ref={fileInputRef}
@@ -400,22 +505,30 @@ export default function SettingsPage() {
               accept=".json"
               onChange={handleImport}
               disabled={importing}
-              className="hidden"
+              style={{ display: 'none' }}
             />
           </label>
         </div>
-        <p className="text-gray-400 text-xs mt-4">
+        <p style={{ color: 'var(--text-muted)', fontSize: '12px', marginTop: '16px' }}>
           Export creates a complete backup of all sites, leads, activities, and settings. Import will add/update records based on IDs.
         </p>
       </div>
 
       {/* Danger Zone */}
-      <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6">
-        <h2 className="text-xl font-serif text-red-400 mb-4">Danger Zone</h2>
-        <p className="text-gray-400 text-sm mb-4">Irreversible actions. Use with caution.</p>
+      <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '12px', padding: '24px' }}>
+        <h2 style={{ fontSize: '20px', fontFamily: 'Georgia, serif', color: '#f87171', marginBottom: '16px' }}>Danger Zone</h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '16px' }}>Irreversible actions. Use with caution.</p>
         <button 
           onClick={() => alert('Contact administrator to clear data.')}
-          className="px-6 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-medium rounded-lg transition-colors border border-red-500/30"
+          style={{
+            padding: '12px 24px',
+            backgroundColor: 'rgba(239, 68, 68, 0.2)',
+            color: '#f87171',
+            fontWeight: 500,
+            borderRadius: '8px',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            cursor: 'pointer',
+          }}
         >
           Clear All Data
         </button>

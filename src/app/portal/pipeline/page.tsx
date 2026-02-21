@@ -44,17 +44,17 @@ const stageNames: Record<number, string> = {
 function ProgressBar({ completed, total }: { completed: number; total: number }) {
   const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
   
-  let barColor = '#ef4444'; // red
-  if (percent >= 75) barColor = '#22c55e'; // green
-  else if (percent >= 50) barColor = '#eab308'; // yellow
-  else if (percent >= 25) barColor = '#ca8a04'; // darker yellow
+  let barColor = '#ef4444';
+  if (percent >= 75) barColor = '#22c55e';
+  else if (percent >= 50) barColor = '#eab308';
+  else if (percent >= 25) barColor = '#ca8a04';
   
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-      <div style={{ width: '80px', backgroundColor: '#0A1628', borderRadius: '4px', height: '8px' }}>
+      <div style={{ width: '80px', backgroundColor: '#E5E7EB', borderRadius: '4px', height: '8px' }}>
         <div style={{ width: `${percent}%`, backgroundColor: barColor, borderRadius: '4px', height: '8px' }} />
       </div>
-      <span style={{ fontSize: '13px', color: '#9CA3AF', minWidth: '40px' }}>{percent}%</span>
+      <span style={{ fontSize: '13px', color: '#6B7280', minWidth: '40px' }}>{percent}%</span>
     </div>
   );
 }
@@ -149,19 +149,19 @@ export default function PipelinePage() {
   });
 
   if (loading) {
-    return <div style={{ padding: '40px', textAlign: 'center', color: '#9CA3AF' }}>Loading...</div>;
+    return <div style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>Loading...</div>;
   }
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '28px', fontWeight: 600, color: '#FFFFFF', fontFamily: 'Georgia, serif' }}>Pipeline</h1>
+        <h1 style={{ fontSize: '28px', fontWeight: 600, color: '#111827', fontFamily: 'Georgia, serif' }}>Pipeline</h1>
         <Link
           href="/portal/new-site"
           style={{ 
             padding: '10px 20px', 
-            backgroundColor: '#B8965A', 
-            color: '#0A1628', 
+            backgroundColor: '#2563EB', 
+            color: '#FFFFFF', 
             fontSize: '14px',
             fontWeight: 600,
             borderRadius: '6px',
@@ -181,26 +181,26 @@ export default function PipelinePage() {
           placeholder="Search by name, city, or state..."
           style={{
             padding: '10px 14px',
-            border: '1px solid #1A3050',
+            border: '1px solid #D1D5DB',
             borderRadius: '6px',
             fontSize: '14px',
             width: '280px',
-            backgroundColor: '#0A1628',
-            color: '#FFFFFF',
+            backgroundColor: '#FFFFFF',
+            color: '#111827',
           }}
         />
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <label style={{ fontSize: '14px', color: '#9CA3AF' }}>Stage:</label>
+          <label style={{ fontSize: '14px', color: '#6B7280' }}>Stage:</label>
           <select
             value={stageFilter}
             onChange={(e) => setStageFilter(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
             style={{ 
-              border: '1px solid #1A3050', 
+              border: '1px solid #D1D5DB', 
               borderRadius: '6px', 
               padding: '10px 14px', 
               fontSize: '14px', 
-              color: '#FFFFFF', 
-              backgroundColor: '#0A1628' 
+              color: '#111827', 
+              backgroundColor: '#FFFFFF' 
             }}
           >
             <option value="all">All Stages</option>
@@ -210,17 +210,17 @@ export default function PipelinePage() {
           </select>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <label style={{ fontSize: '14px', color: '#9CA3AF' }}>Status:</label>
+          <label style={{ fontSize: '14px', color: '#6B7280' }}>Status:</label>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             style={{ 
-              border: '1px solid #1A3050', 
+              border: '1px solid #D1D5DB', 
               borderRadius: '6px', 
               padding: '10px 14px', 
               fontSize: '14px', 
-              color: '#FFFFFF', 
-              backgroundColor: '#0A1628' 
+              color: '#111827', 
+              backgroundColor: '#FFFFFF' 
             }}
           >
             <option value="all">All</option>
@@ -229,12 +229,12 @@ export default function PipelinePage() {
             <option value="killed">Killed</option>
           </select>
         </div>
-        <span style={{ fontSize: '14px', color: '#B8965A', fontWeight: 500 }}>{filteredSites.length} sites</span>
+        <span style={{ fontSize: '14px', color: '#2563EB', fontWeight: 500 }}>{filteredSites.length} sites</span>
       </div>
 
       {filteredSites.length === 0 ? (
-        <div style={{ backgroundColor: '#1A3050', padding: '48px', borderRadius: '12px', border: '1px solid #2A4060', textAlign: 'center' }}>
-          <p style={{ color: '#9CA3AF', marginBottom: '20px', fontSize: '16px' }}>
+        <div style={{ backgroundColor: '#FFFFFF', padding: '48px', borderRadius: '12px', border: '1px solid #E5E7EB', textAlign: 'center' }}>
+          <p style={{ color: '#6B7280', marginBottom: '20px', fontSize: '16px' }}>
             {sites.length === 0 ? 'No sites found. Add your first site to get started.' : 'No sites match the current filters.'}
           </p>
           {sites.length === 0 && (
@@ -242,8 +242,8 @@ export default function PipelinePage() {
               href="/portal/new-site"
               style={{ 
                 padding: '12px 24px', 
-                backgroundColor: '#B8965A', 
-                color: '#0A1628', 
+                backgroundColor: '#2563EB', 
+                color: '#FFFFFF', 
                 fontSize: '14px',
                 fontWeight: 600,
                 borderRadius: '6px',
@@ -256,36 +256,36 @@ export default function PipelinePage() {
           )}
         </div>
       ) : (
-        <div style={{ backgroundColor: '#1A3050', borderRadius: '12px', border: '1px solid #2A4060', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid #2A4060' }}>
-                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#B8965A', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Site</th>
-                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#B8965A', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Stage</th>
-                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#B8965A', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Progress</th>
-                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#B8965A', textTransform: 'uppercase', letterSpacing: '0.5px' }}>MW</th>
-                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#B8965A', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Risk</th>
-                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#B8965A', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Status</th>
+              <tr style={{ borderBottom: '1px solid #E5E7EB', backgroundColor: '#F9FAFB' }}>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Site</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Stage</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Progress</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>MW</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Risk</th>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Status</th>
               </tr>
             </thead>
             <tbody>
               {filteredSites.map((site, i) => (
-                <tr key={site.id} style={{ borderTop: i > 0 ? '1px solid #2A4060' : 'none' }}>
+                <tr key={site.id} style={{ borderTop: i > 0 ? '1px solid #E5E7EB' : 'none' }}>
                   <td style={{ padding: '16px 20px' }}>
                     <Link href={`/portal/sites/${site.id}`} style={{ textDecoration: 'none' }}>
-                      <p style={{ fontWeight: 600, color: '#FFFFFF', fontSize: '15px', marginBottom: '4px' }}>{site.name}</p>
-                      <p style={{ fontSize: '13px', color: '#9CA3AF' }}>{site.city}, {site.state}</p>
+                      <p style={{ fontWeight: 600, color: '#111827', fontSize: '15px', marginBottom: '4px' }}>{site.name}</p>
+                      <p style={{ fontSize: '13px', color: '#6B7280' }}>{site.city}, {site.state}</p>
                     </Link>
                   </td>
                   <td style={{ padding: '16px 20px' }}>
-                    <span style={{ padding: '6px 12px', fontSize: '12px', fontWeight: 500, backgroundColor: '#0A1628', color: '#FFFFFF', borderRadius: '6px', border: '1px solid #2A4060' }}>
+                    <span style={{ padding: '6px 12px', fontSize: '12px', fontWeight: 500, backgroundColor: '#F3F4F6', color: '#374151', borderRadius: '6px', border: '1px solid #E5E7EB' }}>
                       {site.stage}. {stageNames[site.stage] || 'Unknown'}
                     </span>
                   </td>
                   <td style={{ padding: '16px 20px' }}>
                     <ProgressBar completed={site.progress.completed} total={site.progress.total} />
                   </td>
-                  <td style={{ padding: '16px 20px', color: '#FFFFFF', fontWeight: 500, fontSize: '15px' }}>{site.estimatedMW || '—'} MW</td>
+                  <td style={{ padding: '16px 20px', color: '#111827', fontWeight: 500, fontSize: '15px' }}>{site.estimatedMW || '—'} MW</td>
                   <td style={{ padding: '16px 20px' }}>
                     <RiskDot level={site.riskLevel} />
                   </td>
@@ -294,8 +294,8 @@ export default function PipelinePage() {
                       padding: '6px 12px', 
                       fontSize: '12px', 
                       fontWeight: 600, 
-                      backgroundColor: site.status === 'active' ? 'rgba(34, 197, 94, 0.15)' : site.status === 'killed' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(234, 179, 8, 0.15)',
-                      color: site.status === 'active' ? '#22c55e' : site.status === 'killed' ? '#ef4444' : '#eab308',
+                      backgroundColor: site.status === 'active' ? '#DCFCE7' : site.status === 'killed' ? '#FEE2E2' : '#FEF3C7',
+                      color: site.status === 'active' ? '#166534' : site.status === 'killed' ? '#991B1B' : '#92400E',
                       borderRadius: '6px',
                       textTransform: 'capitalize'
                     }}>

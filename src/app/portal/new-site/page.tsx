@@ -93,7 +93,7 @@ function CollapsibleSection({ title, defaultOpen = false, children }: Collapsibl
   const [isOpen, setIsOpen] = useState(defaultOpen);
   
   return (
-    <div style={{ backgroundColor: '#1A3050', borderRadius: '8px', border: '1px solid #2A4060', marginBottom: '16px', overflow: 'hidden' }}>
+    <div style={{ backgroundColor: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-card)', marginBottom: '16px', overflow: 'hidden' }}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -103,14 +103,14 @@ function CollapsibleSection({ title, defaultOpen = false, children }: Collapsibl
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center',
-          backgroundColor: isOpen ? '#0A1628' : '#1A3050',
+          backgroundColor: isOpen ? 'var(--bg-input)' : 'var(--bg-card)',
           border: 'none',
           cursor: 'pointer',
-          borderBottom: isOpen ? '1px solid #2A4060' : 'none'
+          borderBottom: isOpen ? '1px solid var(--border-card)' : 'none'
         }}
       >
-        <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#FFFFFF', margin: 0 }}>{title}</h2>
-        <span style={{ fontSize: '20px', color: '#9CA3AF' }}>{isOpen ? '−' : '+'}</span>
+        <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{title}</h2>
+        <span style={{ fontSize: '20px', color: 'var(--text-muted)' }}>{isOpen ? '−' : '+'}</span>
       </button>
       {isOpen && (
         <div style={{ padding: '24px' }}>
@@ -376,34 +376,34 @@ export default function NewSitePage() {
     router.push(`/portal/sites/${data.id}`);
   }
 
-  const inputStyle = {
+  const inputStyle: React.CSSProperties = {
     width: '100%',
     padding: '10px 12px',
-    border: '1px solid #1A3050',
+    border: '1px solid var(--border-card)',
     borderRadius: '6px',
     fontSize: '14px',
-    color: '#FFFFFF',
-    backgroundColor: '#0A1628',
-    boxSizing: 'border-box' as const,
+    color: 'var(--text-primary)',
+    backgroundColor: 'var(--bg-input)',
+    boxSizing: 'border-box',
   };
 
-  const inputErrorStyle = {
+  const inputErrorStyle: React.CSSProperties = {
     ...inputStyle,
     borderColor: '#ef4444',
   };
 
-  const selectStyle = { ...inputStyle, cursor: 'pointer' };
+  const selectStyle: React.CSSProperties = { ...inputStyle, cursor: 'pointer' };
 
-  const labelStyle = {
+  const labelStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     fontSize: '14px',
     fontWeight: 500,
-    color: '#9CA3AF',
+    color: 'var(--text-muted)',
     marginBottom: '6px',
   };
 
-  const gridStyle = {
+  const gridStyle: React.CSSProperties = {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
     gap: '16px',
@@ -412,10 +412,10 @@ export default function NewSitePage() {
   return (
     <div style={{ maxWidth: '900px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#FFFFFF' }}>New Site</h1>
+        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--text-primary)' }}>New Site</h1>
         {hasDraft && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: '12px', color: '#9CA3AF' }}>
+            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
               Draft saved {lastSaved ? lastSaved.toLocaleTimeString() : ''}
             </span>
             <button
@@ -436,7 +436,7 @@ export default function NewSitePage() {
           </div>
         )}
       </div>
-      <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '24px' }}>
+      <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '24px' }}>
         Enter all available information. Form auto-saves as you type.
       </p>
 
@@ -747,8 +747,8 @@ export default function NewSitePage() {
             disabled={saving || Object.keys(validationErrors).length > 0}
             style={{
               padding: '10px 24px',
-              backgroundColor: Object.keys(validationErrors).length > 0 ? '#9ca3af' : '#B8965A',
-              color: '#0A1628',
+              backgroundColor: Object.keys(validationErrors).length > 0 ? '#9ca3af' : 'var(--accent)',
+              color: 'var(--bg-secondary)',
               fontWeight: 500,
               fontSize: '14px',
               border: 'none',
@@ -764,11 +764,11 @@ export default function NewSitePage() {
             onClick={() => router.push('/portal/dashboard')}
             style={{
               padding: '10px 24px',
-              backgroundColor: '#1A3050',
-              color: '#FFFFFF',
+              backgroundColor: 'var(--bg-card)',
+              color: 'var(--text-primary)',
               fontWeight: 500,
               fontSize: '14px',
-              border: '1px solid #2A4060',
+              border: '1px solid var(--border-card)',
               borderRadius: '6px',
               cursor: 'pointer',
             }}

@@ -9,25 +9,44 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // CSS variable-based colors for theme support
+        primary: 'var(--text-primary)',
+        secondary: 'var(--text-secondary)',
+        muted: 'var(--text-muted)',
+        accent: 'var(--accent)',
+        'accent-hover': 'var(--accent-hover)',
+        border: 'var(--border)',
+        card: 'var(--bg-card)',
+        background: 'var(--bg-primary)',
+        input: 'var(--bg-input)',
+        // Status colors (these stay the same in both themes)
+        success: '#22C55E',
+        warning: '#EAB308',
+        danger: '#EF4444',
+        // Navy colors using CSS variables
         navy: {
-          DEFAULT: '#0A1628',
-          dark: '#0D1B2A',
-          card: '#1A3050',
+          DEFAULT: 'var(--bg-secondary)',
+          dark: 'var(--bg-primary)',
+          card: 'var(--bg-card)',
         },
+        // Gold accent using CSS variable
         gold: {
-          DEFAULT: '#B8965A',
-          light: '#D4B87A',
-          dark: '#9A7B48',
+          DEFAULT: 'var(--accent)',
+          light: 'var(--accent)',
+          dark: 'var(--accent-hover)',
         },
-        offwhite: '#F7F5F2',
-        body: '#333333',
-        // Improved muted colors for better readability on dark backgrounds
-        muted: '#9CA3AF', // gray-400 - much more readable
-        'muted-dark': '#6B7280', // gray-500 - for light backgrounds
-        'light-gray': '#D1D5DB', // gray-300
-        success: '#27AE60',
-        warning: '#F39C12',
-        danger: '#E74C3C',
+      },
+      backgroundColor: {
+        'navy': 'var(--bg-secondary)',
+        'navy-dark': 'var(--bg-primary)',
+        'navy-card': 'var(--bg-card)',
+      },
+      borderColor: {
+        'navy': 'var(--border)',
+        'navy-card': 'var(--border-card)',
+      },
+      textColor: {
+        'gold': 'var(--accent)',
       },
       fontFamily: {
         serif: ['Georgia', 'serif'],

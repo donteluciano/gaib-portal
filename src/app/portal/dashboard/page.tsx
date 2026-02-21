@@ -57,20 +57,20 @@ function ProgressBar({ completed, total, size = 'normal' }: { completed: number;
   if (size === 'small') {
     return (
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '8px' }}>
-        <div style={{ flex: 1, backgroundColor: '#0A1628', borderRadius: '4px', height: '6px' }}>
+        <div style={{ flex: 1, backgroundColor: '#E5E7EB', borderRadius: '4px', height: '6px' }}>
           <div style={{ width: `${percent}%`, backgroundColor: barColor, borderRadius: '4px', height: '6px' }} />
         </div>
-        <span style={{ fontSize: '12px', color: '#9CA3AF' }}>{percent}%</span>
+        <span style={{ fontSize: '12px', color: '#6B7280' }}>{percent}%</span>
       </div>
     );
   }
   
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-      <div style={{ width: '60px', backgroundColor: '#0A1628', borderRadius: '4px', height: '6px' }}>
+      <div style={{ width: '60px', backgroundColor: '#E5E7EB', borderRadius: '4px', height: '6px' }}>
         <div style={{ width: `${percent}%`, backgroundColor: barColor, borderRadius: '4px', height: '6px' }} />
       </div>
-      <span style={{ fontSize: '12px', color: '#9CA3AF' }}>{percent}%</span>
+      <span style={{ fontSize: '12px', color: '#6B7280' }}>{percent}%</span>
     </div>
   );
 }
@@ -159,19 +159,19 @@ export default function DashboardPage() {
     : 0;
 
   if (loading) {
-    return <div style={{ padding: '40px', textAlign: 'center', color: '#9CA3AF' }}>Loading...</div>;
+    return <div style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>Loading...</div>;
   }
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '28px', fontWeight: 600, color: '#FFFFFF', fontFamily: 'Georgia, serif' }}>Dashboard</h1>
+        <h1 style={{ fontSize: '28px', fontWeight: 600, color: '#111827', fontFamily: 'Georgia, serif' }}>Dashboard</h1>
         <Link
           href="/portal/new-site"
           style={{ 
             padding: '10px 20px', 
-            backgroundColor: '#B8965A', 
-            color: '#0A1628', 
+            backgroundColor: '#2563EB', 
+            color: '#FFFFFF', 
             fontSize: '14px',
             fontWeight: 600,
             borderRadius: '6px',
@@ -184,29 +184,29 @@ export default function DashboardPage() {
 
       {/* Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', marginBottom: '32px' }}>
-        <div style={{ backgroundColor: '#1A3050', padding: '20px', borderRadius: '12px', border: '1px solid #2A4060' }}>
-          <p style={{ fontSize: '14px', color: '#9CA3AF', marginBottom: '8px' }}>Active Sites</p>
-          <p style={{ fontSize: '32px', fontWeight: 700, color: '#FFFFFF' }}>{sites.length}</p>
+        <div style={{ backgroundColor: '#FFFFFF', padding: '20px', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+          <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '8px' }}>Active Sites</p>
+          <p style={{ fontSize: '32px', fontWeight: 700, color: '#111827' }}>{sites.length}</p>
         </div>
-        <div style={{ backgroundColor: '#1A3050', padding: '20px', borderRadius: '12px', border: '1px solid #2A4060' }}>
-          <p style={{ fontSize: '14px', color: '#9CA3AF', marginBottom: '8px' }}>Total MW</p>
-          <p style={{ fontSize: '32px', fontWeight: 700, color: '#B8965A' }}>{totalMW}</p>
+        <div style={{ backgroundColor: '#FFFFFF', padding: '20px', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+          <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '8px' }}>Total MW</p>
+          <p style={{ fontSize: '32px', fontWeight: 700, color: '#2563EB' }}>{totalMW}</p>
         </div>
-        <div style={{ backgroundColor: '#1A3050', padding: '20px', borderRadius: '12px', border: '1px solid #2A4060' }}>
-          <p style={{ fontSize: '14px', color: '#9CA3AF', marginBottom: '8px' }}>Avg Progress</p>
-          <p style={{ fontSize: '32px', fontWeight: 700, color: '#FFFFFF' }}>{avgProgress}%</p>
+        <div style={{ backgroundColor: '#FFFFFF', padding: '20px', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+          <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '8px' }}>Avg Progress</p>
+          <p style={{ fontSize: '32px', fontWeight: 700, color: '#111827' }}>{avgProgress}%</p>
         </div>
       </div>
 
       {sites.length === 0 ? (
-        <div style={{ backgroundColor: '#1A3050', padding: '48px', borderRadius: '12px', border: '1px solid #2A4060', textAlign: 'center' }}>
-          <p style={{ color: '#9CA3AF', marginBottom: '20px', fontSize: '16px' }}>No sites yet. Add your first site to get started.</p>
+        <div style={{ backgroundColor: '#FFFFFF', padding: '48px', borderRadius: '12px', border: '1px solid #E5E7EB', textAlign: 'center' }}>
+          <p style={{ color: '#6B7280', marginBottom: '20px', fontSize: '16px' }}>No sites yet. Add your first site to get started.</p>
           <Link
             href="/portal/new-site"
             style={{ 
               padding: '12px 24px', 
-              backgroundColor: '#B8965A', 
-              color: '#0A1628', 
+              backgroundColor: '#2563EB', 
+              color: '#FFFFFF', 
               fontSize: '14px',
               fontWeight: 600,
               borderRadius: '6px',
@@ -220,9 +220,9 @@ export default function DashboardPage() {
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '24px' }}>
           {/* Site Cards */}
-          <div style={{ backgroundColor: '#1A3050', borderRadius: '12px', border: '1px solid #2A4060', overflow: 'hidden' }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #2A4060' }}>
-              <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#FFFFFF', fontFamily: 'Georgia, serif' }}>Active Sites</h2>
+          <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #E5E7EB' }}>
+              <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', fontFamily: 'Georgia, serif' }}>Active Sites</h2>
             </div>
             <div style={{ padding: '16px' }}>
               {sites.slice(0, 5).map((site, i) => (
@@ -234,38 +234,36 @@ export default function DashboardPage() {
                     padding: '16px', 
                     marginBottom: i < Math.min(sites.length, 5) - 1 ? '12px' : 0, 
                     borderRadius: '10px',
-                    backgroundColor: '#0A1628',
-                    border: '1px solid #2A4060',
+                    backgroundColor: '#F9FAFB',
+                    border: '1px solid #E5E7EB',
                     textDecoration: 'none',
                     transition: 'border-color 0.2s',
                   }}
-                  onMouseOver={(e) => (e.currentTarget.style.borderColor = '#B8965A')}
-                  onMouseOut={(e) => (e.currentTarget.style.borderColor = '#2A4060')}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <p style={{ fontWeight: 600, color: '#FFFFFF', fontSize: '15px' }}>{site.name}</p>
+                        <p style={{ fontWeight: 600, color: '#111827', fontSize: '15px' }}>{site.name}</p>
                         <RiskDot level={site.riskLevel} />
                       </div>
-                      <p style={{ fontSize: '13px', color: '#9CA3AF', marginTop: '4px' }}>{site.city}, {site.state}</p>
+                      <p style={{ fontSize: '13px', color: '#6B7280', marginTop: '4px' }}>{site.city}, {site.state}</p>
                     </div>
                     <span style={{ 
                       padding: '4px 10px', 
                       fontSize: '11px', 
                       fontWeight: 600, 
-                      backgroundColor: '#1A3050', 
-                      color: '#B8965A', 
+                      backgroundColor: '#EFF6FF', 
+                      color: '#2563EB', 
                       borderRadius: '6px',
-                      border: '1px solid #2A4060'
+                      border: '1px solid #BFDBFE'
                     }}>
                       Stage {site.stage}
                     </span>
                   </div>
                   <ProgressBar completed={site.progress.completed} total={site.progress.total} size="small" />
-                  <div style={{ display: 'flex', gap: '16px', marginTop: '10px', fontSize: '12px', color: '#9CA3AF' }}>
+                  <div style={{ display: 'flex', gap: '16px', marginTop: '10px', fontSize: '12px', color: '#6B7280' }}>
                     <span>{stageNames[site.stage]}</span>
-                    {site.estimatedMW > 0 && <span style={{ color: '#B8965A' }}>{site.estimatedMW} MW</span>}
+                    {site.estimatedMW > 0 && <span style={{ color: '#2563EB' }}>{site.estimatedMW} MW</span>}
                   </div>
                 </Link>
               ))}
@@ -276,7 +274,7 @@ export default function DashboardPage() {
                     display: 'block', 
                     textAlign: 'center', 
                     padding: '14px', 
-                    color: '#B8965A', 
+                    color: '#2563EB', 
                     fontSize: '14px',
                     fontWeight: 500,
                     textDecoration: 'none',
@@ -290,25 +288,25 @@ export default function DashboardPage() {
           </div>
 
           {/* Recent Activity */}
-          <div style={{ backgroundColor: '#1A3050', borderRadius: '12px', border: '1px solid #2A4060' }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #2A4060' }}>
-              <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#FFFFFF', fontFamily: 'Georgia, serif' }}>Recent Activity</h2>
+          <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #E5E7EB' }}>
+              <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', fontFamily: 'Georgia, serif' }}>Recent Activity</h2>
             </div>
             <div style={{ padding: '16px' }}>
               {activities.length === 0 ? (
-                <p style={{ color: '#9CA3AF', fontSize: '14px', padding: '20px', textAlign: 'center' }}>No activity yet.</p>
+                <p style={{ color: '#6B7280', fontSize: '14px', padding: '20px', textAlign: 'center' }}>No activity yet.</p>
               ) : (
                 activities.map((activity, i) => (
                   <div key={activity.id} style={{ 
                     padding: '14px', 
                     marginBottom: i < activities.length - 1 ? '10px' : 0, 
-                    backgroundColor: '#0A1628',
+                    backgroundColor: '#F9FAFB',
                     borderRadius: '8px',
-                    border: '1px solid #2A4060'
+                    border: '1px solid #E5E7EB'
                   }}>
-                    <p style={{ fontSize: '14px', fontWeight: 600, color: '#FFFFFF' }}>{activity.sites?.name}</p>
-                    <p style={{ fontSize: '14px', color: '#9CA3AF', marginTop: '4px' }}>{activity.action}</p>
-                    <p style={{ fontSize: '12px', color: '#6B7280', marginTop: '6px' }}>{activity.date}</p>
+                    <p style={{ fontSize: '14px', fontWeight: 600, color: '#111827' }}>{activity.sites?.name}</p>
+                    <p style={{ fontSize: '14px', color: '#6B7280', marginTop: '4px' }}>{activity.action}</p>
+                    <p style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '6px' }}>{activity.date}</p>
                   </div>
                 ))
               )}
