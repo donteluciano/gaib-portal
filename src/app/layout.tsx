@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "GAIB Capital Partners",
-  description: "Data center site development and investment",
+  description: "Private investment firm focused on strategic site development",
   icons: {
     icon: "/favicon.svg",
   },

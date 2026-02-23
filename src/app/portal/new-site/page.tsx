@@ -41,7 +41,7 @@ const masterChecklist = [
   { stage: 5, item_key: 'cba_drafted', name: 'Community benefit agreement drafted' },
   { stage: 5, item_key: 'political_support_documented', name: 'Political support documented' },
   { stage: 5, item_key: 'political_gate_decision', name: 'GATE 5 DECISION: Political alignment confirmed' },
-  { stage: 6, item_key: 'dc_engineer_engaged', name: 'Data center engineer engaged' },
+  { stage: 6, item_key: 'dc_engineer_engaged', name: 'Site engineer engaged' },
   { stage: 6, item_key: 'mw_capacity_confirmed', name: 'Deliverable MW capacity confirmed' },
   { stage: 6, item_key: 'cooling_assessed', name: 'Cooling approach assessed' },
   { stage: 6, item_key: 'structures_evaluated', name: 'Existing structures evaluated' },
@@ -61,9 +61,9 @@ const masterChecklist = [
 
 // Tooltips for technical fields
 const fieldTooltips: Record<string, string> = {
-  gasVolume: 'MCFD = Thousand Cubic Feet per Day. Typical data centers need 10,000-50,000 MCFD.',
+  gasVolume: 'MCFD = Thousand Cubic Feet per Day. Typical power facilities need 10,000-50,000 MCFD.',
   gasPressure: 'PSI = Pounds per Square Inch. Higher pressure (500+) allows more efficient generation.',
-  acreage: 'Total developable land area. 20+ acres preferred for large-scale data centers.',
+  acreage: 'Total developable land area. 20+ acres preferred for large-scale development.',
   exitPricePerMW: 'Expected sale price per megawatt of capacity. Market range: $0.25-0.50M/MW.',
   pipelineDistance: 'Distance to nearest gas transmission pipeline. Under 2 miles is ideal.',
   pipelineDiameter: 'Larger diameter (24"+) indicates more capacity available.',

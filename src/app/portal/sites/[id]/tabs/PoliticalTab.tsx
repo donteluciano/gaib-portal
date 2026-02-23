@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
 const politicalFactors = [
   { key: 'mayor_stance', label: 'Mayor/Council Stance', weight: 15 },
   { key: 'election_dynamics', label: 'Election Dynamics', weight: 10 },
-  { key: 'prior_approvals', label: 'Prior Data Center Approvals', weight: 15 },
+  { key: 'prior_approvals', label: 'Prior Industrial Approvals', weight: 15 },
   { key: 'zoning_authority', label: 'Zoning Authority Attitude', weight: 10 },
   { key: 'community_activism', label: 'Community Activism Level', weight: 15 },
   { key: 'regulatory_burden', label: 'Regulatory Burden', weight: 10 },

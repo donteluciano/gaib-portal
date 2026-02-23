@@ -23,10 +23,10 @@ const ddQuestions: QuestionDef[] = [
   { id: 'e3', category: 'environmental', question: 'Is the site in an EPA attainment or non-attainment area?', whoAnswers: 'EPA database', priority: 'critical' },
   { id: 'f1', category: 'fiber', question: 'What fiber providers have presence nearby?', whoAnswers: 'Fiber providers / Site visit', priority: 'high' },
   { id: 'f2', category: 'fiber', question: 'What is the distance to nearest fiber POI?', whoAnswers: 'Fiber provider', priority: 'high' },
-  { id: 'p1', category: 'political', question: 'What is the mayor/council stance on data centers?', whoAnswers: 'Political research / EDO', priority: 'critical' },
+  { id: 'p1', category: 'political', question: 'What is the mayor/council stance on industrial development?', whoAnswers: 'Political research / EDO', priority: 'critical' },
   { id: 'p2', category: 'political', question: 'Has the municipality approved similar projects?', whoAnswers: 'Planning dept / News', priority: 'high' },
   { id: 's1', category: 'site_physical', question: 'What is the current zoning?', whoAnswers: 'Planning dept', priority: 'critical' },
-  { id: 's2', category: 'site_physical', question: 'Is industrial/data center use permitted by-right?', whoAnswers: 'Planning dept', priority: 'critical' },
+  { id: 's2', category: 'site_physical', question: 'Is industrial/industrial use permitted by-right?', whoAnswers: 'Planning dept', priority: 'critical' },
 ];
 
 const categoryLabels: Record<Category, string> = { gas_power: 'Gas & Power', water: 'Water', environmental: 'Environmental', fiber: 'Fiber', political: 'Political', site_physical: 'Site Physical' };

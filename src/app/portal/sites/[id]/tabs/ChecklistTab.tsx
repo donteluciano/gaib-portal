@@ -50,7 +50,7 @@ const stageDefinitions: Record<number, { name: string; items: ChecklistDefinitio
     { key: 'political_gate_decision', name: 'GATE 5: Political aligned', isGate: true },
   ]},
   6: { name: 'Stage 6: Engineering & Feasibility', items: [
-    { key: 'dc_engineer_engaged', name: 'Data center engineer engaged' },
+    { key: 'dc_engineer_engaged', name: 'Site engineer engaged' },
     { key: 'mw_capacity_confirmed', name: 'MW capacity confirmed' },
     { key: 'cooling_assessed', name: 'Cooling approach assessed' },
     { key: 'structures_evaluated', name: 'Existing structures evaluated' },
