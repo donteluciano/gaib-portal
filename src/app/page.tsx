@@ -278,14 +278,15 @@ export default function HomePage() {
 
           {/* Tagline */}
           <p 
-            className="text-sm tracking-[4px] uppercase"
+            className="text-sm tracking-[2px] max-w-2xl"
             style={{ 
               color: 'var(--text-muted)',
               fontWeight: 300,
-              animation: 'fadeUp 1s ease-out 0.8s both'
+              animation: 'fadeUp 1s ease-out 0.8s both',
+              lineHeight: 1.6
             }}
           >
-            Private Infrastructure & Real Estate
+            We develop underdeveloped assets, transforming overlooked opportunities into institutional-quality properties through hands-on execution.
           </p>
 
           {/* Scroll indicator */}
