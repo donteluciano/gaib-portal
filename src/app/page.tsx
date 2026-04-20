@@ -153,7 +153,7 @@ export default function HomePage() {
                 About
               </Link>
               <Link 
-                href="/services" 
+                href="/strategies" 
                 style={{ 
                   color: 'var(--text-muted)', 
                   fontWeight: 400,

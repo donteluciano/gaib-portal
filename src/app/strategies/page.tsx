@@ -65,7 +65,7 @@ export default function ServicesPage() {
             </Link>
             <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
               <Link href="/about" style={{ color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', textDecoration: 'none' }}>About</Link>
-              <Link href="/services" style={{ color: 'var(--gold)', fontWeight: 400, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', textDecoration: 'none' }}>Services</Link>
+              <Link href="/strategies" style={{ color: 'var(--gold)', fontWeight: 400, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', textDecoration: 'none' }}>Strategies</Link>
               <Link href="/team" style={{ color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', textDecoration: 'none' }}>Team</Link>
               <Link href="/news" style={{ color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', textDecoration: 'none' }}>News</Link>
               <Link href="/contact" style={{ color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', textDecoration: 'none' }}>Contact</Link>
@@ -77,9 +77,9 @@ export default function ServicesPage() {
         <section className="pt-40 pb-20 px-10 text-center">
           <div className="h-px mb-10 mx-auto" style={{ width: '40px', background: 'var(--gold)' }} />
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 300, letterSpacing: '6px', textTransform: 'uppercase', marginBottom: '20px' }}>
-            Our <span style={{ color: 'var(--gold)' }}>Services</span>
+            Our <span style={{ color: 'var(--gold)' }}>Strategies</span>
           </h1>
-          <p className="text-sm tracking-[3px] uppercase" style={{ color: 'var(--text-muted)' }}>Investment Strategies & Capabilities</p>
+          <p className="text-sm tracking-[3px] uppercase" style={{ color: 'var(--text-muted)' }}>Investment Philosophy & Focus Areas</p>
         </section>
 
         {/* Services Grid */}
