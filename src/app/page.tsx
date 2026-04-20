@@ -278,15 +278,14 @@ export default function HomePage() {
 
           {/* Tagline */}
           <p 
-            className="text-sm tracking-[2px] max-w-2xl"
+            className="text-sm tracking-[3px] uppercase"
             style={{ 
               color: 'var(--text-muted)',
               fontWeight: 300,
-              animation: 'fadeUp 1s ease-out 0.8s both',
-              lineHeight: 1.6
+              animation: 'fadeUp 1s ease-out 0.8s both'
             }}
           >
-            We develop underdeveloped assets, transforming overlooked opportunities into institutional-quality properties through hands-on execution.
+            Unlocking value in underdeveloped assets across sectors
           </p>
 
           {/* Scroll indicator */}
