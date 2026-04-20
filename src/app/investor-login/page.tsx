@@ -19,7 +19,7 @@ export default function InvestorLoginPage() {
             href="/" 
             className="text-white font-serif text-sm tracking-[6px]"
           >
-            GAIB CAPITAL PARTNERS
+            HERALD CAPITAL PARTNERS
           </Link>
           <div className="flex items-center gap-8 text-xs tracking-[2px]">
             <Link href="/#contact" className="text-[#999999] hover:text-gold transition-colors duration-300">
@@ -74,7 +74,7 @@ export default function InvestorLoginPage() {
       {/* Footer */}
       <footer className="text-center py-10 px-6">
         <p className="font-sans text-[10px] text-[#666666] tracking-[1px]">
-          © 2026 Gaib Capital Partners LLC. All rights reserved.
+          © 2026 Herald Capital Partners LLC. All rights reserved.
         </p>
       </footer>
     </div>

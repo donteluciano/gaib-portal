@@ -1,20 +1,35 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Didact+Gothic&display=swap');
+
+/* Perandory Display Font */
+@font-face {
+  font-family: 'Perandory';
+  src: url('/fonts/Perandory.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root,
 [data-theme="light"] {
-  /* Clean Light Theme */
-  --bg-primary: #F9FAFB;
+  /* Herald Capital Light Theme - Cream background */
+  --bg-primary: #FBF3DA;
   --bg-secondary: #FFFFFF;
   --bg-card: #FFFFFF;
   --bg-input: #FFFFFF;
-  --bg-nav: #FFFFFF;
-  --border: #E5E7EB;
-  --border-card: #E5E7EB;
-  --text-primary: #111827;
-  --text-secondary: #374151;
-  --text-muted: #6B7280;
-  --accent: #2563EB;
-  --accent-hover: #1D4ED8;
+  --bg-nav: #FBF3DA;
+  --border: #E5DFC8;
+  --border-card: #E5DFC8;
+  --text-primary: #111D2B;
+  --text-secondary: #2A3A4D;
+  --text-muted: #5A6A7D;
+  --accent: #BD9468;
+  --accent-hover: #A67F55;
+  
+  /* Brand colors */
+  --navy: #111D2B;
+  --cream: #FBF3DA;
+  --brass: #BD9468;
   
   /* Status colors */
   --success: #22C55E;
@@ -23,19 +38,24 @@
 }
 
 [data-theme="dark"] {
-  /* Dark Theme */
-  --bg-primary: #111827;
-  --bg-secondary: #1F2937;
-  --bg-card: #1F2937;
-  --bg-input: #374151;
-  --bg-nav: #1F2937;
-  --border: #374151;
-  --border-card: #374151;
-  --text-primary: #F9FAFB;
-  --text-secondary: #E5E7EB;
-  --text-muted: #9CA3AF;
-  --accent: #3B82F6;
-  --accent-hover: #2563EB;
+  /* Herald Capital Dark Theme - Navy background */
+  --bg-primary: #111D2B;
+  --bg-secondary: #1A2A3D;
+  --bg-card: #1A2A3D;
+  --bg-input: #243448;
+  --bg-nav: #111D2B;
+  --border: #2A3A4D;
+  --border-card: #2A3A4D;
+  --text-primary: #FBF3DA;
+  --text-secondary: #E5DFC8;
+  --text-muted: #9AA5B5;
+  --accent: #BD9468;
+  --accent-hover: #D4A87A;
+  
+  /* Brand colors */
+  --navy: #111D2B;
+  --cream: #FBF3DA;
+  --brass: #BD9468;
   
   /* Status colors stay the same */
   --success: #22C55E;
@@ -44,16 +64,25 @@
 }
 
 body {
-  @apply bg-gray-50 text-gray-900 transition-colors duration-200;
-  font-family: Arial, system-ui, sans-serif;
+  @apply bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-200;
+  font-family: 'Didact Gothic', Arial, system-ui, sans-serif;
 }
 
 [data-theme="dark"] body {
-  @apply bg-gray-900 text-white;
+  @apply bg-[#111D2B] text-[#FBF3DA];
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: Georgia, serif;
+/* Display font - Perandory (CAPS ONLY per brand guidelines) */
+h1, h2, h3, h4, h5, h6,
+.display-font {
+  font-family: 'Perandory', Georgia, serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Body font */
+.body-font {
+  font-family: 'Didact Gothic', Arial, system-ui, sans-serif;
 }
 
 /* Custom scrollbar */
@@ -63,16 +92,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: #F3F4F6;
+  background: var(--bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D1D5DB;
+  background: var(--border);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9CA3AF;
+  background: var(--text-muted);
 }
 
 /* Focus styles */
@@ -81,9 +110,18 @@ h1, h2, h3, h4, h5, h6 {
   outline-offset: 2px;
 }
 
-/* Accent line class */
-.gold-line {
+/* Accent line class - brass */
+.gold-line,
+.brass-line {
   height: 2px;
-  background: linear-gradient(90deg, var(--accent), transparent);
+  background: linear-gradient(90deg, var(--brass), transparent);
 }
-/* Sat Feb 21 04:33:47 AM UTC 2026 */
+
+/* Herald Capital brand utilities */
+.bg-navy { background-color: #111D2B; }
+.bg-cream { background-color: #FBF3DA; }
+.bg-brass { background-color: #BD9468; }
+.text-navy { color: #111D2B; }
+.text-cream { color: #FBF3DA; }
+.text-brass { color: #BD9468; }
+.border-brass { border-color: #BD9468; }

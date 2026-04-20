@@ -48,8 +48,8 @@ export default function HomePage() {
           --navy: #0a1628;
           --navy-light: #12243d;
           --cream: #f4f1eb;
-          --gold: #b8965a;
-          --gold-light: #d4b87c;
+          --gold: #BD9468;
+          --gold-light: #D4A87A;
           --text-muted: #8a9bb5;
           --white: #ffffff;
         }
@@ -135,9 +135,65 @@ export default function HomePage() {
                 whiteSpace: 'nowrap'
               }}
             >
-              Gaib Capital <span style={{ color: 'var(--gold)' }}>Partners</span>
+              Herald Capital <span style={{ color: 'var(--gold)' }}>Partners</span>
             </Link>
             <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+              <Link 
+                href="/about" 
+                style={{ 
+                  color: 'var(--text-muted)', 
+                  fontWeight: 400,
+                  fontSize: '11px',
+                  letterSpacing: '2px',
+                  textTransform: 'uppercase',
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                About
+              </Link>
+              <Link 
+                href="/services" 
+                style={{ 
+                  color: 'var(--text-muted)', 
+                  fontWeight: 400,
+                  fontSize: '11px',
+                  letterSpacing: '2px',
+                  textTransform: 'uppercase',
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                Services
+              </Link>
+              <Link 
+                href="/team" 
+                style={{ 
+                  color: 'var(--text-muted)', 
+                  fontWeight: 400,
+                  fontSize: '11px',
+                  letterSpacing: '2px',
+                  textTransform: 'uppercase',
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                Team
+              </Link>
+              <Link 
+                href="/news" 
+                style={{ 
+                  color: 'var(--text-muted)', 
+                  fontWeight: 400,
+                  fontSize: '11px',
+                  letterSpacing: '2px',
+                  textTransform: 'uppercase',
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                News
+              </Link>
               <a 
                 href="#contact" 
                 style={{ 
@@ -165,20 +221,6 @@ export default function HomePage() {
                 }}
               >
                 Investor Login
-              </Link>
-              <Link 
-                href="/login" 
-                style={{ 
-                  color: 'var(--text-muted)', 
-                  fontWeight: 400,
-                  fontSize: '11px',
-                  letterSpacing: '2px',
-                  textTransform: 'uppercase',
-                  textDecoration: 'none',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                Portal
               </Link>
             </div>
           </div>
@@ -220,7 +262,7 @@ export default function HomePage() {
               animation: 'fadeUp 1s ease-out 0.5s both'
             }}
           >
-            Gaib Capital
+            Herald Capital
             <span 
               className="block"
               style={{ 
@@ -289,7 +331,7 @@ export default function HomePage() {
               color: 'var(--cream)'
             }}
           >
-            Gaib Capital Partners is a private investment firm that acquires and develops real estate and infrastructure assets in special situations. We target opportunities where proprietary sourcing, technical expertise, and disciplined execution produce outsized risk-adjusted returns. The firm invests alongside its limited partners with zero management fees and a compensation structure tied entirely to performance.
+            Herald Capital Partners is a private investment firm that acquires and develops real estate and infrastructure assets in special situations. We target opportunities where proprietary sourcing, technical expertise, and disciplined execution produce outsized risk-adjusted returns. The firm invests alongside its limited partners with zero management fees and a compensation structure tied entirely to performance.
           </p>
         </section>
 
@@ -490,13 +532,13 @@ export default function HomePage() {
             className="text-sm tracking-[2px] uppercase"
             style={{ fontFamily: "'Cormorant Garamond', serif", color: 'var(--text-muted)' }}
           >
-            Gaib Capital Partners
+            Herald Capital Partners
           </div>
           <div 
             className="text-[11px] tracking-[1px]"
             style={{ color: 'rgba(138, 155, 181, 0.5)' }}
           >
-            © 2026 Gaib Capital Partners LLC. All rights reserved. Confidential. Not an offer to sell securities.
+            © 2026 Herald Capital Partners LLC. All rights reserved. Confidential. Not an offer to sell securities.
           </div>
         </footer>
       </div>

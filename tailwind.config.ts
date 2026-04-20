@@ -50,8 +50,9 @@ const config: Config = {
         'gold': 'var(--accent)',
       },
       fontFamily: {
-        serif: ['Georgia', 'serif'],
-        sans: ['Arial', 'system-ui', 'sans-serif'],
+        display: ['Perandory', 'Georgia', 'serif'],
+        serif: ['Perandory', 'Georgia', 'serif'],
+        sans: ['Didact Gothic', 'Arial', 'system-ui', 'sans-serif'],
       },
     },
   },

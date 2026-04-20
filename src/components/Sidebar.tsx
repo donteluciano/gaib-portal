@@ -144,15 +144,15 @@ export default function Sidebar() {
         <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} mb-3`}>
           {!isCollapsed && (
             <Link href="/portal/dashboard" className="flex items-center gap-3">
-              <img src="/logo.svg" alt="GAIB" width={28} height={28} />
+              <img src="/logo.svg" alt="Herald" width={28} height={28} />
               <h1 className="font-serif text-sm tracking-[3px] leading-tight text-gray-900 dark:text-white">
-                GAIB CAPITAL<br />PARTNERS
+                HERALD CAPITAL<br />PARTNERS
               </h1>
             </Link>
           )}
           {isCollapsed && (
             <Link href="/portal/dashboard">
-              <img src="/logo.svg" alt="GAIB" width={28} height={28} />
+              <img src="/logo.svg" alt="Herald" width={28} height={28} />
             </Link>
           )}
           <button
@@ -165,8 +165,8 @@ export default function Sidebar() {
         </div>
         {!isCollapsed && (
           <>
-            <div className="h-0.5 bg-blue-600 w-12" />
-            <p className="text-xs mt-2 tracking-wider text-blue-600 font-medium">PORTAL</p>
+            <div className="h-0.5 bg-[#BD9468] w-12" />
+            <p className="text-xs mt-2 tracking-wider text-[#BD9468] font-medium">PORTAL</p>
           </>
         )}
       </div>
@@ -182,7 +182,7 @@ export default function Sidebar() {
               title={isCollapsed ? item.name : undefined}
               className={`flex items-center ${isCollapsed ? 'justify-center px-2' : 'gap-3 px-4'} py-3 rounded-lg transition-colors ${
                 isActive
-                  ? 'bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-900/30 dark:border-blue-800'
+                  ? 'bg-blue-50 text-[#BD9468] border border-blue-200 dark:bg-blue-900/30 dark:border-blue-800'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800'
               }`}
             >

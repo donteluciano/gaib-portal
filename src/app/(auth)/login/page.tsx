@@ -53,7 +53,7 @@ export default function LoginPage() {
           padding: '32px'
         }}>
           <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-            <h1 style={{ fontSize: '20px', fontWeight: 600, color: '#111827' }}>GAIB Portal</h1>
+            <h1 style={{ fontSize: '20px', fontWeight: 600, color: '#111827' }}>Herald Portal</h1>
             <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '4px' }}>Internal access only</p>
           </div>
           
