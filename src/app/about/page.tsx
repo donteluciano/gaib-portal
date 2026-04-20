@@ -87,17 +87,17 @@ export default function AboutPage() {
           <div className="mb-16">
             <div className="text-[11px] tracking-[4px] uppercase mb-6" style={{ color: 'var(--gold)', fontWeight: 500 }}>Our Mission</div>
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', lineHeight: 1.7, fontWeight: 300 }}>
-              Herald Capital Partners was founded with a singular vision: to create value in infrastructure and real estate through disciplined investing, operational expertise, and unwavering alignment with our partners.
+              Herald Capital Partners is a real estate-anchored multi-strategy investment firm focused on special situation and high-conviction opportunities across industrial, infrastructure, multifamily, and related sectors.
             </p>
           </div>
 
           <div className="mb-16">
             <div className="text-[11px] tracking-[4px] uppercase mb-6" style={{ color: 'var(--gold)', fontWeight: 500 }}>Our Approach</div>
             <p className="text-base leading-relaxed mb-6" style={{ color: 'var(--text-muted)' }}>
-              We pursue special situations where complexity creates opportunity. Our team's technical background enables us to underwrite risks that generalist investors cannot evaluate, allowing us to acquire assets at compelling valuations.
+              We pursue special situations where complexity creates opportunity. Our team's technical background enables us to underwrite risks that generalist investors cannot evaluate, allowing us to acquire and develop assets at compelling valuations.
             </p>
             <p className="text-base leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-              Unlike traditional fund managers, we charge zero management fees. Our compensation is tied entirely to performance—we succeed only when our investors succeed. This structure ensures complete alignment of interests from day one.
+              We develop underdeveloped lots and transform overlooked properties into institutional-quality assets. Our hands-on approach to development and asset management creates value that passive investment strategies cannot replicate.
             </p>
           </div>
 

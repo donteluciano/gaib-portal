@@ -101,18 +101,18 @@ export default function ServicesPage() {
               </ul>
             </div>
 
-            {/* Real Estate */}
+            {/* Multifamily */}
             <div className="p-10" style={{ background: 'var(--navy-light)', border: '1px solid rgba(184, 150, 90, 0.15)' }}>
               <div className="w-[30px] h-px mb-6" style={{ background: 'var(--gold)' }} />
-              <h3 className="text-2xl tracking-[3px] uppercase mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400 }}>Real Estate</h3>
+              <h3 className="text-2xl tracking-[3px] uppercase mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400 }}>Multifamily</h3>
               <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--text-muted)' }}>
-                Our real estate strategy focuses on special situations where operational improvements, repositioning, or development expertise can unlock substantial value. We target markets with strong fundamentals and barriers to entry.
+                We develop underdeveloped lots and acquire apartment properties in markets with strong rental demand. Our hands-on approach transforms overlooked opportunities into institutional-quality multifamily assets.
               </p>
               <ul className="text-sm space-y-2" style={{ color: 'var(--text-muted)' }}>
+                <li>• Ground-Up Apartment Development</li>
                 <li>• Value-Add Acquisitions</li>
-                <li>• Ground-Up Development</li>
+                <li>• Underdeveloped Lot Development</li>
                 <li>• Repositioning & Redevelopment</li>
-                <li>• Structured Transactions</li>
               </ul>
             </div>
 

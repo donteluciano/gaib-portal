@@ -331,7 +331,7 @@ export default function HomePage() {
               color: 'var(--cream)'
             }}
           >
-            Herald Capital Partners is a private investment firm that acquires and develops real estate and infrastructure assets in special situations. We target opportunities where proprietary sourcing, technical expertise, and disciplined execution produce outsized risk-adjusted returns. The firm invests alongside its limited partners with zero management fees and a compensation structure tied entirely to performance.
+            Herald Capital Partners is a real estate-anchored multi-strategy investment firm focused on special situation and high-conviction opportunities across industrial, infrastructure, multifamily, and related sectors. We develop underdeveloped assets where proprietary sourcing, technical expertise, and disciplined execution produce outsized risk-adjusted returns.
           </p>
         </section>
 
@@ -367,13 +367,13 @@ export default function HomePage() {
                 className="text-[20px] tracking-[3px] uppercase mb-[18px]"
                 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, color: 'var(--cream)' }}
               >
-                Discipline
+                Development
               </h3>
               <p 
                 className="text-sm leading-[1.8]"
                 style={{ color: 'var(--text-muted)', fontWeight: 300 }}
               >
-                Zero management fee. Our compensation is tied entirely to performance. We do not earn carried interest until our investors are paid first.
+                We develop underdeveloped lots and assets, transforming overlooked opportunities into institutional-quality properties through hands-on execution.
               </p>
             </div>
 
