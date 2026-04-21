@@ -4,12 +4,12 @@ import Link from 'next/link';
 import { useEffect, useState, useMemo } from 'react';
 
 // Team data - Donte always first, partners shuffle daily
-const managingPartner = { name: 'Donte Bronaugh', title: 'Managing Partner', photo: null };
+const managingPartner = { name: 'Donte Bronaugh', title: 'Managing Partner' };
 const partners = [
-  { name: 'Benjamin Cobb', title: 'Partner', photo: '/team/ben-cobb.jpg' },
-  { name: 'Daniel Hodinott', title: 'Partner', photo: null },
-  { name: 'Lemar Boone', title: 'Partner', photo: null },
-  { name: 'Sean Thomas', title: 'Partner', photo: null },
+  { name: 'Benjamin Cobb', title: 'Partner' },
+  { name: 'Daniel Hoddinott', title: 'Partner' },
+  { name: 'Lemar Boone', title: 'Partner' },
+  { name: 'Sean Thomas', title: 'Partner' },
 ];
 
 // Shuffle based on day number so order changes daily
@@ -129,13 +129,10 @@ export default function TeamPage() {
                   className="w-40 h-40 mx-auto mb-6 flex items-center justify-center overflow-hidden"
                   style={{ background: 'var(--navy-light)', border: '1px solid rgba(184, 150, 90, 0.15)' }}
                 >
-                  {member.photo ? (
-                    <img src={member.photo} alt={member.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-3xl" style={{ color: 'var(--gold)', opacity: 0.3 }}>
-                      {member.name.split(' ').map(n => n[0]).join('')}
-                    </span>
-                  )}
+                  <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30 8L52 20V40L30 52L8 40V20L30 8Z" stroke="#BD9468" strokeWidth="1" fill="none" opacity="0.4"/>
+                    <text x="30" y="34" textAnchor="middle" fill="#BD9468" fontSize="14" fontFamily="Cormorant Garamond" opacity="0.6">H</text>
+                  </svg>
                 </div>
                 <h3 className="text-lg tracking-[2px] uppercase mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   {member.name}
@@ -155,13 +152,10 @@ export default function TeamPage() {
                   className="w-40 h-40 mx-auto mb-6 flex items-center justify-center overflow-hidden"
                   style={{ background: 'var(--navy-light)', border: '1px solid rgba(184, 150, 90, 0.15)' }}
                 >
-                  {member.photo ? (
-                    <img src={member.photo} alt={member.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-3xl" style={{ color: 'var(--gold)', opacity: 0.3 }}>
-                      {member.name.split(' ').map(n => n[0]).join('')}
-                    </span>
-                  )}
+                  <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30 8L52 20V40L30 52L8 40V20L30 8Z" stroke="#BD9468" strokeWidth="1" fill="none" opacity="0.4"/>
+                    <text x="30" y="34" textAnchor="middle" fill="#BD9468" fontSize="14" fontFamily="Cormorant Garamond" opacity="0.6">H</text>
+                  </svg>
                 </div>
                 <h3 className="text-lg tracking-[2px] uppercase mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   {member.name}
