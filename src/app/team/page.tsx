@@ -12,13 +12,13 @@ const partners = [
   { name: 'Sean Thomas', title: 'Partner' },
 ];
 
-// Shuffle based on week number so order changes weekly
-function getWeekNumber() {
+// Shuffle based on day number so order changes daily
+function getDayNumber() {
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 1);
   const diff = now.getTime() - start.getTime();
-  const oneWeek = 604800000;
-  return Math.floor(diff / oneWeek);
+  const oneDay = 86400000;
+  return Math.floor(diff / oneDay);
 }
 
 function shuffleWithSeed(array: typeof partners, seed: number) {
@@ -36,8 +36,8 @@ export default function TeamPage() {
   const [scrolled, setScrolled] = useState(false);
   
   const shuffledPartners = useMemo(() => {
-    const week = getWeekNumber();
-    return shuffleWithSeed(partners, week);
+    const day = getDayNumber();
+    return shuffleWithSeed(partners, day);
   }, []);
 
   // Donte in the middle: [Partner, Donte, Partner] on top row, [Partner, Partner] on bottom
