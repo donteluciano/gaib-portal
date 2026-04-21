@@ -3,13 +3,13 @@
 import Link from 'next/link';
 import { useEffect, useState, useMemo } from 'react';
 
-// Team data - Donte always first, partners shuffle weekly
-const managingPartner = { name: 'Donte Bronaugh', title: 'Managing Partner' };
+// Team data - Donte always first, partners shuffle daily
+const managingPartner = { name: 'Donte Bronaugh', title: 'Managing Partner', photo: null };
 const partners = [
-  { name: 'Benjamin Cobb', title: 'Partner' },
-  { name: 'Daniel Hodinott', title: 'Partner' },
-  { name: 'Lemar Boone', title: 'Partner' },
-  { name: 'Sean Thomas', title: 'Partner' },
+  { name: 'Benjamin Cobb', title: 'Partner', photo: '/team/ben-cobb.jpg' },
+  { name: 'Daniel Hodinott', title: 'Partner', photo: null },
+  { name: 'Lemar Boone', title: 'Partner', photo: null },
+  { name: 'Sean Thomas', title: 'Partner', photo: null },
 ];
 
 // Shuffle based on day number so order changes daily
@@ -126,12 +126,16 @@ export default function TeamPage() {
             {topRow.map((member) => (
               <div key={member.name} className="text-center">
                 <div 
-                  className="w-40 h-40 mx-auto mb-6 flex items-center justify-center"
+                  className="w-40 h-40 mx-auto mb-6 flex items-center justify-center overflow-hidden"
                   style={{ background: 'var(--navy-light)', border: '1px solid rgba(184, 150, 90, 0.15)' }}
                 >
-                  <span className="text-3xl" style={{ color: 'var(--gold)', opacity: 0.3 }}>
-                    {member.name.split(' ').map(n => n[0]).join('')}
-                  </span>
+                  {member.photo ? (
+                    <img src={member.photo} alt={member.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-3xl" style={{ color: 'var(--gold)', opacity: 0.3 }}>
+                      {member.name.split(' ').map(n => n[0]).join('')}
+                    </span>
+                  )}
                 </div>
                 <h3 className="text-lg tracking-[2px] uppercase mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   {member.name}
@@ -148,12 +152,16 @@ export default function TeamPage() {
             {bottomRow.map((member) => (
               <div key={member.name} className="text-center" style={{ width: '200px' }}>
                 <div 
-                  className="w-40 h-40 mx-auto mb-6 flex items-center justify-center"
+                  className="w-40 h-40 mx-auto mb-6 flex items-center justify-center overflow-hidden"
                   style={{ background: 'var(--navy-light)', border: '1px solid rgba(184, 150, 90, 0.15)' }}
                 >
-                  <span className="text-3xl" style={{ color: 'var(--gold)', opacity: 0.3 }}>
-                    {member.name.split(' ').map(n => n[0]).join('')}
-                  </span>
+                  {member.photo ? (
+                    <img src={member.photo} alt={member.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-3xl" style={{ color: 'var(--gold)', opacity: 0.3 }}>
+                      {member.name.split(' ').map(n => n[0]).join('')}
+                    </span>
+                  )}
                 </div>
                 <h3 className="text-lg tracking-[2px] uppercase mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   {member.name}
