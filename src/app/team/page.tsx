@@ -40,8 +40,9 @@ export default function TeamPage() {
     return shuffleWithSeed(partners, week);
   }, []);
 
-  // Donte first, then shuffled partners
-  const team = [managingPartner, ...shuffledPartners];
+  // Donte in the middle: [Partner, Donte, Partner] on top row, [Partner, Partner] on bottom
+  const topRow = [shuffledPartners[0], managingPartner, shuffledPartners[1]];
+  const bottomRow = [shuffledPartners[2], shuffledPartners[3]];
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -118,11 +119,11 @@ export default function TeamPage() {
           </h1>
         </section>
 
-        {/* Team Grid - 3 on top, 2 on bottom */}
+        {/* Team Grid - 3 on top (Donte center), 2 on bottom */}
         <section className="py-10 px-10 max-w-5xl mx-auto">
-          {/* Top row - 3 members */}
+          {/* Top row - Donte in center */}
           <div className="grid md:grid-cols-3 gap-10 mb-10">
-            {team.slice(0, 3).map((member) => (
+            {topRow.map((member) => (
               <div key={member.name} className="text-center">
                 <div 
                   className="w-40 h-40 mx-auto mb-6 flex items-center justify-center"
@@ -142,9 +143,9 @@ export default function TeamPage() {
             ))}
           </div>
 
-          {/* Bottom row - 2 members, centered */}
+          {/* Bottom row - 2 partners, centered */}
           <div className="flex justify-center gap-10">
-            {team.slice(3, 5).map((member) => (
+            {bottomRow.map((member) => (
               <div key={member.name} className="text-center" style={{ width: '200px' }}>
                 <div 
                   className="w-40 h-40 mx-auto mb-6 flex items-center justify-center"
