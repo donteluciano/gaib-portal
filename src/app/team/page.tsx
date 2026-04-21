@@ -1,10 +1,47 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+
+// Team data - Donte always first, partners shuffle weekly
+const managingPartner = { name: 'Donte Bronaugh', title: 'Managing Partner' };
+const partners = [
+  { name: 'Benjamin Cobb', title: 'Partner' },
+  { name: 'Daniel Hodinott', title: 'Partner' },
+  { name: 'Lemar Boone', title: 'Partner' },
+  { name: 'Sean Thomas', title: 'Partner' },
+];
+
+// Shuffle based on week number so order changes weekly
+function getWeekNumber() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 1);
+  const diff = now.getTime() - start.getTime();
+  const oneWeek = 604800000;
+  return Math.floor(diff / oneWeek);
+}
+
+function shuffleWithSeed(array: typeof partners, seed: number) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor((seed * (i + 1)) % (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  // Use week number to rotate the array
+  const rotations = seed % shuffled.length;
+  return [...shuffled.slice(rotations), ...shuffled.slice(0, rotations)];
+}
 
 export default function TeamPage() {
   const [scrolled, setScrolled] = useState(false);
+  
+  const shuffledPartners = useMemo(() => {
+    const week = getWeekNumber();
+    return shuffleWithSeed(partners, week);
+  }, []);
+
+  // Donte first, then shuffled partners
+  const team = [managingPartner, ...shuffledPartners];
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -74,94 +111,62 @@ export default function TeamPage() {
         </nav>
 
         {/* Hero */}
-        <section className="pt-40 pb-20 px-10 text-center">
+        <section className="pt-40 pb-16 px-10 text-center">
           <div className="h-px mb-10 mx-auto" style={{ width: '40px', background: 'var(--gold)' }} />
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 300, letterSpacing: '6px', textTransform: 'uppercase', marginBottom: '20px' }}>
             Our <span style={{ color: 'var(--gold)' }}>Team</span>
           </h1>
-          <p className="text-sm tracking-[3px] uppercase" style={{ color: 'var(--text-muted)' }}>Leadership & Experience</p>
         </section>
 
-        {/* Team Intro */}
-        <section className="py-10 px-10 max-w-3xl mx-auto text-center">
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', lineHeight: 1.7, fontWeight: 300, color: 'var(--cream)' }}>
-            Our team combines decades of experience in infrastructure development, real estate investment, and capital markets. We bring institutional discipline to every investment while maintaining the entrepreneurial mindset necessary to create value.
-          </p>
-        </section>
-
-        {/* Team Grid */}
-        <section className="py-20 px-10 max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            
-            {/* Team Member Placeholder 1 */}
-            <div className="text-center">
-              <div 
-                className="w-48 h-48 mx-auto mb-6 flex items-center justify-center"
-                style={{ background: 'var(--navy-light)', border: '1px solid rgba(184, 150, 90, 0.15)' }}
-              >
-                <span className="text-4xl" style={{ color: 'var(--gold)', opacity: 0.3 }}>+</span>
+        {/* Team Grid - 3 on top, 2 on bottom */}
+        <section className="py-10 px-10 max-w-5xl mx-auto">
+          {/* Top row - 3 members */}
+          <div className="grid md:grid-cols-3 gap-10 mb-10">
+            {team.slice(0, 3).map((member) => (
+              <div key={member.name} className="text-center">
+                <div 
+                  className="w-40 h-40 mx-auto mb-6 flex items-center justify-center"
+                  style={{ background: 'var(--navy-light)', border: '1px solid rgba(184, 150, 90, 0.15)' }}
+                >
+                  <span className="text-3xl" style={{ color: 'var(--gold)', opacity: 0.3 }}>
+                    {member.name.split(' ').map(n => n[0]).join('')}
+                  </span>
+                </div>
+                <h3 className="text-lg tracking-[2px] uppercase mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  {member.name}
+                </h3>
+                <p className="text-xs tracking-[2px] uppercase" style={{ color: 'var(--gold)' }}>
+                  {member.title}
+                </p>
               </div>
-              <h3 className="text-lg tracking-[2px] uppercase mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Managing Partner</h3>
-              <p className="text-xs tracking-[2px] uppercase mb-4" style={{ color: 'var(--gold)' }}>Leadership</p>
-              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                Oversees firm strategy, investor relations, and investment committee decisions.
-              </p>
-            </div>
-
-            {/* Team Member Placeholder 2 */}
-            <div className="text-center">
-              <div 
-                className="w-48 h-48 mx-auto mb-6 flex items-center justify-center"
-                style={{ background: 'var(--navy-light)', border: '1px solid rgba(184, 150, 90, 0.15)' }}
-              >
-                <span className="text-4xl" style={{ color: 'var(--gold)', opacity: 0.3 }}>+</span>
-              </div>
-              <h3 className="text-lg tracking-[2px] uppercase mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Partner, Infrastructure</h3>
-              <p className="text-xs tracking-[2px] uppercase mb-4" style={{ color: 'var(--gold)' }}>Investments</p>
-              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                Leads infrastructure deal sourcing, due diligence, and portfolio management.
-              </p>
-            </div>
-
-            {/* Team Member Placeholder 3 */}
-            <div className="text-center">
-              <div 
-                className="w-48 h-48 mx-auto mb-6 flex items-center justify-center"
-                style={{ background: 'var(--navy-light)', border: '1px solid rgba(184, 150, 90, 0.15)' }}
-              >
-                <span className="text-4xl" style={{ color: 'var(--gold)', opacity: 0.3 }}>+</span>
-              </div>
-              <h3 className="text-lg tracking-[2px] uppercase mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Partner, Real Estate</h3>
-              <p className="text-xs tracking-[2px] uppercase mb-4" style={{ color: 'var(--gold)' }}>Investments</p>
-              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                Manages real estate acquisitions, development, and asset management.
-              </p>
-            </div>
-
+            ))}
           </div>
 
-          {/* Coming Soon Note */}
-          <div className="mt-16 text-center p-8" style={{ background: 'var(--navy-light)', border: '1px solid rgba(184, 150, 90, 0.1)' }}>
-            <p className="text-sm tracking-[2px] uppercase mb-2" style={{ color: 'var(--gold)' }}>Team Profiles Coming Soon</p>
-            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-              Full team bios and backgrounds will be available shortly. For inquiries, please contact us directly.
-            </p>
+          {/* Bottom row - 2 members, centered */}
+          <div className="flex justify-center gap-10">
+            {team.slice(3, 5).map((member) => (
+              <div key={member.name} className="text-center" style={{ width: '200px' }}>
+                <div 
+                  className="w-40 h-40 mx-auto mb-6 flex items-center justify-center"
+                  style={{ background: 'var(--navy-light)', border: '1px solid rgba(184, 150, 90, 0.15)' }}
+                >
+                  <span className="text-3xl" style={{ color: 'var(--gold)', opacity: 0.3 }}>
+                    {member.name.split(' ').map(n => n[0]).join('')}
+                  </span>
+                </div>
+                <h3 className="text-lg tracking-[2px] uppercase mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  {member.name}
+                </h3>
+                <p className="text-xs tracking-[2px] uppercase" style={{ color: 'var(--gold)' }}>
+                  {member.title}
+                </p>
+              </div>
+            ))}
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-20 px-10 text-center" style={{ background: 'var(--navy-light)' }}>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '28px', fontWeight: 300, marginBottom: '30px' }}>
-            Interested in joining our team?
-          </p>
-          <Link 
-            href="/contact"
-            className="inline-block px-10 py-4 text-xs tracking-[3px] uppercase transition-all duration-300 hover:bg-[var(--gold)] hover:text-[var(--navy)]"
-            style={{ border: '1px solid var(--gold)', color: 'var(--gold)', textDecoration: 'none' }}
-          >
-            Contact Us
-          </Link>
-        </section>
+        {/* Spacer */}
+        <div className="py-20"></div>
 
         {/* Footer */}
         <footer className="px-10 py-10 flex justify-between items-center" style={{ borderTop: '1px solid rgba(184, 150, 90, 0.08)' }}>
