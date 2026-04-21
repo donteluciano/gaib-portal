@@ -285,7 +285,7 @@ export default function HomePage() {
               animation: 'fadeUp 1s ease-out 0.8s both'
             }}
           >
-            Unlocking value in underdeveloped assets across sectors
+            Unlocking alpha in underdeveloped assets across sectors
           </p>
 
           {/* Scroll indicator */}
