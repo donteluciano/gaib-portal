@@ -164,7 +164,7 @@ export default function HomePage() {
                   whiteSpace: 'nowrap'
                 }}
               >
-                Services
+                Strategies
               </Link>
               <Link 
                 href="/team" 
