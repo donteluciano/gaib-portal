@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, directStorage, portalFileUrl } from '@/lib/supabase';
 
 type DocCategory = 'legal' | 'gas' | 'environmental' | 'political' | 'engineering' | 'fiber' | 'financial' | 'other';
 type AddMode = 'upload' | 'link';
@@ -63,10 +63,13 @@ export default function DocumentsTab({ siteId }: Props) {
       const timestamp = Date.now();
       const safeName = selectedFile.name.replace(/[^a-zA-Z0-9.-]/g, '_');
       const filePath = `sites/${siteId}/${timestamp}_${safeName}`;
-      const { data, error } = await supabase.storage.from('documents').upload(filePath, selectedFile, { cacheControl: '3600', upsert: false });
-      if (error) { if (error.message.includes('Bucket not found')) throw new Error('Storage bucket "documents" not found. Please create it in Supabase Dashboard → Storage.'); throw error; }
-      const { data: urlData } = supabase.storage.from('documents').getPublicUrl(filePath);
-      return urlData.publicUrl;
+      // Get a one-time upload token through the signed-in proxy, then upload straight to storage.
+      const { data: signed, error: signError } = await supabase.storage.from('documents').createSignedUploadUrl(filePath);
+      if (signError || !signed) { if (signError?.message.includes('not found')) throw new Error('Storage bucket "documents" not found. Please create it in Supabase Dashboard → Storage.'); throw signError ?? new Error('Upload failed'); }
+      const { error } = await directStorage().from('documents').uploadToSignedUrl(filePath, signed.token, selectedFile, { cacheControl: '3600' });
+      if (error) throw error;
+      // Files are private; this link opens them through the portal sign-in.
+      return `/api/db/storage/v1/object/public/documents/${filePath}`;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Upload failed';
       setError(errorMessage);
@@ -98,7 +101,7 @@ export default function DocumentsTab({ siteId }: Props) {
   function resetForm() { setNewDoc({ name: '', url: '', category: 'other' }); setSelectedFile(null); setShowForm(false); setError(null); if (fileInputRef.current) fileInputRef.current.value = ''; }
 
   async function removeDoc(id: string, url: string) {
-    if (url.includes('supabase') && url.includes('/documents/')) {
+    if (url.includes('/storage/v1/object/') && url.includes('/documents/')) {
       try { const pathMatch = url.match(/\/documents\/(.+)$/); if (pathMatch) await supabase.storage.from('documents').remove([pathMatch[1]]); } catch (e) { console.error('Failed to delete file from storage:', e); }
     }
     const { error } = await supabase.from('documents').delete().eq('id', id);
@@ -163,7 +166,7 @@ export default function DocumentsTab({ siteId }: Props) {
             <tbody>
               {docs.map((doc) => (
                 <tr key={doc.id} style={{ borderBottom: '1px solid var(--border-card)' }}>
-                  <td style={{ padding: '12px 24px' }}><a href={doc.url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', textDecoration: 'none' }}><span>{getFileIcon(doc.file_type, doc.url)}</span><span>{doc.name}</span><span style={{ color: 'var(--text-muted)' }}>↗</span></a></td>
+                  <td style={{ padding: '12px 24px' }}><a href={portalFileUrl(doc.url)} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', textDecoration: 'none' }}><span>{getFileIcon(doc.file_type, doc.url)}</span><span>{doc.name}</span><span style={{ color: 'var(--text-muted)' }}>↗</span></a></td>
                   <td style={{ padding: '12px 24px' }}><span style={{ padding: '4px 8px', fontSize: '12px', fontWeight: 500, borderRadius: '4px', backgroundColor: categoryColors[doc.category]?.bg || '#F3F4F6', color: categoryColors[doc.category]?.text || '#6B7280', border: `1px solid ${categoryColors[doc.category]?.border || '#E5E7EB'}` }}>{categoryLabels[doc.category] || 'Other'}</span></td>
                   <td style={{ padding: '12px 24px', color: 'var(--text-muted)', fontSize: '14px' }}>{formatFileSize(doc.file_size) || '—'}</td>
                   <td style={{ padding: '12px 24px', color: 'var(--text-muted)' }}>{doc.date_added}</td>

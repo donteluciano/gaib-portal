@@ -95,7 +95,9 @@ CREATE TABLE IF NOT EXISTS site_incentives (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Enable RLS (but allow all for now)
+-- Enable RLS on every table. There are deliberately no policies: the public (anon) key
+-- gets no access. The portal reads and writes through /api/db on the server using the
+-- service role key, which is not affected by RLS. See supabase-lockdown.sql.
 ALTER TABLE sites ENABLE ROW LEVEL SECURITY;
 ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE activities ENABLE ROW LEVEL SECURITY;
@@ -104,16 +106,6 @@ ALTER TABLE fund_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE site_actuals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE dd_answers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE site_incentives ENABLE ROW LEVEL SECURITY;
-
--- Policies to allow all access (for development)
-CREATE POLICY "Allow all" ON sites FOR ALL USING (true);
-CREATE POLICY "Allow all" ON leads FOR ALL USING (true);
-CREATE POLICY "Allow all" ON activities FOR ALL USING (true);
-CREATE POLICY "Allow all" ON checklist_items FOR ALL USING (true);
-CREATE POLICY "Allow all" ON fund_settings FOR ALL USING (true);
-CREATE POLICY "Allow all" ON site_actuals FOR ALL USING (true);
-CREATE POLICY "Allow all" ON dd_answers FOR ALL USING (true);
-CREATE POLICY "Allow all" ON site_incentives FOR ALL USING (true);
 
 -- =====================
 -- TEST DATA

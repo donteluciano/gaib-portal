@@ -1,20 +1,21 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { PORTAL_COOKIE, isValidPortalSession } from '@/lib/portal-auth';
 
-export function middleware(request: NextRequest) {
-  const authCookie = request.cookies.get('gaib-auth');
-  const isAuthenticated = authCookie?.value === 'authenticated';
+// The portal and its database proxy require a signed-in session.
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const signedIn = await isValidPortalSession(request.cookies.get(PORTAL_COOKIE)?.value);
 
-  // Portal is temporarily public for sharing
-  // To re-enable protection, uncomment below:
-  // if (request.nextUrl.pathname.startsWith('/portal')) {
-  //   if (!isAuthenticated) {
-  //     return NextResponse.redirect(new URL('/login', request.url));
-  //   }
-  // }
+  if (pathname.startsWith('/api/db')) {
+    return signedIn ? NextResponse.next() : NextResponse.json({ message: 'Not signed in' }, { status: 401 });
+  }
 
-  // Redirect authenticated users from login to portal
-  if (request.nextUrl.pathname === '/login' && isAuthenticated) {
+  if (pathname.startsWith('/portal')) {
+    return signedIn ? NextResponse.next() : NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  if (pathname === '/login' && signedIn) {
     return NextResponse.redirect(new URL('/portal/dashboard', request.url));
   }
 
@@ -22,5 +23,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/login', '/portal/:path*'],
+  matcher: ['/login', '/portal/:path*', '/api/db/:path*'],
 };
