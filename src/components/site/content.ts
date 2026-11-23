@@ -35,8 +35,6 @@ export const TEAM: TeamMember[] = [
   },
   { name: 'Lemar Boone', title: 'Partner', initials: 'LB' },
   { name: 'Benjamin Cobb', title: 'Partner', initials: 'BC' },
-  { name: 'Daniel Hoddinott', title: 'Partner', initials: 'DH' },
-  { name: 'Sean Thomas', title: 'Partner', initials: 'ST' },
 ];
 
 export type NewsItem = {
