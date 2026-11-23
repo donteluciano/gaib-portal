@@ -4,13 +4,13 @@ import { CtaBand, PageHero, SectionHeading } from '@/components/site/blocks';
 export const metadata: Metadata = {
   title: 'Approach',
   description:
-    'A staged, gated process that takes land from first look to a build-ready site for modular AI inference data centers.',
+    'A staged, gated process that takes a site, open land or an existing building, from first look to build-ready for modular AI inference data centers.',
 };
 
 const STAGES = [
   {
     title: 'Site control',
-    text: 'Parcel identified and screened, ownership confirmed through title, the site visited and documented, and an option agreement executed.',
+    text: 'Site identified and screened, whether open land or an existing building, ownership confirmed through title, the property visited and documented, and an option agreement executed.',
     gate: 'Site under option',
   },
   {
@@ -35,7 +35,7 @@ const STAGES = [
   },
   {
     title: 'Engineering and feasibility',
-    text: 'Site engineer engaged, cooling approach and equipment assessed, zoning and the air-permit pathway confirmed, and a full financial model built.',
+    text: 'Site engineer engaged, existing structures evaluated, cooling approach and equipment assessed, zoning and the air-permit pathway confirmed, and a full financial model built.',
     gate: 'Engineering confirmed',
   },
   {
@@ -60,7 +60,7 @@ export default function ApproachPage() {
     <>
       <PageHero
         label="Our approach"
-        title="A staged, gated process from raw land to a build-ready site."
+        title="A staged, gated process that turns land or an existing building into a build-ready site."
         intro="Every site moves through seven stages. Each one ends in a go/no-go decision, so capital goes in only as risk comes out."
       />
 

@@ -14,7 +14,7 @@ export default function ContactPage() {
       <PageHero
         label="Contact"
         title="Tell us about your site."
-        intro="Whether you own land, represent a seller or develop data centers, we would like to hear from you. Submissions go directly to our team."
+        intro="Whether you own land or a building, represent a seller or develop data centers, we would like to hear from you. Submissions go directly to our team."
       />
 
       <section>
@@ -24,7 +24,7 @@ export default function ContactPage() {
               <p className="hc-label">What helps</p>
               <span className="hc-rule mt-5" />
               <p className="hc-muted mt-6 text-[16px] leading-[1.75]">
-                For land, the location, approximate size and anything you know about nearby gas transmission lines,
+                For a property, the location, the acreage or building size, and anything you know about nearby gas transmission lines,
                 substations or fiber. Partial information is fine. We will follow up with questions.
               </p>
             </div>

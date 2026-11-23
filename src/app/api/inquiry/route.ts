@@ -88,6 +88,7 @@ export async function POST(request: Request) {
     county: orNull(text(body.county, 100)),
     state: orNull(text(body.state, 50)),
     // acreage and asking_price are numeric columns; the raw entries are kept in the notes.
+    current_use: orNull(text(body.currentUse, 300)),
     acreage: toNumber(acreageInput),
     asking_price: toNumber(askingPriceInput),
     additional_notes: notes,
