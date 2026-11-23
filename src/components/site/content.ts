@@ -31,10 +31,11 @@ export const TEAM: TeamMember[] = [
     name: 'Donte Bronaugh',
     title: 'Managing Partner',
     initials: 'DB',
+    photo: '/team/donte-bronaugh.jpg',
     bio: 'Previously at Hyperscale Data, where he worked on site selection, development, deployment and community engagement for its Michigan data center campus, work that led to a 20 MW AI compute agreement.',
   },
   { name: 'Lemar Boone', title: 'Partner', initials: 'LB' },
-  { name: 'Benjamin Cobb', title: 'Partner', initials: 'BC' },
+  { name: 'Benjamin Cobb', title: 'Partner', initials: 'BC', photo: '/team/ben-cobb.jpg' },
 ];
 
 export type NewsItem = {
