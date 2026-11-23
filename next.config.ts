@@ -5,8 +5,6 @@ const nextConfig: NextConfig = {
     return [
       // "Strategies" was renamed "Approach".
       { source: "/strategies", destination: "/approach", permanent: true },
-      // News was retired until there is news to share.
-      { source: "/news", destination: "/", permanent: false },
     ];
   },
 };
