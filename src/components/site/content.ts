@@ -3,8 +3,7 @@
 export const FIRM_NAME = 'Herald Capital Partners';
 export const LEGAL_NAME = 'Herald Capital Partners LLC';
 
-// TODO: confirm this is the inbox you want public inquiries to show. It is on the old GAIB name.
-export const CONTACT_EMAIL = 'info@gaibcapitalpartners.com';
+export const CONTACT_EMAIL = 'donte@heraldcappartners.com';
 
 export const SITE_DESCRIPTION =
   'Herald Capital Partners finds, secures and de-risks powered sites for modular AI inference data centers.';
