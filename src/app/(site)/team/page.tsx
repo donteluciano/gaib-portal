@@ -20,13 +20,13 @@ export default function TeamPage() {
         <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
           <ul className="flex flex-wrap justify-center gap-x-8 gap-y-14">
             {TEAM.map((person) => (
-              <li key={person.name} className="w-full max-w-[300px] sm:w-[calc(50%-16px)] lg:w-[calc(33.333%-22px)]">
-                <div className="flex aspect-square w-full items-center justify-center overflow-hidden border border-[#BD9468]/25 bg-[#18283B]">
+              <li key={person.name} className="w-full max-w-[300px] text-center sm:w-[calc(50%-16px)] lg:w-[calc(33.333%-22px)]">
+                <div className="mx-auto flex aspect-square w-full max-w-[240px] items-center justify-center overflow-hidden rounded-full border border-[#BD9468]/40 bg-[#18283B]">
                   {person.photo ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={person.photo} alt={person.name} className="h-full w-full object-cover" />
                   ) : (
-                    <span className="hc-wordmark text-[40px] text-[#BD9468]" aria-hidden="true">
+                    <span className="hc-wordmark text-[36px] text-[#BD9468]" aria-hidden="true">
                       {person.initials}
                     </span>
                   )}
