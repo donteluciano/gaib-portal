@@ -12,9 +12,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const description =
+  "Herald Capital Partners finds, secures and de-risks powered sites for modular AI inference data centers.";
+
 export const metadata: Metadata = {
-  title: "Herald Capital Partners",
-  description: "Private investment firm focused on strategic site development",
+  metadataBase: new URL("https://heraldcappartners.com"),
+  title: {
+    default: "Herald Capital Partners",
+    template: "%s | Herald Capital Partners",
+  },
+  description,
+  openGraph: {
+    type: "website",
+    siteName: "Herald Capital Partners",
+    title: "Herald Capital Partners",
+    description,
+    url: "https://heraldcappartners.com",
+  },
   icons: {
     icon: "/favicon.svg",
   },
