@@ -67,5 +67,5 @@ export const NEWS: NewsItem[] = [
   },
 ];
 
-export const INQUIRY_ROLES = ['Landowner', 'Broker', 'Developer / Operator', 'Other'] as const;
+export const INQUIRY_ROLES = ['Property owner', 'Broker', 'Developer / Operator', 'Other'] as const;
 export type InquiryRole = (typeof INQUIRY_ROLES)[number];

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const STEPS = [
   {
     title: 'Originate',
-    text: 'We identify parcels where gas, power, fiber and water line up, often before they come to market.',
+    text: 'We identify sites, open land or existing buildings, where gas, power, fiber and water line up, often before they come to market.',
   },
   {
     title: 'Secure',
@@ -50,15 +50,15 @@ const CRITERIA = [
   },
   {
     title: 'Deployment',
-    text: 'Land suited to modular construction and phased expansion as demand grows.',
+    text: 'Land or buildings suited to modular deployment and phased expansion as demand grows.',
   },
 ];
 
 const AUDIENCES = [
   {
-    title: 'Landowners',
-    text: 'If you own land near gas transmission lines, substations or fiber routes, we would like to hear from you. We move quickly and explain our process plainly.',
-    cta: 'Submit your land',
+    title: 'Property owners',
+    text: 'If you own land or an industrial building near gas transmission lines, substations or fiber routes, we would like to hear from you. We move quickly and explain our process plainly.',
+    cta: 'Submit your property',
   },
   {
     title: 'Brokers',
@@ -84,7 +84,8 @@ export default function HomePage() {
             Powered sites for AI inference, ready to build.
           </h1>
           <p className="hc-muted mt-8 max-w-2xl text-[17px] leading-[1.7] md:text-[20px]">
-            Herald Capital Partners finds, secures and de-risks land for modular inference data centers. We
+            Herald Capital Partners finds, secures and de-risks sites for modular inference data centers, from open land to existing
+            buildings. We
             assemble the power, fiber, water and approvals a developer needs, so new capacity can come online fast.
           </p>
           <div className="mt-11 flex flex-col gap-4 sm:flex-row">
@@ -109,7 +110,7 @@ export default function HomePage() {
               needed.
             </p>
             <p>
-              Grid connections can take years. The sites that move fastest pair land with firm power, often
+              Grid connections can take years. The sites that move fastest pair a property with firm power, often
               generated on site, along with fiber, water and a clear permitting path. Those sites are scarce, and
               assembling one takes specialized work well before construction begins.
             </p>
@@ -143,8 +144,8 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
           <SectionHeading
             label="What we look for"
-            title="The full infrastructure stack, on one parcel."
-            intro="Most land has one or two of these. The sites we pursue have, or can credibly reach, all of them."
+            title="The full infrastructure stack, on one site."
+            intro="Most properties have one or two of these. The sites we pursue have, or can credibly reach, all of them."
           />
           <div className="mt-14 grid gap-x-14 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
             {CRITERIA.map((item) => (

@@ -40,7 +40,7 @@ export default function TeamPage() {
         </div>
       </section>
 
-      <CtaBand title="Work with us" text="Landowners, brokers and developers: we would like to hear from you." cta="Get in touch" />
+      <CtaBand title="Work with us" text="Property owners, brokers and developers: we would like to hear from you." cta="Get in touch" />
     </>
   );
 }

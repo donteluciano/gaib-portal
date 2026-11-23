@@ -45,7 +45,7 @@ export default function AboutPage() {
                 delivered on their timeline, not the utility queue&apos;s.
               </p>
               <p>
-                We work at the earliest and most specialized stage of that process: finding the right land, securing
+                We work at the earliest and most specialized stage of that process: finding the right site, whether open land or an existing building, securing
                 it, and completing the power, environmental, fiber, permitting and community work that turns it into
                 a site a developer can build on.
               </p>

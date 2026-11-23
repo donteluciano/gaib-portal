@@ -10,7 +10,7 @@ export default function ContactForm() {
   const [errorMessage, setErrorMessage] = useState('');
   const [role, setRole] = useState<string>(INQUIRY_ROLES[0]);
 
-  const isSiteSubmission = role === 'Landowner' || role === 'Broker';
+  const isSiteSubmission = role === 'Property owner' || role === 'Broker';
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -131,6 +131,15 @@ export default function ContactForm() {
               <input id="askingPrice" name="askingPrice" className="hc-input" />
             </div>
           </div>
+          <div className="hc-field">
+            <label htmlFor="currentUse">Existing buildings and current use</label>
+            <input
+              id="currentUse"
+              name="currentUse"
+              className="hc-input"
+              placeholder="e.g. 60,000 sq ft vacant warehouse, or open farmland"
+            />
+          </div>
         </fieldset>
       )}
 
@@ -142,7 +151,7 @@ export default function ContactForm() {
           className="hc-input"
           placeholder={
             isSiteSubmission
-              ? 'Nearby gas lines, substations or fiber, current use, timing...'
+              ? 'Nearby gas lines, substations or fiber, timing, anything else...'
               : 'How can we help?'
           }
         />
