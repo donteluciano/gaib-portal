@@ -61,7 +61,7 @@ function calculateLeadScore(lead: Partial<Lead>): number {
   if (lead.county) score += 5;
   if (lead.address) score += 5;
   
-  const price = parseFloat((lead.asking_price || '0').replace(/[^0-9.]/g, ''));
+  const price = parseFloat(String(lead.asking_price || '0').replace(/[^0-9.]/g, ''));
   if (price > 0 && acreage > 0) {
     const pricePerAcre = price / acreage;
     if (pricePerAcre <= 50000) score += 25;
@@ -158,7 +158,7 @@ export default function LeadsPage() {
   async function convertToSite(lead: Lead) {
     if (!confirm(`Convert "${lead.address}" to a new site?`)) return;
     setConverting(lead.id);
-    const siteInputs = { acreage: parseFloat(lead.acreage) || 0, askingPrice: parseFloat((lead.asking_price || '0').replace(/[^0-9.]/g, '')) || 0 };
+    const siteInputs = { acreage: parseFloat(lead.acreage) || 0, askingPrice: parseFloat(String(lead.asking_price || '0').replace(/[^0-9.]/g, '')) || 0 };
     const { data: siteData, error: siteError } = await supabase.from('sites').insert({
       name: lead.address || `${lead.city}, ${lead.state}`,
       city: lead.city,

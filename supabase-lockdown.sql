@@ -1,13 +1,27 @@
--- Herald portal: close the database and document storage to public access.
+-- Herald portal database lockdown. APPLIED to the production project on 2026-11-23
+-- (migrations "lock_down_public_access" and "revoke_public_table_grants").
+-- Kept here as a record and for setting up a new project the same way.
 --
--- Run this in Supabase > SQL Editor only AFTER:
---   1. SUPABASE_SERVICE_ROLE_KEY and PORTAL_PASSWORD are set in Vercel, and
---   2. the portal update (database proxy at /api/db) is live and you can sign in.
--- The portal and the website contact form use the service key on the server, which these
--- rules do not affect. Running this earlier would break the old portal.
+-- Model: the public (anon) key can do nothing except add a new lead from the website
+-- contact form. The portal reads and writes through /api/db on the website's server,
+-- using SUPABASE_SERVICE_ROLE_KEY, which RLS and these grants do not affect.
 
--- 1. Remove every row-level security policy on public tables (including the "Allow all"
---    ones) and make sure RLS is on everywhere. RLS on + no policies = no public access.
+-- 1. Lead columns the portal and website form use (additive).
+ALTER TABLE public.leads
+  ADD COLUMN IF NOT EXISTS first_name text,
+  ADD COLUMN IF NOT EXISTS last_name text,
+  ADD COLUMN IF NOT EXISTS email text,
+  ADD COLUMN IF NOT EXISTS phone text,
+  ADD COLUMN IF NOT EXISTS company text,
+  ADD COLUMN IF NOT EXISTS county text,
+  ADD COLUMN IF NOT EXISTS relationship text,
+  ADD COLUMN IF NOT EXISTS current_use text,
+  ADD COLUMN IF NOT EXISTS additional_notes text,
+  ADD COLUMN IF NOT EXISTS lead_status text DEFAULT 'new',
+  ADD COLUMN IF NOT EXISTS lead_score integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS converted_site_id uuid;
+
+-- 2. RLS on every public table, with no policies except the one below.
 DO $$
 DECLARE r record;
 BEGIN
@@ -19,21 +33,19 @@ BEGIN
   END LOOP;
 END $$;
 
--- 2. Make the documents bucket private and remove public storage policies.
---    Files then open only through the signed-in portal, via short-lived links.
-DO $$
-DECLARE r record;
-BEGIN
-  UPDATE storage.buckets SET public = false WHERE id = 'documents';
-  FOR r IN SELECT policyname FROM pg_policies WHERE schemaname = 'storage' AND tablename = 'objects' LOOP
-    BEGIN
-      EXECUTE format('DROP POLICY %I ON storage.objects', r.policyname);
-    EXCEPTION WHEN insufficient_privilege THEN
-      RAISE NOTICE 'Could not drop storage policy "%": remove it in Storage > Policies.', r.policyname;
-    END;
-  END LOOP;
-END $$;
+CREATE POLICY "Website contact form can add new leads"
+  ON public.leads FOR INSERT TO anon
+  WITH CHECK (lead_status = 'new' AND converted_site_id IS NULL);
 
--- 3. Check. Both queries should return no rows.
-SELECT schemaname, tablename, policyname FROM pg_policies WHERE schemaname IN ('public', 'storage');
-SELECT id, public FROM storage.buckets WHERE public = true;
+-- 3. No table privileges for anon/authenticated, except inserting leads.
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM anon, authenticated;
+GRANT INSERT ON public.leads TO anon;
+
+-- 4. Private bucket for portal documents.
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('documents', 'documents', false)
+ON CONFLICT (id) DO UPDATE SET public = false;
+
+-- Check: should return no rows.
+SELECT relname FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname = 'public' AND c.relkind = 'r' AND NOT c.relrowsecurity;
