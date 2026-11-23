@@ -19,7 +19,7 @@ const STEPS = [
   },
   {
     title: 'De-risk',
-    text: 'Each site moves through staged diligence on power, environmental, fiber, community and engineering, with a go/no-go decision at every gate.',
+    text: 'Each site moves through staged diligence on power, feasibility, environmental, fiber and community, with a go/no-go decision at every gate.',
   },
   {
     title: 'Deliver',
