@@ -19,6 +19,11 @@ const STAGES = [
     gate: 'Power confirmed',
   },
   {
+    title: 'Feasibility and engineering',
+    text: 'Site engineer engaged, existing structures evaluated, cooling approach and equipment assessed, zoning and the air-permit pathway confirmed, and a full financial model built.',
+    gate: 'Feasibility confirmed',
+  },
+  {
     title: 'Water and environmental',
     text: 'Water availability and rights confirmed. A Phase I environmental site assessment is completed, with Phase II work and remediation scoped where needed.',
     gate: 'Environmental clear',
@@ -32,11 +37,6 @@ const STAGES = [
     title: 'Political and community',
     text: 'Municipal officials engaged early, community outreach begun, incentives explored, and community benefit agreements drafted where appropriate.',
     gate: 'Local alignment confirmed',
-  },
-  {
-    title: 'Engineering and feasibility',
-    text: 'Site engineer engaged, existing structures evaluated, cooling approach and equipment assessed, zoning and the air-permit pathway confirmed, and a full financial model built.',
-    gate: 'Engineering confirmed',
   },
   {
     title: 'Packaging and exit',
