@@ -34,8 +34,8 @@ export const TEAM: TeamMember[] = [
     photo: '/team/donte-bronaugh.jpg',
     bio: 'Previously at Hyperscale Data, where he worked on site selection, development, deployment and community engagement for its Michigan data center campus, work that led to a 20 MW AI compute agreement.',
   },
-  { name: 'Lemar Boone', title: 'Partner', initials: 'LB' },
   { name: 'Benjamin Cobb', title: 'Partner', initials: 'BC', photo: '/team/ben-cobb.jpg' },
+  { name: 'Sean Thomas', title: 'Partner', initials: 'ST', photo: '/team/sean-thomas.jpg' },
 ];
 
 export type NewsItem = {
