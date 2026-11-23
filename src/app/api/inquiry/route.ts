@@ -15,6 +15,16 @@ function orNull(value: string): string | null {
   return value ? value : null;
 }
 
+const MULTIPLIERS: Record<string, number> = { k: 1e3, m: 1e6, b: 1e9 };
+
+/** Turns entries like "50", "1,200", "$2.5M" or "750k" into a number; anything else becomes null. */
+function toNumber(value: string): number | null {
+  const match = value.replace(/[$,\s]/g, '').match(/^(\d*\.?\d+)([kmb])?$/i);
+  if (!match) return null;
+  const n = parseFloat(match[1]) * (MULTIPLIERS[(match[2] || '').toLowerCase()] ?? 1);
+  return Number.isFinite(n) ? n : null;
+}
+
 export async function POST(request: Request) {
   let body: Record<string, unknown>;
   try {
@@ -44,7 +54,17 @@ export async function POST(request: Request) {
   }
 
   const message = text(body.message, 4000);
-  const notes = [`Submitted through the website contact form (${role}).`, message].filter(Boolean).join('\n\n');
+  const acreageInput = text(body.acreage, 50);
+  const askingPriceInput = text(body.askingPrice, 50);
+  const asEntered = [
+    acreageInput && `Acreage as entered: ${acreageInput}`,
+    askingPriceInput && `Asking price as entered: ${askingPriceInput}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
+  const notes = [`Submitted through the website contact form (${role}).`, asEntered, message]
+    .filter(Boolean)
+    .join('\n\n');
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   // Prefer a server-only key if one is configured; fall back to the public key the portal already uses.
@@ -67,10 +87,14 @@ export async function POST(request: Request) {
     city: orNull(text(body.city, 100)),
     county: orNull(text(body.county, 100)),
     state: orNull(text(body.state, 50)),
-    acreage: orNull(text(body.acreage, 50)),
-    asking_price: orNull(text(body.askingPrice, 50)),
+    // acreage and asking_price are numeric columns; the raw entries are kept in the notes.
+    acreage: toNumber(acreageInput),
+    asking_price: toNumber(askingPriceInput),
     additional_notes: notes,
     lead_status: 'new',
+    // Older columns the leads table also has.
+    status: 'new',
+    source: 'Website',
   });
 
   if (error) {
