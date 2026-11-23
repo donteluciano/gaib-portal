@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /portal
+Disallow: /login
+Disallow: /api/
+Disallow: /investor-login
 
 Sitemap: https://heraldcappartners.com/sitemap.xml
