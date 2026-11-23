@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const STEPS = [
   {
     title: 'Originate',
-    text: 'We identify sites, open land or existing buildings, where gas, power, fiber and water line up, often before they come to market.',
+    text: 'We identify sites, open land or existing buildings, where electric capacity or gas, fiber and water line up, often before they come to market.',
   },
   {
     title: 'Secure',
@@ -30,7 +30,7 @@ const STEPS = [
 const CRITERIA = [
   {
     title: 'Power',
-    text: 'Access to transmission-pipeline gas and utility capacity that can support on-site generation, with grid service as backup or supplement.',
+    text: 'Utility electric capacity from nearby substations and transmission, transmission-pipeline gas for on-site generation, or both.',
   },
   {
     title: 'Fiber',
@@ -42,7 +42,7 @@ const CRITERIA = [
   },
   {
     title: 'Permitting',
-    text: 'A workable zoning pathway and a clear route to air permits for on-site generation.',
+    text: 'A workable zoning pathway, and a clear route to air permits where generation is on site.',
   },
   {
     title: 'Community',
@@ -110,8 +110,8 @@ export default function HomePage() {
               needed.
             </p>
             <p>
-              Grid connections can take years. The sites that move fastest pair a property with firm power, often
-              generated on site, along with fiber, water and a clear permitting path. Those sites are scarce, and
+              Grid connections can take years. The sites that move fastest pair a property with firm power, from the
+              grid, generated on site or both, along with fiber, water and a clear permitting path. Those sites are scarce, and
               assembling one takes specialized work well before construction begins.
             </p>
           </div>

@@ -14,9 +14,9 @@ const STAGES = [
     gate: 'Site under option',
   },
   {
-    title: 'Gas and power',
-    text: 'Transmission pipeline identified, a third-party gas supply study commissioned, the gas utility engaged, and deliverable megawatts confirmed. Grid interconnection is assessed as backup or supplement.',
-    gate: 'Gas and power confirmed',
+    title: 'Power',
+    text: 'Electric and gas paths assessed side by side: utility substation and transmission capacity, load studies and will-serve letters on the electric side; pipeline, supply studies and the gas utility for on-site generation. Deliverable megawatts confirmed.',
+    gate: 'Power confirmed',
   },
   {
     title: 'Water and environmental',
@@ -47,7 +47,7 @@ const STAGES = [
 
 const PACKAGE = [
   'Option or purchase agreement, with title work',
-  'Gas supply study and utility will-serve or capacity letters',
+  'Utility capacity and will-serve letters, and gas supply studies where generation is on site',
   'Water availability and Phase I environmental site assessment',
   'Fiber route mapping and last-mile cost estimate',
   'Zoning confirmation and air-permit pathway',
